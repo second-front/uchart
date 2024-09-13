@@ -1,0 +1,58 @@
+{{- if .Values.subCharts }}
+  {{- range $subChart, $v := .Values.subCharts}}
+  {{- with $ -}}
+  {{ if not (empty $v) }}
+  {{ if not (eq $v.enabled false) }}
+
+{{/* Variables */}}
+{{- $name := $v.name | default $subChart }}
+{{- $chartUrl := $v.chartUrl | default "registry.gamewarden.io/charts" }}
+{{- $namespace := $v.namespace | default $subChart }}
+{{- $revision := $v.revision }}
+---
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}-{{ $subChart }}"
+  namespace: argocd
+spec:
+  project: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}"
+  destination:
+    namespace: {{ .Values.global.applicationName }}
+    name: {{ .Values.global.destinationCluster }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=false
+      - RespectIgnoreDifferences=true
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
+  revisionHistoryLimit: 3
+  sources:
+    - repoURL: {{ $chartUrl }}
+      targetRevision: {{ $revision }}
+      chart: {{ $name }}
+      helm:
+        {{-  if $v.values }}
+        values: |
+          {{- toYaml $v.values| nindent 10 }}
+          global:
+            applicationName: {{ .Values.global.applicationName }}
+            customerName: {{ .Values.global.customerName }}
+            impactLevel: {{ .Values.global.impactLevel }}
+            environment: {{ .Values.global.environment }}
+            {{- if hasKey $v.values "global" }}
+            {{- range $key, $value := $v.values.global }}
+            {{ $key }}: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+        {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+{{- end }}

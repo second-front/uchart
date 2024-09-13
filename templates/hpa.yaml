@@ -1,0 +1,47 @@
+{{- range $msvc, $v := .Values.microservices}}
+{{- with $ }}
+{{- if $v }}
+{{/* Variables */}}
+{{- $enabled := (($v.autoscaling).enabled) | default .Values.defaults.autoscaling.enabled }}
+{{- $targetName := (($v.autoscaling).targetName) | default $msvc }}
+{{- $minReplicas := (($v.autoscaling).minReplicas) | default .Values.defaults.autoscaling.minReplicas }}
+{{- $maxReplicas := (($v.autoscaling).maxReplicas) | default .Values.defaults.autoscaling.maxReplicas }}
+{{- $namespace := $v.namespace | default .Release.Namespace }}
+{{- $targetCPUUtilizationPercentage := (($v.autoscaling).targetCPUUtilizationPercentage) | default .Values.defaults.autoscaling.targetCPUUtilizationPercentage }}
+{{- $targetMemoryUtilizationPercentage := (($v.autoscaling).targetMemoryUtilizationPercentage) | default .Values.defaults.autoscaling.targetMemoryUtilizationPercentage }}
+
+{{- if $enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $msvc }}
+  namespace: {{ $namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ $targetName }}
+  minReplicas: {{ $minReplicas }}
+  maxReplicas: {{ $maxReplicas }}
+  metrics:
+  {{- if $targetMemoryUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ $targetMemoryUtilizationPercentage }}
+  {{- end }}   
+  {{- if $targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ $targetCPUUtilizationPercentage }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

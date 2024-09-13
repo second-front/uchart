@@ -1,0 +1,254 @@
+{{- range $msvc, $v := .Values.microservices}}
+{{- with $ -}}
+{{ if not (empty $v) }}
+{{- $statefulsetEnabled := (($v.statefulset).enabled) }}
+{{- if not $statefulsetEnabled }}
+{{- if $v.containers }}
+
+{{/* Variables */}}
+{{/* TODO: Turn this into ternary statement */}}
+
+{{- $autoscalingEnabled := (($v.autoscaling).enabled) | default .Values.defaults.autoscaling.enabled }}
+{{- $replicaCount := $v.replicaCount | default .Values.defaults.replicaCount }}
+{{- $strategy := $v.strategy | default .Values.defaults.strategy }}
+{{- $podAnnotations := $v.podAnnotations | default .Values.defaults.podAnnotations }}
+{{- $imagePullSecrets := $v.imagePullSecrets | default .Values.defaults.imagePullSecrets }}
+{{- $terminationGracePeriodSeconds := $v.terminationGracePeriodSeconds }}
+{{- $podSecurityContext := $v.podSecurityContext | default .Values.defaults.podSecurityContext }}
+{{- $createServiceAccount := (($v.serviceAccount).create) | default .Values.defaults.serviceAccount.create }}
+{{- $serviceAccountName := (($v.serviceAccount).name) | default .Values.defaults.serviceAccount.name }}
+{{- $securityContext := $v.securityContext | default .Values.defaults.securityContext }}
+{{- $imagePullPolicy := (($v.image).pullPolicy) | default .Values.defaults.image.pullPolicy }}
+{{- $envs := $v.envs }}
+{{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs }}
+{{- $extraVolumes := $v.volumes | default .Values.defaults.volumes }}
+{{- $extraVolumeMounts := $v.volumeMounts | default .Values.defaults.volumeMounts }}
+{{- $envFrom := $v.envFrom | default .Values.defaults.envFrom }}
+{{- $serviceEnabled := (($v.service).enabled) | default .Values.defaults.service.enabled }}
+{{- $resources := $v.resources | default .Values.defaults.resources }}
+{{- $nodeSelector := $v.nodeSelector | default .Values.defaults.nodeSelector }}
+{{- $affinity := $v.affinity | default .Values.defaults.affinity }}
+{{- $tolerations := $v.tolerations | default .Values.defaults.tolerations }}
+{{- $labels := $v.labels }}
+{{- $selectorLabels := $v.selectorLabels }}
+{{- $command := $v.command }}
+{{- $args := $v.args }}
+{{- $workingDir := $v.workingDir }}
+{{- $restartPolicy := $v.restartPolicy }}
+{{- $livenessProbe := $v.livenessProbe }}
+{{- $readinessProbe := $v.readinessProbe }}
+{{- $startupProbe := $v.startupProbe }}
+{{- $initContainers := $v.initContainers}}
+{{- $namespace := $v.namespace | default .Release.Namespace }}
+
+
+{{/* Service Vars */}}
+{{- $type := (($v.service).type) | default .Values.defaults.service.type }}
+{{- $port := (($v.service).port) | default .Values.defaults.service.port }}
+{{- $targetPort := (($v.service).targetPort) | default .Values.defaults.service.targetPort }}
+{{- $name := (($v.service).name) | default .Values.defaults.service.name }}
+{{- $additionalPorts := (($v.service).additionalPorts) | default .Values.defaults.service.additionalPorts }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $msvc }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $msvc }}
+    {{- include "universal-app-chart.labels" . | nindent 4 }}
+    {{- include "universal-app-chart.istioLabels" . | nindent 4 }}
+    {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
+spec:
+  revisionHistoryLimit: 3
+  {{- if not $autoscalingEnabled }}
+  replicas: {{ $replicaCount }}
+  {{- end }}
+  strategy:
+    {{- toYaml $strategy | nindent 4 }}
+  selector:
+    matchLabels:
+      app: {{ $msvc }}
+      {{- include "universal-app-chart.selectorLabels" . | nindent 6 }}
+      {{- include "universal-app-chart.istioLabels" . | nindent 6 }}
+      {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 6 }} {{- end }}
+  template:
+    metadata:
+      {{- with $podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ $msvc }}
+        {{- include "universal-app-chart.selectorLabels" . | nindent 8 }}
+        {{- include "universal-app-chart.istioLabels" . | nindent 8 }}
+        {{- if $labels -}} {{- toYaml $labels | nindent 8 }} {{- end }}
+        {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 8 }} {{- end }}
+        {{- include "universal-app-chart.labels" . | nindent 8 }}
+    spec:
+      {{- with $imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "universal-app-chart.serviceAccountName" (list $createServiceAccount $serviceAccountName .) }}
+    {{- if $initContainers }}
+      initContainers:
+      {{- with $initContainers -}}
+        {{ tpl . $ | nindent 8 }}
+      {{- end }}
+    {{- end }}
+      securityContext:
+        {{- toYaml $podSecurityContext | nindent 8 }}
+      terminationGracePeriodSeconds: {{ default 15 $terminationGracePeriodSeconds | int }}
+      containers:
+      {{- range $containerName, $container := $v.containers }}
+        {{- with $container }}
+        {{- $envs := $container.envs }}
+        {{- $replicaCount := $container.replicaCount | default $.Values.defaults.replicaCount }}
+        {{- $resources := $container.resources | default $.Values.defaults.resources }}
+        {{- $serviceEnabled := (($container.service).enabled) | default $.Values.defaults.service.enabled }}
+        {{- $securityContext := $container.securityContext | default $.Values.defaults.securityContext }}
+        {{- $type := (($container.service).type) | default $.Values.defaults.service.type }}
+        {{- $port := (($container.service).port) | default $.Values.defaults.service.port }}
+        {{- $targetPort := (($container.service).targetPort) | default $.Values.defaults.service.targetPort }}
+        {{- $name := (($container.service).name) | default $.Values.defaults.service.name }}
+        {{- $additionalPorts := (($container.service).additionalPorts) | default $.Values.defaults.service.additionalPorts }}
+        - name: {{ $containerName }}
+          securityContext:
+            {{- toYaml $securityContext | nindent 12 }}
+          image: {{ printf "%s/%s/%s:%s" $.Values.global.image.defaultImageRegistry $.Values.global.image.defaultImageRepository $container.image.name $container.image.tag }}
+          {{- if $container.workingDir }}
+          workingDir: {{ $container.workingDir }}
+          {{- end }}
+          {{- if $container.replicaCount }}
+          replicas: {{ $container.replicaCount }}
+          {{- end }}
+          {{- with $container.livenessProbe }}
+          livenessProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $container.readinessProbe }}
+          readinessProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $container.startupProbe }}
+          startupProbe:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if $container.command }}
+          command:
+            {{- toYaml $container.command | nindent 12 }}
+          {{- end }}
+          {{- if $container.args }}
+          args:
+            {{- toYaml $container.args | nindent 12 }}
+          {{- end }}
+          imagePullPolicy: {{ $imagePullPolicy }}
+          {{- if $container.restartPolicy }}
+          restartPolicy: {{ $container.restartPolicy }}
+          {{- end -}}
+          {{/* BACKWARD COMPATIBILITY FOR multi-lined piped string */}}
+          {{- if or ($container.envFrom) ($v.config) ($v.secrets) -}}
+          {{- if kindOf $container.envFrom | eq "string" }}
+          envFrom:
+          {{- range $line := splitList "\n" $container.envFrom }}
+          {{- if ne $line "" }}
+            {{- $line | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- else }}
+          envFrom:
+            {{- if ($v.secrets) }}
+            - secretRef:
+                name: {{ $msvc }}-secret
+            {{- end }}
+            {{- if ($v.config) }}
+            - configMapRef:
+                name: {{ $msvc }}-config
+            {{- end }}
+          {{- if $container.envFrom }}
+          {{- toYaml $container.envFrom | nindent 12 -}}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          env:
+            - name: "POD_NAME"
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: "POD_NAMESPACE"
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: "NAMESPACE"
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            {{- range $key, $value := $envs }}
+            - name: {{ $key }}
+              value: {{ $value | toString | quote }}
+            {{- end }}
+            {{- range $container.extraEnvs }}
+            - name: {{ .name | quote }}
+              {{- if .value }}
+              value: {{ with .value }}{{ tpl . $ | quote }}{{- end }}
+              {{- end -}}
+              {{- if .valueFrom }}
+              valueFrom:
+              {{- .valueFrom | toYaml | nindent 16 }}
+              {{- end -}}
+            {{- end }}
+          {{- if $container.extraVolumeMounts }}
+          volumeMounts:
+          {{- range $container.extraVolumeMounts }}
+            - name: {{ .name | quote }}
+              mountPath: {{ .mountPath | toYaml }}
+              {{- if .subPath }}
+              subPath: {{ .subPath | toYaml }}
+              {{- end -}}
+          {{- end }}
+          {{- end -}}
+{{- if $serviceEnabled }}
+          ports:
+            - name: {{ $name }}
+              containerPort: {{ $targetPort }}
+              protocol: TCP
+            {{- if $additionalPorts }}
+            {{- range $additionalPorts }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              protocol: {{ .protocol }}
+            {{- end }}
+            {{- end }}
+{{- end }}
+          resources:
+            {{- toYaml $resources | nindent 12 }}
+        {{- end }}
+      {{- end }}
+      {{- with $nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if $extraVolumes }}
+      volumes:
+        {{- with $extraVolumes -}}
+        {{ tpl . $ | nindent 8 }}
+        {{- end }}
+      {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

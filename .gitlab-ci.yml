@@ -1,0 +1,39 @@
+stages:
+  - validate
+
+validate_chart:
+  stage: validate
+  image: registry.gamewarden.io/steelbank/chainguard-helm-validator:0.6.3  # Use an image that has Helm installed
+  script:
+    - helm lint .
+    - |
+      mkdir -p templated-tests/docs
+
+      # helm repo add strimzi-kafka-operator https://strimzi.io/charts
+      # helm repo add neo4j https://helm.neo4j.com/neo4j
+      # helm repo add postgresql https://charts.bitnami.com/bitnami
+      # helm repo add postgresql-ha https://charts.bitnami.com/bitnami
+      # helm repo add opensearch https://opensearch-project.github.io/helm-charts
+      # helm repo add redis https://charts.bitnami.com/bitnami
+      # helm repo add redis-operator https://ot-container-kit.github.io/helm-charts
+      # helm repo add milvus https://milvus-io.github.io/milvus-helm
+      # helm repo add nats https://nats-io.github.io/k8s/helm/charts
+
+      helm dependency build
+      for values_file in docs/*.yaml; do
+        echo "Created templated file $values_file"
+        helm template . -f $values_file > templated-tests/$values_file
+      done
+      for values_file in templated-tests/docs/*.yaml; do
+        echo "Validating with values file: $values_file"
+        # kubeval $values_file --ignore-missing-schemas | grep -v "WARN - Set to ignore missing schemas\|was not validated against a schema"
+        kubeconform -ignore-missing-schemas $values_file
+
+        # #TODO With single node cluster live test
+        # helm install my-release path/to/your/chart/directory --values $values_file --dry-run --debug
+        # helm uninstall my-release
+      done
+
+# check for nulled out microservice
+# check for patched envs
+# verify microservice env (config/secret) is auto added to microserivce

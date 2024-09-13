@@ -1,0 +1,53 @@
+## How to use for customers
+1. Create a values.yaml in the root of the manifests project.
+   ```touch base-values.yaml```
+1. For each microservice the customer has populate the microservices block and appName
+```yaml
+applicationName: <APP_NAME> # Very likely this will be the name of the customer or their application name
+microservices:
+  <MSVC_NAME>:
+    # At their domain which route to send to this MSVC
+    prefix: "/"
+    image:
+      repository: <CONTAINER_REGISTRY_PATH>
+      tag: <TAG OF THE CONTAINER>
+  <MSVC_NAME_2>:
+    ...
+```
+5. Configure available subcharts as needed like postgres, pgadmin, etc...
+6. See ***example*** deployed app ***for all usages*** [here](https://code.il2.gamewarden.io/gamewarden/tools/charts/uchart/chart/-/blob/main/docs/example-values.yaml)
+
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+## How to generate schema automatically
+```
+helm plugin install https://github.com/karuppiah7890/helm-schema-gen
+helm schema-gen values.yaml > values.schema.json
+```
+
+## Manually push new version of chart to registry and push tag to git
+```
+helm package .
+helm push $(ls *.tgz) oci://registry.gamewarden.io/charts
+export chartVersion=$(echo "$(ls *.tgz)" | cut -d'-' -f2- | rev | cut -d'.' -f2- | rev)
+rm $(ls *.tgz)
+git tag -a $chartVersion -m "add appLabel overrides"
+gp --tags
+```
+
+## How to update docs dynamically
+```docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest```
+

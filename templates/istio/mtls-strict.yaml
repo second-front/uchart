@@ -1,0 +1,13 @@
+{{- if not .Values.subCharts }}
+{{- $istioMtlsEnabled := .Values.global.istio.mtls.enabled }}
+{{- if and $istioMtlsEnabled .Values.microservices }}
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: {{ .Values.global.applicationName | default .Values.applicationName }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  mtls:
+    mode: STRICT
+{{- end }}
+{{- end }}

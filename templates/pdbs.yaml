@@ -1,0 +1,30 @@
+{{ if .Values.podDisruptionBudget}}
+{{ $appLabel := .Values.podDisruptionBudget.appLabel | default "universal-app-chart" }}
+{{ $name := .Values.podDisruptionBudget.overrideName | default (printf "%s-%s" .Release.Name "-universal-app-chart") }}
+
+{{- if semverCompare ">=1.21-0" .Capabilities.KubeVersion.GitVersion -}}
+
+
+apiVersion: policy/v1
+{{- else -}}
+apiVersion: policy/v1beta1
+{{- end }}
+kind: PodDisruptionBudget
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  {{ if .Values.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  {{ else }}
+  maxUnavailable: 0
+  {{ end }}
+  {{ if .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  {{ end }}
+  selector:
+    matchLabels:
+      app: {{ $appLabel }}
+      app.kubernetes.io/name: {{ include "universal-app-chart.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{ end }}

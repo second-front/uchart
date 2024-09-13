@@ -1,0 +1,384 @@
+nameOverride: ""
+fullnameOverride: ""
+
+## Global values are used for subcharts
+global:
+  domain: dev.il2.afwerx.dso.mil
+  gateway: istio-system/private
+  applicationName: "testapp"
+  customerName: testapp
+  # -- Used for resource tracking with labels and used for ArgoCD naming
+  impactLevel: il2
+  environment: dev
+  # -- Required for using ArgocdWrapper method with subCharts key
+  destinationCluster: multi-tenant-development-cluster
+  image:
+    # -- Use this with <microservice-name>.image.name instead of using <microservice-name>.image.repository to reduce duplicate yaml code in values.yaml
+    defaultImageRegistry: registry.gamewarden.io
+    defaultImageRepository: testapp
+  # -- Istio settings
+  istio:
+    # -- enforce mtls PeerAuthentication
+    mtls: 
+      enabled: true
+
+ciliumNetworkPolicies:
+  enabled: false
+  appPolicy:
+    enabled: true
+  # -- To add additional policies to the app namespace
+  customPolicies: []
+  #  - name: custom-policy-1
+  #    spec:
+  #      endpointSelector:
+  #       matchLabels: {}
+  #      egress:
+  #       - toCIDR:
+  #         - 192.168.1.0/24
+  #      ingress:
+  #       - fromCIDR:
+  #         - 10.0.0.0/16
+networkPolicies:
+  enabled: false
+  appPolicy:
+    enabled: true
+  # -- To add additional netpols to the app namespace
+  customPolicies: []
+  #  - name: custom-policy-1
+  #    spec:
+  #      podSelector:
+  #       matchLabels: {}
+  #      egress:
+  #       - toCIDR:
+  #         - 192.168.1.0/24
+  #      ingress:
+  #       - fromCIDR:
+  #         - 10.0.0.0/16
+
+imageCredentials: []
+
+rbac:
+  create: false
+  rules: []
+  # RBAC rules for KUBE_PING
+  #  - apiGroups:
+  #      - ""
+  #    resources:
+  #      - pods
+  #    verbs:
+  #      - get
+  #      - list
+
+config:
+  enabled: false
+  data: {}
+
+secrets:
+  enabled: false
+  # data:
+  #   test0: test0
+  #   test1: test1
+  # stringData:
+  #   test2: test2
+  #   test3: test3
+  # generateKeys:
+  #   - DB_PASSWORD
+  #   - JOB_SECRET
+
+defaults:
+  # -- virtual service from chart enabled
+  virtualService:
+    enabled: false
+  # -- Number of replicas for the microservice
+  replicaCount: 1
+  #  statefulsets: min # of secs for which a newly created Pod should be ready without any of its containers crashing
+
+  # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  # The default strategy is RollingUpdate - Recreate is an option as well
+  # RollingUpdate has two optional settings, both defaulting to 25%
+  # maxSurge and maxUnavailable cannot both be zero
+  strategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 25%
+    #   maxUnavailable: 25%
+
+  minReadySeconds: 0
+
+  image:
+    pullPolicy: IfNotPresent
+    # -- Required - repository tag along with either repository or name (one is required)
+    tag: ""
+  # -- Pull secrets for the image/s
+  imagePullSecrets:
+    - name: private-registry
+  serviceAccount:
+    # -- Specifies whether a service account should be created
+    create: false
+    # -- Annotations to add to the service account
+    annotations: {}
+    labels: {}
+    # -- The name of the service account to use.
+    # -- If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  # -- Extra environment variables
+  extraEnvs: {}
+    # - name: EXAMPLE
+    #   value: example
+    # - name: EXAMPLE_FROM
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: mysecret
+    #       key: password
+    #       optional: false
+
+  # -- Extra environment variables from secrets or configMaps
+  envFrom: {}
+    # - secretRef:
+    #     name: mysecret
+    # - configMapRef:
+    #     name: myconfig
+  
+  # -- Example Pod Disruption Budget values
+  podDisruptionBudget: {}
+    # minAvailable: 5
+    # maxUnavailable: 1 
+
+  service:
+    # -- Use a service with Microservice
+    enabled: true
+    # -- Set the service to headless
+    headless: false
+    # -- Set the service type (ClusterIP, NodePort, LoadBalancer, ExternalName )
+    type: ClusterIP
+    # -- Set the port you want to expose the service on.
+    port: 80
+    # -- Set a name for the port
+    name: http
+    # -- Set to true to remove the port name
+    disablePortName: false
+    # -- Set the default targetPort of service to 8080 ( Port the application is listening on within the container )
+    targetPort: 8080
+    # -- Set the app procotol to allow explicit selection. (http, http2, https, tcp, tls, grpc, mongo, mysql, redis)
+    appProtocol: TCP
+    # -- Add additional ports to expose
+    additionalPorts: {}
+    #   - port: 69
+    #     targetPort: 6969
+    #     protocol: TCP
+    #     name: http
+
+  resources:
+    # by default run without limits, and no limitRanges are set
+    # limits:
+    #   cpu: "2"
+    #   memory: 2Gi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  autoscaling:
+    #  -- Horizontal Autoscaling of pods
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  # -- Restrict a Pod to only be able to run on a particular Node.
+  nodeSelector: {}
+  # -- Applied to pods, and allow (but do not require) the pods to schedule onto nodes with matching taints.
+  tolerations: []
+  # -- Ensure that pods are hosted on specific nodes
+  affinity: {}
+
+# -- Extra kubernetes objects to deploy inline - Takes in MAP or LIST
+extraManifests: []
+  #   yourNameOfFirstResource: 
+  #     apiVersion: kafka.strimzi.io/v1beta2
+  #     kind: Kafka
+  #     metadata:
+  #       name: kafka-cluster
+  #       namespace: test
+  #     spec:
+  #       kafka:
+  #         replicas: 1
+  #         listeners:
+  #           - name: plain
+  #             port: ...
+### OR list
+  # - apiVersion: kafka.strimzi.io/v1beta2
+  #   kind: Kafka
+  #   metadata:
+  #       name: kafka-cluster
+  #       namespace: skyschedule
+  #   spec:
+  #       kafka:
+  #           replicas: 1 ...
+
+# -- Extra kubernetes objects to deploy inline - Map only
+manifests: {}
+  #   yourNameOfFirstResource: 
+  #     apiVersion: kafka.strimzi.io/v1beta2
+  #     kind: Kafka
+  #     metadata:
+  #       name: kafka-cluster
+  #       namespace: test
+  #     spec:
+  #       kafka:
+  #         replicas: 1
+  #         listeners:
+  #           - name: plain
+  #             port: 9092
+  #             type: internal
+  #             tls: false
+
+# Microservices: example of two services, the first being deployment and second a statefulset
+microservices: {}
+  # backend:
+  #   labels:
+  #     protect: keycloak
+  #   namespace: testapp
+  #   resources:
+  #     limits:
+  #       cpu: 400m
+  #       memory: 3Gi
+  #     requests:
+  #       cpu: 400m
+  #       memory: 3Gi
+  #   image:
+  #     repository: registry.gamewarden.io/gw/keycloak
+  #     tag: "nightly"
+  #   service:
+  #     enabled: true
+  #     type: ClusterIP
+  #     port: 80
+  #     name: http
+  #     targetPort: 8080
+  #     appProtocol: http
+  #     additionalPorts:
+  #     - port: 5005
+  #       targetPort: 5005
+  #       protocol: TCP
+  #       name: backend
+  #   match:
+  #     - uri:
+  #         prefix: /api
+  #  # specify host and number for non-msvc host and different port number than service port
+  #         host: nonmsvchost    
+  #         number: 8080
+  #     - uri:
+  #         prefix: /frontend
+  #     - uri:
+  #         prefix: /root 
+  #   envFrom:
+  #     - secretRef:
+  #         name: example
+  #   extraEnvs:
+  #   - name: _JAVA_OPTIONS
+  #     value: -Xmx2048m -Xms512m -Dlogging.level.org.springframework=TRACE
+  #   - name: SPRING_DATASOURCE_USERNAME
+  #     value: DBAdmin
+  #   - name: SPRING_DATASOURCE_PASSWORD
+  #     valueFrom:
+  #       secretKeyRef:
+  #         name: example
+  #         key: APP_DB_PASS
+  #   - name: JAVA_TOOL_OPTIONS
+  #     value: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+  #   serviceAccount:
+  #     create: enabled
+  #   rbac:
+  #     rules:
+  #     - apiGroups: ["apps"]
+  #       resources: ["deployments"]
+  #       verbs: ["get", "list", "watch", "update"]
+  # engine:
+  #   statefulset:
+  #     enabled: true
+  #   resources:
+  #     limits:
+  #       cpu: 400m
+  #       memory: 3Gi
+  #     requests:
+  #       cpu: 400m
+  #       memory: 3Gi
+  #   image:
+  #     repository: registry.gamewarden.io/agencies/example
+  #     tag: "0.0.0"
+  #   service:
+  #     enabled: true
+  #     type: ClusterIP
+  #     port: 5015
+  #     name: http
+  #     targetPort: 5015
+  #     appProtocol: http
+  #   volumeClaimTemplates:
+  #   - metadata:
+  #       name: www
+  #     spec:
+  #       accessModes: [ "ReadWriteOnce" ]
+  #       storageClassName: "my-storage-class"
+  #       resources:
+  #         requests:
+  #           storage: 1Gi
+  # adding secret for the microservice
+  #   secrets:
+  #     stringData:
+  #       test: test 
+  # Example Secrets input:
+  # microservices:
+  #   test-app:
+  #     secrets:
+  #       generatekeys:
+  #         - DB_PASSWORD
+  #         - JOB_SECRET
+
+  # Example output:
+  # stringData:
+  #   # loop through keys and generate values if any don't exist
+  #   # set $mSecret to existing secret data or generate a random one when not exists
+  #   DB_PASSWORD: peqtK5haL5JsKJ9xgQ3AOfock6MlZXJz
+  #   # set $mSecret to existing secret data or generate a random one when not exists
+  #   JOB_SECRET: uaJOImcmf1tC5yJm0nZMSg47fz4y6YlY
+  #   test: "test"
+
+
+# -- Used to get around ArgoCD generating new secrets with argocd ignore annotations
+generatedSecrets:
+  enabled: false
+
+
+
+
+# default chart name is name of subChart key
+# default chartUrl is 'registry.gamewarden.io/charts'
+# revision is required
+# if key defined it is auto enabled 
+# -- ArgoCD Wrapper for deploying extra ArgoCD Applictions, one for each subchart added below
+subCharts: {}
+  # clamav:
+  #   enabled: false
+  #   chartUrl: 'registry.gamewarden.io/charts'
+  #   name: clamav
+  #   revision: 0.0.2
+  #   values: {}
+
+
+argocd:
+# -- Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName
+  sourceNamespaces: []
+  # - customerNamespaceTwo

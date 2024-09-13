@@ -1,0 +1,223 @@
+subCharts:
+  clamav:
+    enabled: false
+    chartUrl: 'registry.gamewarden.io/charts'
+    name: clamav
+    revision: 0.0.2
+    values: {}
+  pgadmin:
+    enabled: false
+    revision: 0.1.0
+    values:
+      existingSecret: pgadmin4-password
+      podLabels:
+        protect: keycloak
+      selectorLabels:
+        protect: keycloak
+  opensearch:
+    enabled: false
+    revision: 2.19.0
+    values:
+      extraEnvs:
+        - name: DISABLE_INSTALL_DEMO_CONFIG
+          value: 'true'
+        - name: DISABLE_SECURITY_PLUGIN
+          value: 'true'
+      global:
+        dockerRegistry: registry.gamewarden.io
+      image:
+        repository: steelbank/cgr/opensearch
+        tag: 2.13.0-r0
+      imagePullSecrets:
+        - name: private-registry
+      persistence:
+        image: steelbank/cgr/busybox
+        imageTag: 1.36.1-r25
+      replicas: 2
+  mysql:
+    enabled: false
+    revision: 9.1.7-bb.1
+    values: 
+      # enable in customer values file to enable master/slave configuration
+      # architecture: replication
+      auth:
+        existingSecret: generated-secrets
+      primary:
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 2Gi 
+      secondary:
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 2Gi 
+        replicaCount: 3
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - mysql
+                topologyKey: "kubernetes.io/hostname"
+  postgresql:
+    revision: 12.2.2
+    enabled: false
+    values:
+      image:
+        registry: registry.gamewarden.io
+        repository: ironbank-proxy/ironbank/bitnami/postgres/postgresql11
+        tag: "11.22.0-debian-11-r2"
+      global:
+        imagePullSecrets:
+          - private-registry
+        postgresql:
+          auth:
+            existingSecret: generated-secrets
+            secretKeys:
+              adminPasswordKey: GENERATED_DB_PASSWORD
+              userPasswordKey: GENERATED_DB_PASSWORD
+              replicationPasswordKey: GENERATED_ADMIN_PASSWORD
+      auth:
+        existingSecret: generated-secrets
+        secretKeys:
+          adminPasswordKey: GENERATED_DB_PASSWORD
+          userPasswordKey: GENERATED_DB_PASSWORD
+          replicationPasswordKey: GENERATED_ADMIN_PASSWORD
+      primary:
+        containerSecurityContext:
+          capabilities:
+            drop:
+            - ALL
+      readReplicas:
+        containerSecurityContext:
+          capabilities:
+            drop:
+            - ALL
+      initContainers: []
+  postgresql-ha:
+    enabled: false
+    revision: 11.1.4
+    values:
+      persistence:
+        size: 8Gi
+      pgpool:
+        existingSecret: "generated-secrets"
+        image:
+          registry: registry.gamewarden.io
+          repository: ironbank-proxy/ironbank/bitnami/pgpool
+          tag: "4.3.2-debian-10-r15-ubi9"
+      postgresql:
+        existingSecret: "generated-secrets"
+        image:
+          registry: registry.gamewarden.io
+          repository: ironabank-proxy/ironbank/bitnami/postgresql-repmgr
+          tag: "16.2.0"
+      initContainers: []
+  strimzi-kafka-operator:
+    revision: 0.40.0
+    enabled: false
+    values:
+      defaultImageRegistry: registry.gamewarden.io
+      defaultImageRepository: ironbank-proxy/ironbank/opensource/strimzi
+      defaultImageTag: 0.40.0
+      image:
+        imagePullSecrets: private-registry
+        registry: ""
+        repository: ""
+        name: operator
+        tag: ""
+
+  neo4j:
+    revision: 5.18.1
+    enabled: false
+
+  # In order to deploy Minio-instance minio-operator needs to be enabled is cosmic on the cluster
+  minio-instance:
+    revision: 5.0.5-bb.0
+    enabled: false
+    # Example provided secret for env for tentant using generated secrets:
+    # existingSecretName: "generated-secrets" 
+    #
+    # Example HA config with 1 5GB volume per server and two buckets created, defaults to 4 servers
+    # tenant:
+    #   pools:
+    #     - volumesPerServer: 1
+    #       size: 5Gi
+    #   buckets: 
+    #     - name: bucket1
+    #     - name: bucket2
+
+  minio-standalone:
+    enabled: false
+    revision: 0.0.2
+    # Example webhook setup:
+    # envs:
+    #   MINIO_NOTIFY_WEBHOOK_ENABLE_primary: "on"
+    #   MINIO_NOTIFY_WEBHOOK_ENDPOINT_primary: "http://backend.skyschedule.svc.cluster.local:80/api/refresh"
+    #REF: https://min.io/docs/minio/linux/administration/monitoring/publish-events-to-webhook.html#
+    # enabled: false
+    # microservices:
+    #   minio.minio.svc.cluster.local:
+    #     volumeClaimTemplates: |
+    #       - metadata:
+    #           name: minio.minio.svc.cluster.local
+    #         spec:
+    #           accessModes: [ "ReadWriteOnce" ]
+    #           resources:
+    #             requests:
+    #               storage: 30Gi
+  milvus:
+    enabled: false
+    revision: 4.0.31
+  nats:
+    enabled: false
+    revision: 1.1.11
+    values: 
+      fullnameOverride: nats
+      container:
+        image:
+          registry: registry.gamewarden.io
+          repository: steelbank/cgr/nats
+          tag: "2.10.14-r0"
+      natsBox:
+        container:
+          image:
+            registry: registry.gamewarden.io
+            repository: steelbank/opensource/nats/nats-box
+            tag: "0.14.3"
+      reloader:
+        enabled: false
+      exporter:
+        enabled: false
+  redis:
+    revision: 17.9.5
+    enabled: false
+    values:
+      auth:
+        existingSecret: "generated-secrets"
+        existingSecretPasswordKey: "GENERATED_REDIS_PASSWORD"
+  mongodb:
+    enabled: false
+    revision: 13.12.1
+    values:
+      enabled: false
+      global:
+        imagePullSecrets:
+        - name: private-registry
+      auth:
+        existingSecret: generated-secrets
+      image:
+        registry: registry.gamewarden.io
+        repository: ironbank-proxy/ironbank/bitnami/mongodb
+        tag: 5.0.9
+        pullPolicy: "IfNotPresent"

@@ -1,0 +1,21 @@
+{{- $networkPoliciesEnabled := .Values.networkPolicies.enabled }}
+{{- if and $networkPoliciesEnabled (index .Values "minio-instance" "enabled") }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress-allow-minio-operator
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: minio-operator
+  - ports:
+    - port: 9000
+      protocol: TCP
+  {{- end }}

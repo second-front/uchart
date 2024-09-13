@@ -1,0 +1,45 @@
+dependencies:
+- name: pgadmin
+  repository: file://./charts/pgadmin
+  version: 0.1.0
+- name: opensearch
+  repository: file://./charts/opensearch
+  version: 2.19.0
+- name: mysql
+  repository: file://./charts/mysql
+  version: 9.1.7-bb.1
+- name: postgresql
+  repository: file://./charts/postgresql
+  version: 12.2.2
+- name: postgresql-ha
+  repository: file://./charts/postgresql-ha
+  version: 11.1.4
+- name: strimzi-kafka-operator
+  repository: file://./charts/strimzi-kafka-operator
+  version: 0.40.0
+- name: redis
+  repository: file://./charts/redis
+  version: 17.9.5
+- name: minio-instance
+  repository: file://./charts/minio-instance
+  version: 5.0.5-bb.0
+- name: minio-standalone
+  repository: file://./charts/minio-standalone
+  version: 0.0.1
+- name: neo4j
+  repository: file://./charts/neo4j
+  version: 5.18.1
+- name: clamav
+  repository: file://./charts/clamav
+  version: 0.0.1
+- name: nats
+  repository: file://./charts/nats
+  version: 1.1.11
+- name: mongodb
+  repository: file://./charts/mongodb
+  version: 13.12.1
+- name: milvus
+  repository: file://./charts/milvus
+  version: 4.0.31
+digest: sha256:fe3ef0a1dcb70c3f9a1f14ff2a8c1d6927fa5076dcfbd22c66d01cdae9c59cb4
+generated: "2024-04-16T10:08:22.331179331-05:00"

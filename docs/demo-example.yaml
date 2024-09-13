@@ -1,0 +1,54 @@
+global:
+  applicationName: example
+  customerName: Example Company
+  impactLevel: IL2
+  environment: development
+  gateway: istio-system/private
+  domain: practice.il2.afwerx.dso.mil
+  image:
+    defaultImageRegistry: registry.gamewarden.io
+    defaultImageRepository: testcustomer
+  istio:
+    mtls: 
+      enabled: false
+
+ciliumNetworkPolicies:
+  enabled: false
+
+microservices:
+  backend:
+    match:
+      - uri:
+          prefix: /api
+    image:
+      tag: 0.0.0
+    serviceAccount:
+      create: enabled
+    rbac:
+      rules:
+      - apiGroups: ["apps"]
+        resources: ["deployments"]
+        verbs: ["get", "list", "watch", "update"]
+  frontend:
+    statefulset:
+      enabled: true
+    prefix: /
+    image:
+      tag: 0.0.0
+    resources:
+      limits:
+        cpu: 400m
+        memory: 3Gi
+      requests:
+        cpu: 400m
+        memory: 3Gi
+
+# rbac:
+#   create: true
+
+# defaults:
+  # serviceAccount:
+  #   create: true
+  #   name: "utility"
+  # virtualService:
+  #   enabled: false

@@ -1,0 +1,16 @@
+{{- $networkPoliciesEnabled := .Values.networkPolicies.enabled }}
+{{- $namespace := .Release.Namespace }}
+{{- if and $networkPoliciesEnabled .Values.networkPolicies.customPolicies}}
+{{- range .Values.networkPolicies.customPolicies }}
+{{- if and .name .spec }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .name }}
+  namespace: {{ $namespace }}
+spec:
+{{ toYaml .spec | indent 2 }}
+---
+{{- end }}
+{{- end }}
+{{- end }}
