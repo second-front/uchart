@@ -7,7 +7,7 @@
 {{/* Variables */}}
 {{- $name := $v.name | default $subChart }}
 {{- $chartUrl := $v.chartUrl | default "registry.gamewarden.io/charts" }}
-{{- $namespace := $v.namespace | default $subChart }}
+{{- $namespace := $v.namespace | default .Values.global.applicationName }}
 {{- $revision := $v.revision }}
 ---
 kind: Application
@@ -18,7 +18,7 @@ metadata:
 spec:
   project: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}"
   destination:
-    namespace: {{ .Values.global.applicationName }}
+    namespace: {{ $namespace }}
     name: {{ .Values.global.destinationCluster }}
   syncPolicy:
     automated:

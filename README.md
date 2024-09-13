@@ -29,7 +29,6 @@ A universal application chart for gamewarden environments
 | ---- | ------ | --- |
 | Anthony Butt | <anthony.butt@secondfront.com> |  |
 | Lucas Pick | <lucas.pick@secondfront.com> |  |
-| Joshua Taylor | <joshua.taylor@secondfront.com> |  |
 
 ## Source Code
 

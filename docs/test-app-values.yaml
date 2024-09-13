@@ -41,6 +41,7 @@ subCharts:
         existingSecretPasswordKey: "GENERATED_REDIS_PASSWORD"
   opensearch:
     revision: 2.19.0
+    namespace: otherNamespace
     values:
       extraEnvs:
         - name: DISABLE_INSTALL_DEMO_CONFIG
