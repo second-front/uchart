@@ -1,8 +1,8 @@
 {{- range $msvc, $v := .Values.microservices }}
 {{- with $ -}}
 
-{{- if not (empty $v) }}
-{{- if $v.cronjob.enabled }}
+{{- if not (empty $v) }}  # Check if the microservice values are not empty
+{{- if $v.cronjob.enabled }}  # Check if the cronjob is enabled for the microservice
 {{- $image := printf "%s:%s" $v.image.repository $v.image.tag }}
 {{- if $v.image.name }}
   {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $v.image.name $v.image.tag }}
@@ -10,8 +10,8 @@
   {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $msvc $v.image.tag }}
   {{ if $v.image.repository }}
   {{ $image = printf "%s:%s" $v.image.repository $v.image.tag }}
-  {{ end }}
-{{ end }}
+  {{ end }}  # End of the check if image.repository is set
+{{ end }}  # End of the check if image.name is set
 
 {{- $schedule := $v.cronjob.schedule | default .Values.defaults.cronjob.schedule }}
 {{- $concurrencyPolicy := $v.cronjob.concurrencyPolicy | default "Forbid" }}
@@ -93,8 +93,7 @@ spec:
                 {{- toYaml $args | nindent 16 }}
               {{- end }}
 
-{{- end }}
-{{- end }}
-{{- end }}
-{{- end }}
-{{- end }}
+{{- end }}  # End of cronjob enabled check
+{{- end }}  # End of check if microservice values are not empty
+{{- end }}  # End of the "with" block
+{{- end }}  # End of the "range" block
