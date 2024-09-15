@@ -93,4 +93,4 @@ spec:
 {{- end }}  # End of job enabled check
 {{- end }}  # End of check if microservice values are not empty
 {{- end }}  # End of the "with" block
-{{- end }}  # End of the "range" block
+{{- end }}
