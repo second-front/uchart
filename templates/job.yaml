@@ -1,8 +1,9 @@
 {{- range $msvc, $v := .Values.microservices }}
 {{- with $ -}}
 
-{{- if not (empty $v) }} # Check if the microservice values are not empty
-{{- if $v.job.enabled }} # Check if the job is enabled for the microservice
+{{- if not (empty $v) }}
+{{- if $v.job }}
+{{- if ($v.job).enabled }}
 {{- $image := printf "%s:%s" $v.image.repository $v.image.tag }}
 {{- if $v.image.name }}
   {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $v.image.name $v.image.tag }}
@@ -10,24 +11,25 @@
   {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $msvc $v.image.tag }}
   {{ if $v.image.repository }}
   {{ $image = printf "%s:%s" $v.image.repository $v.image.tag }}
-  {{ end }} # End of the check if image.repository is set
-{{ end }} # End of the check if image.name is set
+  {{ end }}
+{{ end }}
 
-{{- $backoffLimit := $v.job.backoffLimit | default 6 }}
-{{- $completions := $v.job.completions | default 1 }}
-{{- $parallelism := $v.job.parallelism | default 1 }}
-{{- $restartPolicy := $v.job.restartPolicy | default "Never" }}
+{{- $backoffLimit := $v.backoffLimit | default 6 }}
+{{- $completions := $v.completions | default 1 }}
+{{- $parallelism := $v.parallelism | default 1 }}
+{{- $restartPolicy := $v.restartPolicy | default "Never" }}
 {{- $imagePullPolicy := $v.image.pullPolicy | default .Values.defaults.image.pullPolicy }}
-{{- $suspended := $v.job.suspended | default false }}  # Suspended job logic
+{{- $suspended := $v.suspended | default false }}
 {{- $envs := $v.envs }}
 {{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs }}
 {{- $labels := $v.labels }}
-{{- $securityContext := $v.securityContext | default (dict "capabilities" (dict "drop" (list "ALL"))) }}  # Default drop all capabilities
+{{- $annotations := $v.annotations | default (dict) }}
+{{- $securityContext := $v.securityContext | default (dict "capabilities" (dict "drop" (list "ALL"))) }}
 {{- $namespace := $v.namespace | default .Release.Namespace }}
 {{- $command := $v.command | default .Values.defaults.command }}
 {{- $args := $v.args | default .Values.defaults.args }}
 
-{{- if not $suspended }}  # Do not create Job if suspended is true
+{{- if not $suspended }}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -38,6 +40,10 @@ metadata:
     app: {{ $msvc }}
     {{- include "universal-app-chart.labels" . | nindent 4 }}
     {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
 spec:
   completions: {{ $completions }}
   parallelism: {{ $parallelism }}
@@ -89,8 +95,9 @@ spec:
             {{- toYaml $args | nindent 12 }}
           {{- end }}
 
-{{- end }}  # End suspended check
-{{- end }}  # End of job enabled check
-{{- end }}  # End of check if microservice values are not empty
-{{- end }}  # End of the "with" block
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
 {{- end }}

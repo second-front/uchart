@@ -1,8 +1,10 @@
 {{- range $msvc, $v := .Values.microservices }}
 {{- with $ -}}
 
-{{- if not (empty $v) }}  # Check if the microservice values are not empty
-{{- if $v.cronjob.enabled }}  # Check if the cronjob is enabled for the microservice
+{{- if not (empty $v) }}
+
+{{- if $v.cronjob }}
+{{- if ($v.cronjob).enabled }}
 {{- $image := printf "%s:%s" $v.image.repository $v.image.tag }}
 {{- if $v.image.name }}
   {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $v.image.name $v.image.tag }}
@@ -10,24 +12,21 @@
   {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $msvc $v.image.tag }}
   {{ if $v.image.repository }}
   {{ $image = printf "%s:%s" $v.image.repository $v.image.tag }}
-  {{ end }}  # End of the check if image.repository is set
-{{ end }}  # End of the check if image.name is set
-
-{{- $schedule := $v.cronjob.schedule | default .Values.defaults.cronjob.schedule }}
-{{- $concurrencyPolicy := $v.cronjob.concurrencyPolicy | default "Forbid" }}
-{{- $successfulJobsHistoryLimit := $v.cronjob.successfulJobsHistoryLimit | default 3 }}
-{{- $failedJobsHistoryLimit := $v.cronjob.failedJobsHistoryLimit | default 1 }}
-{{- $restartPolicy := $v.cronjob.restartPolicy | default "OnFailure" }}
+  {{ end }}
+{{ end }}
+{{- $completions := $v.completions | default 1 }}
+{{- $parallelism := $v.parallelism | default 1 }}
+{{- $restartPolicy := $v.restartPolicy | default "Never" }}
 {{- $imagePullPolicy := $v.image.pullPolicy | default .Values.defaults.image.pullPolicy }}
-{{- $suspended := $v.cronjob.suspended | default false }}
+{{- $suspended := $v.suspended | default false }}
 {{- $envs := $v.envs }}
 {{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs }}
 {{- $labels := $v.labels }}
+{{- $annotations := $v.annotations | default (dict) }}
 {{- $securityContext := $v.securityContext | default (dict "capabilities" (dict "drop" (list "ALL"))) }}
 {{- $namespace := $v.namespace | default .Release.Namespace }}
-{{- $command := $v.command | default .Values.defaults.command }}
-{{- $args := $v.args | default .Values.defaults.args }}
-
+{{- $command := $v.command }}
+{{- $args := $v.args }}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -38,14 +37,17 @@ metadata:
     app: {{ $msvc }}
     {{- include "universal-app-chart.labels" . | nindent 4 }}
     {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
 spec:
-  schedule: "{{ $schedule }}"
-  concurrencyPolicy: {{ $concurrencyPolicy }}
-  successfulJobsHistoryLimit: {{ $successfulJobsHistoryLimit }}
-  failedJobsHistoryLimit: {{ $failedJobsHistoryLimit }}
-  suspend: {{ $suspended }}   # Added suspended support
+  schedule: "{{ $v.cronjob.schedule }}"
   jobTemplate:
     spec:
+      backoffLimit: {{ $v.cronjob.backoffLimit | default 4 }}
+      completions: {{ $completions }}
+      parallelism: {{ $parallelism }}
       template:
         spec:
           restartPolicy: {{ $restartPolicy }}
@@ -55,21 +57,17 @@ spec:
               imagePullPolicy: {{ $imagePullPolicy }}
               {{- with $securityContext }}
               securityContext:
-                {{- toYaml . | nindent 16 }}
+                {{- toYaml . | nindent 14 }}
+              {{- end }}
+              {{- if $v.command }}
+              command:
+                {{- toYaml $command | nindent 14 }}
+              {{- end }}
+              {{- if $v.args }}
+              args:
+                {{- toYaml $args | nindent 14 }}
               {{- end }}
               env:
-                - name: "POD_NAME"
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.name
-                - name: "POD_NAMESPACE"
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.namespace
-                - name: "NAMESPACE"
-                  valueFrom:
-                      fieldRef:
-                        fieldPath: metadata.namespace
                 {{- range $key, $value := $envs }}
                 - name: {{ $key }}
                   value: {{ $value | toString | quote }}
@@ -81,19 +79,12 @@ spec:
                   {{- end -}}
                   {{- if .valueFrom }}
                   valueFrom:
-                  {{- .valueFrom | toYaml | nindent 18 }}
+                  {{- .valueFrom | toYaml | nindent 14 }}
                   {{- end -}}
                 {{- end }}
-              {{- if $command }}
-              command:
-                {{- toYaml $command | nindent 16 }}
-              {{- end }}
-              {{- if $args }}
-              args:
-                {{- toYaml $args | nindent 16 }}
-              {{- end }}
+{{- end }}
+{{- end }}
 
-{{- end }}  # End of cronjob enabled check
-{{- end }}  # End of check if microservice values are not empty
-{{- end }}  # End of the "with" block
+{{- end }}
+{{- end }}
 {{- end }}

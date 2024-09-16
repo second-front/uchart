@@ -402,8 +402,6 @@ generatedSecrets:
   enabled: false
 
 
-
-
 # default chart name is name of subChart key
 # default chartUrl is 'registry.gamewarden.io/charts'
 # revision is required

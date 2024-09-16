@@ -4,10 +4,15 @@
 
 {{- if $v }}
 {{/* Variables */}}
-{{- $enabled := (($v.service).enabled) | default .Values.defaults.service.enabled }}
-
+{{- $serviceConfig := default dict $v.service }}
+{{- $enabled := true }}
+{{- if hasKey $serviceConfig "enabled" }}
+  {{- if not $serviceConfig.enabled }}
+    {{- $enabled = false }}
+  {{- end }}
+{{- end }}
 {{- if and $enabled (not $v.containers) }}
-
+{{- if and (not $v.containers) (not $v.cronjob) (not $v.job) }}
 {{- $type := (($v.service).type) | default .Values.defaults.service.type }}
 {{- $headless := (($v.service).headless) | default .Values.defaults.service.headless }}
 {{- $port := (($v.service).port) | default .Values.defaults.service.port }}
@@ -117,6 +122,7 @@ spec:
     app.kubernetes.io/instance: {{ $.Release.Name }}
     authentication: istio-auth
     app.kubernetes.io/name: {{ printf "%s-%s" $.Release.Name $.Chart.Name | trunc 63 | trimSuffix "-" }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
