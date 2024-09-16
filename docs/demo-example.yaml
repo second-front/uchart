@@ -35,6 +35,8 @@ microservices:
     prefix: /
     image:
       tag: 0.0.0
+    service:
+      enabled: false
     resources:
       limits:
         cpu: 400m
