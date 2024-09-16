@@ -2,7 +2,7 @@
 {{- range $msvc, $v := .Values.microservices}}
 {{- with $ -}}
 {{ if not (empty $v) }}
-{{- if not $v.containers }}
+{{- if and (not $v.containers) (not $v.cronjob) (not $v.job) }}
 {{- $statefulsetEnabled := (($v.statefulset).enabled) }}
 {{- if not $statefulsetEnabled }}
 

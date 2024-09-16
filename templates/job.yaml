@@ -1,0 +1,103 @@
+{{- range $msvc, $v := .Values.microservices }}
+{{- with $ -}}
+
+{{- if not (empty $v) }}
+{{- if $v.job }}
+{{- if ($v.job).enabled }}
+{{- $image := printf "%s:%s" $v.image.repository $v.image.tag }}
+{{- if $v.image.name }}
+  {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $v.image.name $v.image.tag }}
+{{- else }}
+  {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $msvc $v.image.tag }}
+  {{ if $v.image.repository }}
+  {{ $image = printf "%s:%s" $v.image.repository $v.image.tag }}
+  {{ end }}
+{{ end }}
+
+{{- $backoffLimit := $v.backoffLimit | default 6 }}
+{{- $completions := $v.completions | default 1 }}
+{{- $parallelism := $v.parallelism | default 1 }}
+{{- $restartPolicy := $v.restartPolicy | default "Never" }}
+{{- $imagePullPolicy := $v.image.pullPolicy | default .Values.defaults.image.pullPolicy }}
+{{- $suspended := $v.suspended | default false }}
+{{- $envs := $v.envs }}
+{{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs }}
+{{- $labels := $v.labels }}
+{{- $annotations := $v.annotations | default (dict) }}
+{{- $securityContext := $v.securityContext | default (dict "capabilities" (dict "drop" (list "ALL"))) }}
+{{- $namespace := $v.namespace | default .Release.Namespace }}
+{{- $command := $v.command | default .Values.defaults.command }}
+{{- $args := $v.args | default .Values.defaults.args }}
+
+{{- if not $suspended }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $msvc }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $msvc }}
+    {{- include "universal-app-chart.labels" . | nindent 4 }}
+    {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  completions: {{ $completions }}
+  parallelism: {{ $parallelism }}
+  backoffLimit: {{ $backoffLimit }}
+  template:
+    spec:
+      restartPolicy: {{ $restartPolicy }}
+      containers:
+        - name: {{ $msvc }}
+          image: {{ $image }}
+          imagePullPolicy: {{ $imagePullPolicy }}
+          {{- with $securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: "POD_NAME"
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: "POD_NAMESPACE"
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: "NAMESPACE"
+              valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.namespace
+            {{- range $key, $value := $envs }}
+            - name: {{ $key }}
+              value: {{ $value | toString | quote }}
+            {{- end }}
+            {{- range $extraEnvs }}
+            - name: {{ .name | quote }}
+              {{- if .value }}
+              value: {{ with .value }}{{ tpl . $ | quote }}{{- end }}
+              {{- end -}}
+              {{- if .valueFrom }}
+              valueFrom:
+              {{- .valueFrom | toYaml | nindent 14 }}
+              {{- end -}}
+            {{- end }}
+          {{- if $command }}
+          command:
+            {{- toYaml $command | nindent 12 }}
+          {{- end }}
+          {{- if $args }}
+          args:
+            {{- toYaml $args | nindent 12 }}
+          {{- end }}
+
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
