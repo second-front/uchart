@@ -1,4 +1,4 @@
-{{- if .Values.subCharts }}
+{{- if and .Values.subCharts .Values.microservices }}
 ---
 kind: Application
 apiVersion: argoproj.io/v1alpha1
