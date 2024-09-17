@@ -8,7 +8,7 @@
 {{- $name := $v.name | default $subChart }}
 {{- $chartUrl := $v.chartUrl | default "registry.gamewarden.io/charts" }}
 {{- $namespace := $v.namespace | default .Values.global.applicationName }}
-{{- $revision := $v.revision }}
+{{- $revision := $v.revision | default $.Chart.Version }}
 ---
 kind: Application
 apiVersion: argoproj.io/v1alpha1
