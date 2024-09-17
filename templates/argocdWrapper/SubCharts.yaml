@@ -51,6 +51,13 @@ spec:
             {{- end }}
             {{- end }}
         {{- end }}
+    {{- if $v.valuesRepo }}
+      valueFiles:
+      {{- toYaml  $v.valueFiles | nindent 6 }}
+    - repoURL: {{ $v.valuesRepo }}
+      targetRevision: {{ $v.valuesRevision | default "main" }}
+      ref: values
+    {{- end }}
   {{- end }}
   {{- end }}
   {{- end }}

@@ -62,3 +62,11 @@ subCharts:
   justValuesUchart:
     values:
       simple: test
+  uCharWithValuesRepo:
+    values:
+      test: values
+    valuesRepo: https://github.com/second-front/asi-values.git
+    valuesRevision: main
+    valueFiles:
+    - $values/test-dev/base.yaml
+    - $values/test-dev/dev.yaml
