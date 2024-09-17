@@ -36,6 +36,7 @@ microservices:
       maxReplicas: 100
       targetCPUUtilizationPercentage: 80
       # targetMemoryUtilizationPercentage: 80
+    ## - Support multiple configmaps like this
     config:
       airplane-data:
         .env: |

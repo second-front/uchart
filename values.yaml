@@ -305,6 +305,15 @@ microservices: {}
   #     - apiGroups: ["apps"]
   #       resources: ["deployments"]
   #       verbs: ["get", "list", "watch", "update"]
+  #   config:
+  #     configMapNameHere:
+  #       .env: |
+  #         support: stringedValuesLikeThis
+  #         secretswithinconfigmap: sosecretshere
+  #         service-url: http://localghost:9005
+  #     car-json-data:
+  #       test: testString
+  #       support: keyValuePairsLikeThis
   # engine:
   #   statefulset:
   #     enabled: true
