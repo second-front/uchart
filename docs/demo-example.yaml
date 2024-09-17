@@ -36,6 +36,15 @@ microservices:
       maxReplicas: 100
       targetCPUUtilizationPercentage: 80
       # targetMemoryUtilizationPercentage: 80
+    config:
+      airplane-data:
+        .env: |
+          logLevel: trace
+          secretswithinconfigmap: sosecretshere
+          service-url: http://localghost:9005
+      car-json-data:
+        test: testString
+        test2: testString2
 
   # frontend:
   #   statefulset:

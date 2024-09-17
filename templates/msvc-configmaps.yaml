@@ -1,27 +1,23 @@
-{{- range $msvc, $v := .Values.microservices}}
-{{- with $ }}
-{{- if $v }}
-{{/* Variables */}}
-{{- $configMap := ($v.config).data }}
-{{- $namespace := $v.namespace | default .Release.Namespace }}
-
-
-{{- if $configMap }}
+{{- range $msvc, $v := .Values.microservices }}
+{{- with $v }}
+  {{- if $v.config }}
+    {{- range $configName, $configData := $v.config }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $msvc }}-config
-  namespace: {{ $namespace }}
-  labels:
-{{ include "universal-app-chart.labels" . | indent 4 }}
+  name: {{ $configName }}
+  namespace: {{ $v.namespace | default $.Release.Namespace }}
 data:
-{{- with $configMap }}
-  {{- range $key, $value := . }}
-  {{- printf "%s: %s" $key (tpl $value $ | quote) | nindent 2 }}
+{{- range $key, $value := $configData }}
+  {{- if contains "\n" $value }}
+  {{ $key }}: |
+{{- $value | nindent 4 }}
+  {{- else }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
 {{- end }}
-{{- end }}
-{{- end }}
-{{- end }}
+    {{- end }}
+  {{- end }}
 {{- end }}
 {{- end }}
