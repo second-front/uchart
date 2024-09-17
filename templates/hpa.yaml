@@ -8,7 +8,7 @@
 {{- $maxReplicas := (($v.autoscaling).maxReplicas) | default .Values.defaults.autoscaling.maxReplicas }}
 {{- $namespace := $v.namespace | default .Release.Namespace }}
 {{- $targetCPUUtilizationPercentage := (($v.autoscaling).targetCPUUtilizationPercentage) | default .Values.defaults.autoscaling.targetCPUUtilizationPercentage }}
-{{- $targetMemoryUtilizationPercentage := (($v.autoscaling).targetMemoryUtilizationPercentage) | default .Values.defaults.autoscaling.targetMemoryUtilizationPercentage }}
+{{- $targetMemoryUtilizationPercentage := (($v.autoscaling).targetMemoryUtilizationPercentage) }}
 
 {{- if $enabled }}
 ---
