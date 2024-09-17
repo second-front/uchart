@@ -429,3 +429,5 @@ argocd:
 # -- Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName
   sourceNamespaces: []
   # - customerNamespaceTwo
+# -- Create all namespaces beforehand in sourceNamespaces (the main namespace auto-creates from argocd)
+  createNamespace: false
