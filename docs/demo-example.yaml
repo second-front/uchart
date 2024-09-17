@@ -53,6 +53,9 @@ microservices:
   #       cpu: 400m
   #       memory: 3Gi
 
+generatedSecrets:
+  enabled: true
+
 # rbac:
 #   create: true
 
