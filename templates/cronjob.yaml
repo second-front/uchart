@@ -21,6 +21,7 @@
 {{- $suspended := $v.suspended | default false }}
 {{- $envs := $v.envs }}
 {{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs }}
+{{- $envFrom := $v.envFrom }}
 {{- $labels := $v.labels }}
 {{- $annotations := $v.annotations | default (dict) }}
 {{- $securityContext := $v.securityContext | default (dict "capabilities" (dict "drop" (list "ALL"))) }}
@@ -66,6 +67,22 @@ spec:
               {{- if $v.args }}
               args:
                 {{- toYaml $args | nindent 14 }}
+              {{- end }}
+              {{/* BACKWARD COMPATIBILITY FOR multi-lined piped string */}}
+              {{- if or ($envFrom) ($v.config) ($v.secrets) }}
+              {{- if kindOf $envFrom | eq "string" }}
+              envFrom:
+              {{- range $line := splitList "\n" $envFrom }}
+              {{- if ne $line "" }}
+                {{- $line | nindent 12 }}
+              {{- end }}
+              {{- end }}
+              {{- else }}
+              envFrom:
+              {{- if $envFrom }}
+              {{- toYaml $envFrom | nindent 12 -}}
+              {{- end }}
+              {{- end }}
               {{- end }}
               env:
                 {{- range $key, $value := $envs }}
