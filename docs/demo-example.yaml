@@ -29,21 +29,29 @@ microservices:
       - apiGroups: ["apps"]
         resources: ["deployments"]
         verbs: ["get", "list", "watch", "update"]
-  frontend:
-    statefulset:
+    autoscaling:
+      #  -- Horizontal Autoscaling of pods
       enabled: true
-    prefix: /
-    image:
-      tag: 0.0.0
-    service:
-      enabled: false
-    resources:
-      limits:
-        cpu: 400m
-        memory: 3Gi
-      requests:
-        cpu: 400m
-        memory: 3Gi
+      minReplicas: 1
+      maxReplicas: 100
+      targetCPUUtilizationPercentage: 80
+      # targetMemoryUtilizationPercentage: 80
+
+  # frontend:
+  #   statefulset:
+  #     enabled: true
+  #   prefix: /
+  #   image:
+  #     tag: 0.0.0
+  #   service:
+  #     enabled: false
+  #   resources:
+  #     limits:
+  #       cpu: 400m
+  #       memory: 3Gi
+  #     requests:
+  #       cpu: 400m
+  #       memory: 3Gi
 
 # rbac:
 #   create: true
