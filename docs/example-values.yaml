@@ -205,7 +205,13 @@ microservices:
           items:
           - key: config.json
             path: config.json
-
+    topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: zone
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          foo: bar
   backend:
     statefulset:
       enabled: true
@@ -284,4 +290,10 @@ microservices:
               secretKeyRef:
                 name: keycloak-keycloak-git
                 key: token
-
+    topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: zone
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          foo: bar

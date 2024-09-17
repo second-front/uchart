@@ -37,6 +37,7 @@
 {{- $resources := $v.resources | default .Values.defaults.resources }}
 {{- $nodeSelector := $v.nodeSelector | default .Values.defaults.nodeSelector }}
 {{- $affinity := $v.affinity | default .Values.defaults.affinity }}
+{{- $topologySpreadConstraints := $v.topologySpreadConstraints }}
 {{- $tolerations := $v.tolerations | default .Values.defaults.tolerations }}
 {{- $namespace := $v.namespace | default .Release.Namespace }}
 {{- $labels := $v.labels }}
@@ -234,6 +235,10 @@ spec:
       {{- end }}
       {{- with $affinity }}
       affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $topologySpreadConstraints }}
+      topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with $tolerations }}
