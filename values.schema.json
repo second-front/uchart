@@ -67,7 +67,7 @@
                     }
                 },
                 "envFrom": {
-                    "type": "object"
+                    "type": "array"
                 },
                 "extraEnvs": {
                     "type": "object"

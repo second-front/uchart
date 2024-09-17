@@ -15,6 +15,13 @@ global:
 ciliumNetworkPolicies:
   enabled: false
 
+
+defaults:
+  envFrom:
+    - configMapRef:
+        name: default-config
+
+
 microservices:
   backend:
     match:
@@ -46,22 +53,31 @@ microservices:
       car-json-data:
         test: testString
         test2: testString2
-
-  # frontend:
-  #   statefulset:
-  #     enabled: true
-  #   prefix: /
-  #   image:
-  #     tag: 0.0.0
-  #   service:
-  #     enabled: false
-  #   resources:
-  #     limits:
-  #       cpu: 400m
-  #       memory: 3Gi
-  #     requests:
-  #       cpu: 400m
-  #       memory: 3Gi
+    envFrom: 
+    - secretRef:
+        name: example
+    - configMapRef:
+        name: example
+  frontend:
+    statefulset:
+      enabled: true
+    prefix: /
+    image:
+      tag: 0.0.0
+    service:
+      enabled: false
+    resources:
+      limits:
+        cpu: 400m
+        memory: 3Gi
+      requests:
+        cpu: 400m
+        memory: 3Gi
+    envFrom: 
+    - secretRef:
+        name: example
+    - configMapRef:
+        name: example
 
 generatedSecrets:
   enabled: true

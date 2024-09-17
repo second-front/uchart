@@ -1,4 +1,9 @@
 
+defaults:
+  envFrom:
+    - configMapRef:
+        name: default-config
+
 microservices:
   example-cronjob:
     cronjob:
@@ -19,6 +24,11 @@ microservices:
     envs:
       ENV_VAR_1: "value1"
       ENV_VAR_2: "value2"
+    envFrom: 
+    - secretRef:
+        name: example
+    - configMapRef:
+        name: example
   examplejob:
     job:
       enabled: true
@@ -40,11 +50,6 @@ microservices:
     envs:
       ENV_VAR_1: "value1"
       ENV_VAR_2: "value2"
-    envFrom: 
-    - secretRef:
-        name: example
-    - configMapRef:
-        name: example
     extraEnvs:
       - name: SPRING_DATASOURCE_USERNAME
         value: DBAdmin
@@ -58,3 +63,8 @@ microservices:
           configMapKeyRef:
             name: special-config
             key: SPECIAL_LEVEL
+    envFrom: 
+    - secretRef:
+        name: example
+    - configMapRef:
+        name: example

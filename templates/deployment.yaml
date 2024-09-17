@@ -32,7 +32,13 @@
 {{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs }}
 {{- $extraVolumes := $v.volumes | default .Values.defaults.volumes }}
 {{- $extraVolumeMounts := $v.volumeMounts | default .Values.defaults.volumeMounts }}
-{{- $envFrom := $v.envFrom | default .Values.defaults.envFrom }}
+
+{{- $mergedEnvFrom := $v.envFrom | default (list) }}
+{{- $defaultsEnvFrom := .Values.defaults.envFrom | default (list) }}
+{{- range $defaultsEnvFrom }}
+  {{- $mergedEnvFrom = append $mergedEnvFrom . }}
+{{- end }}
+
 {{- $serviceEnabled := (($v.service).enabled) | default .Values.defaults.service.enabled }}
 {{- $resources := $v.resources | default .Values.defaults.resources }}
 {{- $nodeSelector := $v.nodeSelector | default .Values.defaults.nodeSelector }}
@@ -149,29 +155,9 @@ spec:
           {{- if $restartPolicy }}
           restartPolicy: {{ $restartPolicy }}
           {{- end -}}
-          {{/* BACKWARD COMPATIBILITY FOR multi-lined piped string */}}
-          {{- if or ($envFrom) ($v.config) ($v.secrets) }}
-          {{- if kindOf $envFrom | eq "string" }}
+          {{- if or ($mergedEnvFrom) ($v.config) ($v.secrets) }}
           envFrom:
-          {{- range $line := splitList "\n" $envFrom }}
-          {{- if ne $line "" }}
-            {{- $line | nindent 12 }}
-          {{- end }}
-          {{- end }}
-          {{- else }}
-          envFrom:
-            {{- if ($v.secrets) }}
-            - secretRef:
-                name: {{ $msvc }}-secret
-            {{- end }}
-            {{- if ($v.config) }}
-            - configMapRef:
-                name: {{ $msvc }}-config
-            {{- end }}
-          {{- if $envFrom }}
-          {{- toYaml $envFrom | nindent 12 -}}
-          {{- end }}
-          {{- end }}
+          {{- toYaml $mergedEnvFrom | nindent 14 }}
           {{- end }}
           env:
             - name: "POD_NAME"

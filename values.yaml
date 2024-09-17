@@ -147,7 +147,7 @@ defaults:
     #       optional: false
 
   # -- Extra environment variables from secrets or configMaps
-  envFrom: {}
+  envFrom: []
     # - secretRef:
     #     name: mysecret
     # - configMapRef:
