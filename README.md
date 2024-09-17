@@ -38,6 +38,7 @@ A universal application chart for gamewarden environments
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| argocd.disableProjectCreation | bool | `false` | Disable option for creation of project for applications created from subCharts if nesting |
 | argocd.sourceNamespaces | list | `[]` | Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName |
 | ciliumNetworkPolicies.appPolicy.enabled | bool | `true` |  |
 | ciliumNetworkPolicies.customPolicies | list | `[]` | To add additional policies to the app namespace |
@@ -46,10 +47,9 @@ A universal application chart for gamewarden environments
 | config.enabled | bool | `false` |  |
 | defaults.affinity | object | `{}` | Ensure that pods are hosted on specific nodes |
 | defaults.autoscaling.enabled | bool | `false` |  |
-| defaults.autoscaling.maxReplicas | int | `100` |  |
+| defaults.autoscaling.maxReplicas | int | `10` |  |
 | defaults.autoscaling.minReplicas | int | `1` |  |
 | defaults.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| defaults.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | defaults.envFrom | object | `{}` | Extra environment variables from secrets or configMaps |
 | defaults.extraEnvs | object | `{}` | Extra environment variables |
 | defaults.image.pullPolicy | string | `"IfNotPresent"` |  |

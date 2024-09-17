@@ -415,6 +415,8 @@ subCharts: {}
   #   values: {}
 
 argocd:
+# -- Disable option for creation of project for applications created from subCharts if nesting
+  disableProjectCreation: false
 # -- Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName
   sourceNamespaces: []
   # - customerNamespaceTwo

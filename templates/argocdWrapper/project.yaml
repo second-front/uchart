@@ -1,4 +1,4 @@
-{{- if .Values.subCharts }}
+{{- if and .Values.subCharts ( not .Values.argocd.disableProjectCreation) }}
 ---
 kind: AppProject
 apiVersion: argoproj.io/v1alpha1
