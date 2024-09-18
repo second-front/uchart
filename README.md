@@ -43,6 +43,7 @@ A universal application chart for gamewarden environments
 | argocd.sourceNamespaces | list | `[]` | Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName |
 | argocd.wrapperAppOff | bool | `false` | Turn off the argocdWrapper Application.yaml template and instead deploy microservices without being under an argocd application |
 | argocd.wrapperAppWave | string | `""` | Set argocd sync wave number on just the argocdWrapper Application if used |
+| argocd.wrapperSync | bool | `true` | Sync options - Turn on or off automated syncing with pruning for the argocdWrapper Application from microservice |
 | ciliumNetworkPolicies.appPolicy.enabled | bool | `true` |  |
 | ciliumNetworkPolicies.customPolicies | list | `[]` | To add additional policies to the app namespace |
 | ciliumNetworkPolicies.enabled | bool | `false` |  |
@@ -89,7 +90,7 @@ A universal application chart for gamewarden environments
 | global.applicationName | string | `"testapp"` |  |
 | global.customerName | string | `"testapp"` |  |
 | global.destinationCluster | string | `"multi-tenant-development-cluster"` | Required for using ArgocdWrapper method with subCharts key |
-| global.domain | string | `"dev.il2.afwerx.dso.mil"` |  |
+| global.domain | string | `"gamewarden.io"` |  |
 | global.environment | string | `"dev"` |  |
 | global.gateway | string | `"istio-system/private"` |  |
 | global.image.defaultImageRegistry | string | `"registry.gamewarden.io"` | Use this with <microservice-name>.image.name instead of using <microservice-name>.image.repository to reduce duplicate yaml code in values.yaml |

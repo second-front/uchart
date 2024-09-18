@@ -3,7 +3,7 @@ fullnameOverride: ""
 
 ## Global values are used for subcharts
 global:
-  domain: dev.il2.afwerx.dso.mil
+  domain: gamewarden.io
   gateway: istio-system/private
   applicationName: "testapp"
   customerName: testapp
