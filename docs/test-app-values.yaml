@@ -11,6 +11,7 @@ global:
 argocd:
 #   wrapperAppOff: true
   wrapperAppWave: "1"
+  wrapperSync: false
 
 microservices:
   backend:
@@ -71,6 +72,7 @@ subCharts:
   justValuesUchart:
     values:
       simple: test
+    sync: false
   uCharWithValuesRepo:
     values:
       test: values

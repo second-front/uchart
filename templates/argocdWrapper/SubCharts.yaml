@@ -25,9 +25,11 @@ spec:
     namespace: {{ $namespace }}
     name: {{ .Values.global.destinationCluster }}
   syncPolicy:
+    {{- if $v.sync }}
     automated:
       prune: true
       selfHeal: true
+    {{- end }}
     syncOptions:
       - CreateNamespace=true
       - Validate=false
@@ -54,6 +56,8 @@ spec:
             {{ $key }}: {{ $value | quote }}
             {{- end }}
             {{- end }}
+          argocd:
+            wrapperAppOff: true
         {{- end }}
     {{- if $v.valuesRepo }}
       valueFiles:
