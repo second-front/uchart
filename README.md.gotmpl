@@ -42,11 +42,14 @@ helm schema-gen values.yaml > values.schema.json
 ```
 helm package .
 helm push $(ls *.tgz) oci://registry.gamewarden.io/charts
-export chartVersion=$(echo "$(ls *.tgz)" | cut -d'-' -f2- | rev | cut -d'.' -f2- | rev)
 rm $(ls *.tgz)
-git tag -a $chartVersion -m "add appLabel overrides"
-gp --tags
 ```
 
 ## How to update docs dynamically
 ```docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest```
+
+## Run test values agains't chart
+```shell
+for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i; done
+for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i | kubeconform -ignore-missing-schemas; done
+```
