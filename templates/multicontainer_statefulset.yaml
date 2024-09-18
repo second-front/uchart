@@ -54,7 +54,6 @@
 {{- $name := (($v.service).name) | default .Values.defaults.service.name }}
 {{- $additionalPorts := (($v.service).additionalPorts) | default .Values.defaults.service.additionalPorts }}
 
-
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -110,7 +109,7 @@ spec:
       {{- with $initContainers -}}
         {{ tpl . $ | nindent 8 }}
       {{- end }}
-    {{- end }}  
+    {{- end }}
       terminationGracePeriodSeconds: {{ default 15 $terminationGracePeriodSeconds | int }}
       containers:
       {{- range $containerName, $container := $v.containers }}

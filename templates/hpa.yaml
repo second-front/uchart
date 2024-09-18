@@ -33,7 +33,7 @@ spec:
       target:
         type: Utilization
         averageUtilization: {{ $targetMemoryUtilizationPercentage }}
-  {{- end }}   
+  {{- end }}
   {{- if $targetCPUUtilizationPercentage }}
   - type: Resource
     resource:

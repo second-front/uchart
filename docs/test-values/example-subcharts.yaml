@@ -37,7 +37,7 @@ subCharts:
   mysql:
     enabled: false
     revision: 9.1.7-bb.1
-    values: 
+    values:
       # enable in customer values file to enable master/slave configuration
       # architecture: replication
       auth:
@@ -49,7 +49,7 @@ subCharts:
             memory: 2Gi
           limits:
             cpu: 2000m
-            memory: 2Gi 
+            memory: 2Gi
       secondary:
         resources:
           requests:
@@ -57,7 +57,7 @@ subCharts:
             memory: 2Gi
           limits:
             cpu: 2000m
-            memory: 2Gi 
+            memory: 2Gi
         replicaCount: 3
         affinity:
           podAntiAffinity:
@@ -146,14 +146,14 @@ subCharts:
     revision: 5.0.5-bb.0
     enabled: false
     # Example provided secret for env for tentant using generated secrets:
-    # existingSecretName: "generated-secrets" 
+    # existingSecretName: "generated-secrets"
     #
     # Example HA config with 1 5GB volume per server and two buckets created, defaults to 4 servers
     # tenant:
     #   pools:
     #     - volumesPerServer: 1
     #       size: 5Gi
-    #   buckets: 
+    #   buckets:
     #     - name: bucket1
     #     - name: bucket2
 
@@ -182,7 +182,7 @@ subCharts:
   nats:
     enabled: false
     revision: 1.1.11
-    values: 
+    values:
       fullnameOverride: nats
       container:
         image:

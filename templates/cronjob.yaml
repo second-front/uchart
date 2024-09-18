@@ -1,5 +1,5 @@
-{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
-{{- range $msvc, $v := .Values.microservices }}
+{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts )}}
+{{- range $msvc, $v := .Values.microservices}}
 {{- with $ -}}
 
 {{- if not (empty $v) }}

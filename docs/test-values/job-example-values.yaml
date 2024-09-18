@@ -24,7 +24,7 @@ microservices:
     envs:
       ENV_VAR_1: "value1"
       ENV_VAR_2: "value2"
-    envFrom: 
+    envFrom:
     - secretRef:
         name: example
     - configMapRef:
@@ -63,7 +63,7 @@ microservices:
           configMapKeyRef:
             name: special-config
             key: SPECIAL_LEVEL
-    envFrom: 
+    envFrom:
     - secretRef:
         name: example
     - configMapRef:

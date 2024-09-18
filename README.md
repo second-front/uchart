@@ -47,8 +47,7 @@ A universal application chart for gamewarden environments
 | ciliumNetworkPolicies.appPolicy.enabled | bool | `true` |  |
 | ciliumNetworkPolicies.customPolicies | list | `[]` | To add additional policies to the app namespace |
 | ciliumNetworkPolicies.enabled | bool | `false` |  |
-| config.data | object | `{}` |  |
-| config.enabled | bool | `false` |  |
+| config | object | `{"data":{},"enabled":false}` | Global application configmap - used for all microservices deployed to one namespace |
 | defaults.affinity | object | `{}` | Ensure that pods are hosted on specific nodes |
 | defaults.autoscaling.enabled | bool | `false` |  |
 | defaults.autoscaling.maxReplicas | int | `10` |  |
@@ -99,7 +98,7 @@ A universal application chart for gamewarden environments
 | global.istio | object | `{"mtls":{"enabled":true}}` | Istio settings |
 | global.istio.mtls | object | `{"enabled":true}` | enforce mtls PeerAuthentication |
 | imageCredentials | list | `[]` |  |
-| manifests | object | `{}` | Extra kubernetes objects to deploy inline - Map only |
+| manifests | object | `{}` | Extra kubernetes objects to deploy inline |
 | microservices | object | `{}` |  |
 | nameOverride | string | `""` |  |
 | networkPolicies.appPolicy.enabled | bool | `true` |  |
@@ -107,8 +106,8 @@ A universal application chart for gamewarden environments
 | networkPolicies.enabled | bool | `false` |  |
 | rbac.create | bool | `false` |  |
 | rbac.rules | list | `[]` |  |
-| secrets.enabled | bool | `false` |  |
-| subCharts | object | `{}` | ArgoCD Wrapper for deploying extra ArgoCD Applictions, one for each subchart added below |
+| secrets | object | `{"enabled":false}` | Global application secret - used for all microservices deployed to one namespace |
+| subCharts | object | `{}` | ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below |
 
 ## How to generate schema automatically
 ```
@@ -120,12 +119,14 @@ helm schema-gen values.yaml > values.schema.json
 ```
 helm package .
 helm push $(ls *.tgz) oci://registry.gamewarden.io/charts
-export chartVersion=$(echo "$(ls *.tgz)" | cut -d'-' -f2- | rev | cut -d'.' -f2- | rev)
 rm $(ls *.tgz)
-git tag -a $chartVersion -m "add appLabel overrides"
-gp --tags
 ```
 
 ## How to update docs dynamically
 ```docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest```
 
+## Run test values agains't chart
+```shell
+for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i; done
+for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i | kubeconform -ignore-missing-schemas; done
+```

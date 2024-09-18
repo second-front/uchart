@@ -1,11 +1,11 @@
-##  INFO 
+##  INFO
 ##    Multi container pods requires image tag to be set at the microservice level:
-##    
+##
 ##      microservices:
 ##        backendMultiContainer:
 ##          image:
 ##            tag: null
-##    
+##
 ##    Virtual Services are not enabled with multi-container deployments or statefulsets
 
 
@@ -20,7 +20,7 @@ global:
     defaultImageRegistry: registry.gamewarden.io
     defaultImageRepository: testcustomer
   istio:
-    mtls: 
+    mtls:
       enabled: false
 
 microservices:
@@ -63,11 +63,11 @@ microservices:
         envs:
           testVar1: eat
           testVariableTwo: me
-        image: 
+        image:
           name: test1image
           tag: test1
-      mainContainer: 
-        image: 
+      mainContainer:
+        image:
           name: test2image
           tag: test2
 
