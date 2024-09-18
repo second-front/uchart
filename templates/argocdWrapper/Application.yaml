@@ -1,10 +1,14 @@
-{{- if and .Values.subCharts .Values.microservices }}
+{{- if and .Values.subCharts .Values.microservices (not .Values.argocd.wrapperAppOff)}}
 ---
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
   name: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}"
   namespace: argocd
+{{-  if .Values.argocd.wrapperAppWave }}
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ .Values.argocd.wrapperAppWave }}
+{{- end }}
 spec:
   project: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}"
   destination:

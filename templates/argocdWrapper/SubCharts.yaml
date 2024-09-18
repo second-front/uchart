@@ -15,6 +15,10 @@ apiVersion: argoproj.io/v1alpha1
 metadata:
   name: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}-{{ $subChart }}"
   namespace: argocd
+{{-  if $v.wave }}
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ $v.wave }}
+{{- end }}
 spec:
   project: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}"
   destination:
