@@ -38,8 +38,10 @@ A universal application chart for gamewarden environments
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| argocd.createNamespace | bool | `false` | Create all namespaces beforehand in sourceNamespaces (the main namespace auto-creates from argocd) |
 | argocd.disableProjectCreation | bool | `false` | Disable option for creation of project for applications created from subCharts if nesting |
 | argocd.sourceNamespaces | list | `[]` | Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName |
+| argocd.wrapperAppOff | bool | `false` | Turn off the argocdWrapper Application.yaml template and instead deploy microservices without being under an argocd application |
 | ciliumNetworkPolicies.appPolicy.enabled | bool | `true` |  |
 | ciliumNetworkPolicies.customPolicies | list | `[]` | To add additional policies to the app namespace |
 | ciliumNetworkPolicies.enabled | bool | `false` |  |
@@ -50,7 +52,7 @@ A universal application chart for gamewarden environments
 | defaults.autoscaling.maxReplicas | int | `10` |  |
 | defaults.autoscaling.minReplicas | int | `1` |  |
 | defaults.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| defaults.envFrom | object | `{}` | Extra environment variables from secrets or configMaps |
+| defaults.envFrom | list | `[]` | Extra environment variables from secrets or configMaps |
 | defaults.extraEnvs | object | `{}` | Extra environment variables |
 | defaults.image.pullPolicy | string | `"IfNotPresent"` |  |
 | defaults.image.tag | string | `""` | Required - repository tag along with either repository or name (one is required) |
