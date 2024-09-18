@@ -1,21 +1,23 @@
-## How to use for customers
-1. Create a values.yaml in the root of the manifests project.
+## How to use for organizations
+1. Create a values.yaml in the root of a manifests project repo.
    ```touch base-values.yaml```
-1. For each microservice the customer has populate the microservices block and appName
+1. For each microservice to deploy populate the microservices block and fill in required global fields
 ```yaml
-applicationName: <APP_NAME> # Very likely this will be the name of the customer or their application name
+global:
+  applicationName: testapp # required for naming application to be deployed
+  customerName: testapp    # required for labeling organization
+  impactLevel: il2         # required for labeling
+  environment: dev         # required for labeling
 microservices:
-  <MSVC_NAME>:
-    # At their domain which route to send to this MSVC
-    prefix: "/"
+  <MSVC_NAME>: #   (example: frontend)
     image:
       repository: <CONTAINER_REGISTRY_PATH>
       tag: <TAG OF THE CONTAINER>
-  <MSVC_NAME_2>:
+  <MSVC_NAME_2>: # (example: backend)
     ...
 ```
 5. Configure available subcharts as needed like postgres, pgadmin, etc...
-6. See ***example*** deployed app ***for all usages*** [here](https://code.il2.gamewarden.io/gamewarden/tools/charts/uchart/chart/-/blob/main/docs/example-values.yaml)
+6. See ***example*** deployed app for ***usage*** [here](https://code.il2.gamewarden.io/gamewarden/tools/charts/uchart/-/blob/main/docs/test-values)
 
 # uchart
 
@@ -82,19 +84,18 @@ A universal application chart for gamewarden environments
 | defaults.serviceAccount.name | string | `""` | If not set and create is true, a name is generated using the fullname template |
 | defaults.strategy | object | `{}` |  |
 | defaults.tolerations | list | `[]` | Applied to pods, and allow (but do not require) the pods to schedule onto nodes with matching taints. |
-| defaults.virtualService | object | `{"enabled":false}` | virtual service from chart enabled |
+| defaults.virtualService | object | `{"domain":"gamewarden.io","enabled":false}` | virtual service from chart enabled |
 | extraManifests | list | `[]` | Extra kubernetes objects to deploy inline - Takes in MAP or LIST |
 | fullnameOverride | string | `""` |  |
 | generatedSecrets | object | `{"enabled":false}` | Used to get around ArgoCD generating new secrets with argocd ignore annotations |
-| global.applicationName | string | `"testapp"` |  |
-| global.customerName | string | `"testapp"` |  |
+| global.applicationName | string | `"testapp"` | Required |
+| global.customerName | string | `"testapp"` | Required |
 | global.destinationCluster | string | `"multi-tenant-development-cluster"` | Required for using ArgocdWrapper method with subCharts key |
-| global.domain | string | `"gamewarden.io"` |  |
-| global.environment | string | `"dev"` |  |
+| global.environment | string | `"dev"` | Required |
 | global.gateway | string | `"istio-system/private"` |  |
 | global.image.defaultImageRegistry | string | `"registry.gamewarden.io"` | Use this with <microservice-name>.image.name instead of using <microservice-name>.image.repository to reduce duplicate yaml code in values.yaml |
 | global.image.defaultImageRepository | string | `"testapp"` |  |
-| global.impactLevel | string | `"il2"` | Used for resource tracking with labels and used for ArgoCD naming |
+| global.impactLevel | string | `"il2"` | Required - Used for resource tracking with labels and used for ArgoCD naming |
 | global.istio | object | `{"mtls":{"enabled":true}}` | Istio settings |
 | global.istio.mtls | object | `{"enabled":true}` | enforce mtls PeerAuthentication |
 | imageCredentials | list | `[]` |  |

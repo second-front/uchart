@@ -4,12 +4,14 @@ fullnameOverride: ''
 
 ## Global values are used for subcharts
 global:
-  domain: gamewarden.io
   gateway: istio-system/private
+  # -- Required
   applicationName: testapp
+  # -- Required
   customerName: testapp
-  # -- Used for resource tracking with labels and used for ArgoCD naming
+  # -- Required - Used for resource tracking with labels and used for ArgoCD naming
   impactLevel: il2
+  # -- Required
   environment: dev
   # -- Required for using ArgocdWrapper method with subCharts key
   destinationCluster: multi-tenant-development-cluster
@@ -92,6 +94,7 @@ defaults:
   # -- virtual service from chart enabled
   virtualService:
     enabled: false
+    domain: gamewarden.io
   # -- Number of replicas for the microservice
   replicaCount: 1
   #  statefulsets: min # of secs for which a newly created Pod should be ready without any of its containers crashing

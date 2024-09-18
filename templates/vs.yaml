@@ -19,7 +19,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
-    - {{ .Values.global.applicationName | default .Values.applicationName }}.{{ .Values.domain | default .Values.domain }}
+    - {{ .Values.global.applicationName | default .Values.applicationName }}.{{ .Values.domain | default .Values.virtualService.domain }}
   gateways:
     - {{ .Values.gateway | default .Values.global.gateway }}
   http:

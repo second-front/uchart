@@ -10,7 +10,7 @@ global:
   impactLevel: IL2
   environment: development
   gateway: istio-system/private
-  domain: practice.il2.afwerx.dso.mil
+  domain: practice.gamewarden.io
   image:
     defaultImageRegistry: registry.gamewarden.io
     defaultImageRepository: agencies/agency-name

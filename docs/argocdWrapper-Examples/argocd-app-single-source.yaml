@@ -26,7 +26,7 @@ spec:
           backend:
             labels:
               protect: keycloak
-            namespace: testapp
+            namespace: ice
             resources:
               limits:
                 cpu: 400m
