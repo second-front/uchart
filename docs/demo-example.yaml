@@ -9,7 +9,7 @@ global:
     defaultImageRegistry: registry.gamewarden.io
     defaultImageRepository: testcustomer
   istio:
-    mtls: 
+    mtls:
       enabled: false
 
 ciliumNetworkPolicies:
@@ -53,7 +53,7 @@ microservices:
       car-json-data:
         test: testString
         test2: testString2
-    envFrom: 
+    envFrom:
     - secretRef:
         name: example
     - configMapRef:
@@ -73,7 +73,7 @@ microservices:
       requests:
         cpu: 400m
         memory: 3Gi
-    envFrom: 
+    envFrom:
     - secretRef:
         name: example
     - configMapRef:

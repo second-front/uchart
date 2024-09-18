@@ -1,3 +1,4 @@
+---
 project: default
 source:
   repoURL: registry.gamewarden.io/charts
@@ -65,7 +66,7 @@ source:
             replicas: 2
   chart: uchart
 destination:
-  server: 'https://kubernetes.default.svc'
+  server: https://kubernetes.default.svc
   namespace: argocd
 syncPolicy:
   automated:

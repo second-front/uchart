@@ -97,7 +97,7 @@ extraManifests:
         topicOperator: {}
         userOperator: {}
 
-# Allows setting a threshold of minimun available pods or maximum unavailable pods        
+# Allows setting a threshold of minimun available pods or maximum unavailable pods
 podDisruptionBudget: {}
   # minAvailable: 5
   # maxUnavailable: 1
@@ -133,7 +133,7 @@ microservices:
     ## adding secret for the microservice
     secrets:
       data:
-        test: test 
+        test: test
       ## generateKeys generates a random 32 alphanumeric value
       ## generateKeys supports adding additional keys after certain keys have already been generated
       generateKeys:
@@ -169,7 +169,7 @@ microservices:
         port: 8080
 
     # Example Readiness Probe
-    readinessProbe: 
+    readinessProbe:
       initialDelaySeconds: 30
       periodSeconds: 60
       timeoutSeconds: 15
@@ -177,7 +177,7 @@ microservices:
       failureThreshold: 3
       tcpSocket:
         port: 5015
-    envFrom: 
+    envFrom:
     - secretRef:
         name: example
     - configMapRef:
@@ -259,7 +259,7 @@ microservices:
         path: /example
         port: 8080
     # Example Readiness Probe
-    readinessProbe: 
+    readinessProbe:
       initialDelaySeconds: 30
       periodSeconds: 60
       timeoutSeconds: 15

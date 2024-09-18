@@ -1,44 +1,45 @@
+---
 project: default
 sources:
-- repoURL: registry.gamewarden.io/charts
-  targetRevision: 1.0.2
-  chart: uchart
-  helm:
-    values: |
-      global:
-        applicationName: "ice"
-        customerName: testapp
-        impactLevel: il2
-        environment: dev
-        destinationCluster: multi-tenant-development-cluster
-        image:
-          defaultImageRepository: testapp
-      microservices:
-        backend:
-          labels:
-            protect: keycloak
-          resources:
-            limits:
-              cpu: 400m
-              memory: 3Gi
-            requests:
-              cpu: 400m
-              memory: 3Gi
+  - repoURL: registry.gamewarden.io/charts
+    targetRevision: 1.0.2
+    chart: uchart
+    helm:
+      values: |
+        global:
+          applicationName: "ice"
+          customerName: testapp
+          impactLevel: il2
+          environment: dev
+          destinationCluster: multi-tenant-development-cluster
           image:
-            repository: registry.gamewarden.io/gw/keycloak
-            tag: "nightly"
-      valuesRepo: &valuesRepo https://github.com/second-front/asi-values.git
+            defaultImageRepository: testapp
+        microservices:
+          backend:
+            labels:
+              protect: keycloak
+            resources:
+              limits:
+                cpu: 400m
+                memory: 3Gi
+              requests:
+                cpu: 400m
+                memory: 3Gi
+            image:
+              repository: registry.gamewarden.io/gw/keycloak
+              tag: "nightly"
+        valuesRepo: &valuesRepo https://github.com/second-front/asi-values.git
 
-      subCharts:
-        uni-accepted-routes:
-          valuesRepo: *valuesRepo
-          valuesRevision: main
-          valuesFiles:
-          - $values/uni-accepted-routes/base.yaml
-          - $values/uni-accepted-routes/dev.yaml
-    
+        subCharts:
+          uni-accepted-routes:
+            valuesRepo: *valuesRepo
+            valuesRevision: main
+            valuesFiles:
+            - $values/uni-accepted-routes/base.yaml
+            - $values/uni-accepted-routes/dev.yaml
+
 destination:
-  server: 'https://kubernetes.default.svc'
+  server: https://kubernetes.default.svc
   namespace: argocd
 syncPolicy:
   automated:
