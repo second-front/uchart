@@ -91,10 +91,11 @@ secrets:
   #   - JOB_SECRET
 
 defaults:
-  # -- virtual service from chart enabled
+  # -- domain for istio virtual services
+  domain: gamewarden.io
+  # -- istio virtual service from chart enabled
   virtualService:
     enabled: false
-    domain: gamewarden.io
   # -- Number of replicas for the microservice
   replicaCount: 1
   #  statefulsets: min # of secs for which a newly created Pod should be ready without any of its containers crashing

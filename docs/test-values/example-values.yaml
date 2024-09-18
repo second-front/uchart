@@ -139,6 +139,10 @@ microservices:
       generateKeys:
         - DB_PASSWORD
         - JOB_SECRET
+    ## virtual services match per microservice    
+    match:
+      - uri:
+          prefix: /
 
     service:
       port: 5015
@@ -218,6 +222,10 @@ microservices:
     image:
       repository: registry.gamewarden.io/agencies/example/testapp
       tag: 1.1.1
+    ## virtual services match per microservice    
+    match:
+      - uri:
+          prefix: /api
     args:
       - test
     config:

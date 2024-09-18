@@ -55,6 +55,7 @@ A universal application chart for gamewarden environments
 | defaults.autoscaling.maxReplicas | int | `10` |  |
 | defaults.autoscaling.minReplicas | int | `1` |  |
 | defaults.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| defaults.domain | string | `"gamewarden.io"` | domain for istio virtual services |
 | defaults.envFrom | list | `[]` | Extra environment variables from secrets or configMaps |
 | defaults.extraEnvs | object | `{}` | Extra environment variables |
 | defaults.image.pullPolicy | string | `"IfNotPresent"` |  |
@@ -84,7 +85,7 @@ A universal application chart for gamewarden environments
 | defaults.serviceAccount.name | string | `""` | If not set and create is true, a name is generated using the fullname template |
 | defaults.strategy | object | `{}` |  |
 | defaults.tolerations | list | `[]` | Applied to pods, and allow (but do not require) the pods to schedule onto nodes with matching taints. |
-| defaults.virtualService | object | `{"domain":"gamewarden.io","enabled":false}` | virtual service from chart enabled |
+| defaults.virtualService | object | `{"enabled":false}` | istio virtual service from chart enabled |
 | extraManifests | list | `[]` | Extra kubernetes objects to deploy inline - Takes in MAP or LIST |
 | fullnameOverride | string | `""` |  |
 | generatedSecrets | object | `{"enabled":false}` | Used to get around ArgoCD generating new secrets with argocd ignore annotations |
