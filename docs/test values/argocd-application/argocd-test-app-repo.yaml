@@ -28,7 +28,7 @@ sources:
             image:
               repository: registry.gamewarden.io/gw/keycloak
               tag: "nightly"
-        valuesRepo: &valuesRepo https://github.com/second-front/asi-values.git
+        valuesRepo: &valuesRepo https://github.com/second-front/example.git
 
         subCharts:
           uni-accepted-routes:
@@ -37,7 +37,6 @@ sources:
             valuesFiles:
             - $values/uni-accepted-routes/base.yaml
             - $values/uni-accepted-routes/dev.yaml
-
 destination:
   server: https://kubernetes.default.svc
   namespace: argocd

@@ -31,7 +31,7 @@
       - uri:
           prefix: /api
    # specify host and number for non-msvc host and different port number than service port
-          host: nonmsvchost    
+          host: nonmsvchost
           number: 8080
       - uri:
           prefix: /frontend
@@ -44,7 +44,7 @@
     envs:
       ENV_VAR_1: "value1"
       ENV_VAR_2: "value2"
-    ## - Pass in a list of objects for variables to add 
+    ## - Pass in a list of objects for variables to add
         ## (lists are not merged when using multiple helm values files, so envs is recommended)
     extraEnvs:
     - name: _JAVA_OPTIONS
@@ -110,7 +110,7 @@
     ## - adding single simple secret for each microservice in-line
     secrets:
       stringData:
-        test: test 
+        test: test
 ```
 
 ## Example Secrets input per microservice:

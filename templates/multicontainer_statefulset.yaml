@@ -54,7 +54,6 @@
 {{- $name := (($v.service).name) | default .Values.defaults.service.name }}
 {{- $additionalPorts := (($v.service).additionalPorts) | default .Values.defaults.service.additionalPorts }}
 
-
 ---
 apiVersion: apps/v1
 kind: StatefulSet

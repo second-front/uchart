@@ -11,6 +11,7 @@
 {{- end }}
 
 {{- if and $virtualServiceEnabled .Values.microservices (not $multiContainerPodsExist) }}
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
