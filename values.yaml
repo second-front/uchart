@@ -250,11 +250,12 @@ subCharts: {}
   #   name: clamav                                # default is set to the subChart key
   #   revision: 0.0.2                             # required - version of included chart
   #   namespace: otherNamespace                   # only desired if you want to deploy to a different namespace than your applicationName
-  #   values: {}
-  #   valueFiles: []                             # if used with valuesRepo, it will turn the subChart application into a multi-sourced application
-  #   valuesRepo: ""                             # git repo location of where the values files are retrieved from
-  #   wave: ""                                   # used to create the annotations for argocd sync waves
-  #   sync: true                               # default true - used to turn off automated sync and pruning for the subChart
+  #   values: {}                                  # optional - helm values in-line
+  #   valueFiles: []                              # optional - if used with valuesRepo, it will turn the subChart application into a multi-sourced application
+  #   valuesRepo: ""                              # optional - git repo location of where the values files are retrieved from
+  #   wave: ""                                    # optional - used to create the annotations for argocd sync waves
+  #   sync: true                                  # default true - used to turn off automated sync and pruning for the subChart
+  #   project: ""                                 # optional - default is inherited from created project - this is an override     
 
 argocd:
 # -- Disable option for creation of project for applications created from subCharts if nesting
@@ -271,3 +272,5 @@ argocd:
   wrapperAppWave: ''
 # -- Sync options - Turn on or off automated syncing with pruning for the argocdWrapper Application from microservice
   wrapperSync: true
+# -- Project override for the argocdWrapper microservice Application
+  projectOverride: ""

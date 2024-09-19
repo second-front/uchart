@@ -42,6 +42,7 @@ A universal application chart for gamewarden environments
 |-----|------|---------|-------------|
 | argocd.createNamespace | bool | `false` | Create all namespaces beforehand in sourceNamespaces (the main namespace auto-creates from argocd) |
 | argocd.disableProjectCreation | bool | `false` | Disable option for creation of project for applications created from subCharts if nesting |
+| argocd.projectOverride | string | `""` | Project override for the argocdWrapper microservice Application |
 | argocd.sourceNamespaces | list | `[]` | Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName |
 | argocd.wrapperAppOff | bool | `false` | Turn off the argocdWrapper Application.yaml template and instead deploy microservices without being under an argocd application |
 | argocd.wrapperAppWave | string | `""` | Set argocd sync wave number on just the argocdWrapper Application if used |

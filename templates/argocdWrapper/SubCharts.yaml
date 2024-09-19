@@ -20,7 +20,7 @@ metadata:
     argocd.argoproj.io/sync-wave: {{ $v.wave }}
 {{- end }}
 spec:
-  project: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}"
+  project: "{{ default (printf "%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName) $v.project }}"
   destination:
     namespace: {{ $namespace }}
     name: {{ .Values.global.destinationCluster }}
