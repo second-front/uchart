@@ -5,16 +5,31 @@
 {{- if not (empty $v) }}
 {{- if $v.job }}
 {{- if ($v.job).enabled }}
-{{- $image := printf "%s:%s" $v.image.repository $v.image.tag }}
-{{- if $v.image.name }}
-  {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $v.image.name $v.image.tag }}
+
+{{/* Define image */}}
+{{- $image := printf "%s:%s" $v.image.repository $v.image.tag -}}
+{{ if $v.image.name }}
+  {{- if .Values.global.image.defaultImageRegistry }}
+    {{- if .Values.global.image.defaultImageRepository }}
+      {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $v.image.name $v.image.tag }}
+    {{- else }}
+      {{ $image = printf "%s/%s:%s" .Values.global.image.defaultImageRegistry $v.image.name $v.image.tag }}
+    {{- end }}
+  {{- end }}
 {{- else }}
-  {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $msvc $v.image.tag }}
-  {{ if $v.image.repository }}
-  {{ $image = printf "%s:%s" $v.image.repository $v.image.tag }}
-  {{ end }}
+  {{- if .Values.global.image.defaultImageRegistry }}
+    {{- if .Values.global.image.defaultImageRepository }}
+      {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $msvc $v.image.tag }}
+    {{- else }}
+      {{ $image = printf "%s/%s:%s" .Values.global.image.defaultImageRegistry $msvc $v.image.tag }}
+    {{- end }}
+  {{- end }}
+  {{- if $v.image.repository }}
+    {{ $image = printf "%s:%s" $v.image.repository $v.image.tag }}
+  {{- end }}
 {{ end }}
 
+{{/* Variables */}}
 {{- $backoffLimit := $v.backoffLimit | default 6 }}
 {{- $completions := $v.completions | default 1 }}
 {{- $parallelism := $v.parallelism | default 1 }}

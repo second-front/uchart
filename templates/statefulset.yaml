@@ -8,17 +8,30 @@
 {{- if $statefulsetEnabled }}
 {{- if $v.image.tag}}
 
-{{/* Variables */}}
-{{/* TODO: Turn this into ternary statement */}}
+{{/* Define image */}}
 {{- $image := printf "%s:%s" $v.image.repository $v.image.tag -}}
 {{ if $v.image.name }}
-  {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $v.image.name $v.image.tag }}
+  {{- if .Values.global.image.defaultImageRegistry }}
+    {{- if .Values.global.image.defaultImageRepository }}
+      {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $v.image.name $v.image.tag }}
+    {{- else }}
+      {{ $image = printf "%s/%s:%s" .Values.global.image.defaultImageRegistry $v.image.name $v.image.tag }}
+    {{- end }}
+  {{- end }}
 {{- else }}
-  {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $msvc $v.image.tag }}
-  {{ if $v.image.repository }}
-  {{ $image = printf "%s:%s" $v.image.repository $v.image.tag }}
-  {{ end }}
+  {{- if .Values.global.image.defaultImageRegistry }}
+    {{- if .Values.global.image.defaultImageRepository }}
+      {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $msvc $v.image.tag }}
+    {{- else }}
+      {{ $image = printf "%s/%s:%s" .Values.global.image.defaultImageRegistry $msvc $v.image.tag }}
+    {{- end }}
+  {{- end }}
+  {{- if $v.image.repository }}
+    {{ $image = printf "%s:%s" $v.image.repository $v.image.tag }}
+  {{- end }}
 {{ end }}
+
+{{/* Variables */}}
 {{- $autoscalingEnabled := (($v.autoscaling).enabled) | default .Values.defaults.autoscaling.enabled }}
 {{- $replicaCount := $v.replicaCount | default .Values.defaults.replicaCount }}
 {{- $minReadySeconds := $v.minReadySeconds | default .Values.defaults.minReadySeconds }}
