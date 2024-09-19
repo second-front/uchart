@@ -24,8 +24,11 @@ secrets:
   stringData:
     Single-Secret-Name: Single1234
     BigSecret: MultiSecret
+
 config:
   enabled: true
+  annotations:
+    imageregistry: "https://hub.docker.com/"
   data:
     logLevel: debug
     secretswithinconfigmap: testtest1
@@ -122,7 +125,7 @@ microservices:
       - -c
       - |
         source /vault/secrets/config
-        <entrypoint script>
+        <entrypoint script>subChartProjectOverride
     ## example configmap per microservice
     config:
       data:

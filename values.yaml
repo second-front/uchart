@@ -76,6 +76,7 @@ rbac:
 config:
   enabled: false
   data: {}
+  annotations: {}
 
 # -- Global application secret - used for all microservices deployed to one namespace
 secrets:
