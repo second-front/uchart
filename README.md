@@ -21,6 +21,8 @@ microservices:
 
 # uchart
 
+chart version: 1.0.2
+
 A universal application chart for gamewarden environments
 
 **Homepage:** <https:code.il2.gamewarden.io/gamewarden/tools/uchart>
@@ -50,7 +52,7 @@ A universal application chart for gamewarden environments
 | ciliumNetworkPolicies.appPolicy.enabled | bool | `true` |  |
 | ciliumNetworkPolicies.customPolicies | list | `[]` | To add additional policies to the app namespace |
 | ciliumNetworkPolicies.enabled | bool | `false` |  |
-| config | object | `{"data":{},"enabled":false}` | Global application configmap - used for all microservices deployed to one namespace |
+| config | object | `{"annotations":{},"data":{},"enabled":false}` | Global application configmap - used for all microservices deployed to one namespace |
 | defaults.affinity | object | `{}` | Ensure that pods are hosted on specific nodes |
 | defaults.autoscaling.enabled | bool | `false` |  |
 | defaults.autoscaling.maxReplicas | int | `10` |  |
