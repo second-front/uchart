@@ -125,7 +125,7 @@ microservices:
       - -c
       - |
         source /vault/secrets/config
-        <entrypoint script>subChartProjectOverride
+        <entrypoint script>
     ## example configmap per microservice
     config:
       data:
