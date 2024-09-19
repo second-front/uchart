@@ -29,6 +29,12 @@ microservices:
         name: example
     - configMapRef:
         name: example
+    # securityContext:
+    #   capabilities:
+    #     add:
+    #     - SYS_NICE
+    #     drop:
+    #     - KILL
   examplejob:
     job:
       enabled: true
@@ -67,3 +73,9 @@ microservices:
         name: example
     - configMapRef:
         name: example
+    # securityContext:
+    #   capabilities:
+    #     add:
+    #     - SYS_NICE
+    #     drop:
+    #     - KILL

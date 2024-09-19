@@ -81,7 +81,7 @@ spec:
               imagePullPolicy: {{ $imagePullPolicy }}
               {{- with $securityContext }}
               securityContext:
-                {{- toYaml . | nindent 14 }}
+                {{- toYaml . | nindent 16 }}
               {{- end }}
               {{- if $v.command }}
               command:
