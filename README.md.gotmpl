@@ -55,5 +55,5 @@ rm $(ls *.tgz)
 ## Run test values agains't chart
 ```shell
 for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i; done
-for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i | kubeconform -ignore-missing-schemas; done
+for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i | kubeconform -ignore-missing-schemas -strict; done
 ```
