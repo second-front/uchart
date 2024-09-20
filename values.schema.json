@@ -194,7 +194,7 @@
             }
         },
         "extraManifests": {
-            "type": "array"
+            "type": ["array", "object"]
         },
         "fullnameOverride": {
             "type": "string"

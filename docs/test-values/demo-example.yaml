@@ -22,6 +22,11 @@ defaults:
         name: default-config
 
 
+extraManifests:
+  test:
+    this: is
+    a: test
+
 microservices:
   backend:
     match:
