@@ -49,6 +49,7 @@ spec:
       helm:
         {{-  if $v.values }}
         values: |
+          {{- toYaml $v.values | nindent 10 }}
           global:
             applicationName: {{ $v.namespace}}
             customerName: {{ .Values.global.customerName }}
