@@ -18,7 +18,9 @@ spec:
   description: Application Project for {{ .Values.global.customerName }}
   destinations:
   - name: {{ .Values.global.destinationCluster }}
-    namespace: {{ .Values.global.applicationName }}
+    namespace: "*"
+  - name: "in-cluster"
+    namespace: "argocd"
   namespaceResourceWhitelist:
   - group: '*'
     kind: '*'

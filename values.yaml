@@ -248,6 +248,7 @@ subCharts: {}
   # clamav:
   #   enabled: false                              # default is true
   #   chartUrl: 'registry.gamewarden.io/charts'   # default is 'registry.gamewarden.io/charts'
+  #   chart: "uchart"                             # default is 'uchart'
   #   name: clamav                                # default is set to the subChart key
   #   revision: 0.0.2                             # required - version of included chart
   #   namespace: otherNamespace                   # only desired if you want to deploy to a different namespace than your applicationName
