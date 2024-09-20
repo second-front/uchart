@@ -21,7 +21,7 @@ microservices:
 
 # uchart
 
-chart version: 1.0.2
+chart version: 1.0.4
 
 A universal application chart for gamewarden environments
 
@@ -133,5 +133,5 @@ rm $(ls *.tgz)
 ## Run test values agains't chart
 ```shell
 for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i; done
-for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i | kubeconform -ignore-missing-schemas; done
+for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i | kubeconform -ignore-missing-schemas -strict; done
 ```

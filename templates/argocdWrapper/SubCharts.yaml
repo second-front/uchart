@@ -23,9 +23,13 @@ spec:
   project: "{{ default (printf "%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName) $v.project }}"
   destination:
     namespace: {{ $namespace }}
+    {{- if eq $v.chart "uchart" }}
+    name: in-cluster
+    {{- else }}
     name: {{ .Values.global.destinationCluster }}
+    {{- end }}
   syncPolicy:
-    {{- if $v.sync }}
+    {{- if (default true $v.sync) }}
     automated:
       prune: true
       selfHeal: true
@@ -41,13 +45,12 @@ spec:
   sources:
     - repoURL: {{ $chartUrl }}
       targetRevision: {{ $revision }}
-      chart: {{ $name }}
+      chart: {{ $v.chart | default "uchart" }}
       helm:
         {{-  if $v.values }}
         values: |
-          {{- toYaml $v.values| nindent 10 }}
           global:
-            applicationName: {{ .Values.global.applicationName }}
+            applicationName: {{ $v.namespace}}
             customerName: {{ .Values.global.customerName }}
             impactLevel: {{ .Values.global.impactLevel }}
             environment: {{ .Values.global.environment }}
@@ -56,12 +59,14 @@ spec:
             {{ $key }}: {{ $value | quote }}
             {{- end }}
             {{- end }}
+          {{- if .Values.argocd.projectOverride }}
           argocd:
-            wrapperAppOff: true
+            projectOverride: {{ .Values.argocd.projectOverride }}
+          {{- end }}
         {{- end }}
-    {{- if $v.valuesRepo }}
-      valueFiles:
-      {{- toYaml  $v.valueFiles | nindent 6 }}
+      {{- if $v.valuesRepo }}
+        valueFiles:
+        {{- toYaml  $v.valueFiles | nindent 8 }}
     - repoURL: {{ $v.valuesRepo }}
       targetRevision: {{ $v.valuesRevision | default "main" }}
       ref: values

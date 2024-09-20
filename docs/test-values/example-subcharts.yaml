@@ -4,7 +4,8 @@ subCharts:
     chartUrl: 'registry.gamewarden.io/charts'
     name: clamav
     revision: 0.0.2
-    values: {}
+    values:
+      test: test
   pgadmin:
     enabled: false
     revision: 0.1.0

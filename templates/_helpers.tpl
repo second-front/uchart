@@ -35,7 +35,6 @@ Common labels
 */}}
 {{- define "universal-app-chart.labels" -}}
 helm.sh/chart: {{ include "universal-app-chart.chart" . }}
-{{ include "universal-app-chart.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
