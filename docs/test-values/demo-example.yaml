@@ -28,41 +28,41 @@ extraManifests:
     a: test
 
 microservices:
-  backend:
-    match:
-      - uri:
-          prefix: /api
-    image:
-      tag: 0.0.0
-    serviceAccount:
-      create: enabled
-    rbac:
-      rules:
-      - apiGroups: ["apps"]
-        resources: ["deployments"]
-        verbs: ["get", "list", "watch", "update"]
-    autoscaling:
-      #  -- Horizontal Autoscaling of pods
-      enabled: true
-      minReplicas: 1
-      maxReplicas: 100
-      targetCPUUtilizationPercentage: 80
-      # targetMemoryUtilizationPercentage: 80
-    ## - Support multiple configmaps like this
-    config:
-      airplane-data:
-        .env: |
-          logLevel: trace
-          secretswithinconfigmap: sosecretshere
-          service-url: http://localghost:9005
-      car-json-data:
-        test: testString
-        test2: testString2
-    envFrom:
-    - secretRef:
-        name: example
-    - configMapRef:
-        name: example
+  # backend:
+  #   match:
+  #     - uri:
+  #         prefix: /api
+  #   image:
+  #     tag: 0.0.0
+  #   serviceAccount:
+  #     create: enabled
+  #   rbac:
+  #     rules:
+  #     - apiGroups: ["apps"]
+  #       resources: ["deployments"]
+  #       verbs: ["get", "list", "watch", "update"]
+  #   autoscaling:
+  #     #  -- Horizontal Autoscaling of pods
+  #     enabled: true
+  #     minReplicas: 1
+  #     maxReplicas: 100
+  #     targetCPUUtilizationPercentage: 80
+  #     # targetMemoryUtilizationPercentage: 80
+  #   ## - Support multiple configmaps like this
+  #   config:
+  #     airplane-data:
+  #       .env: |
+  #         logLevel: trace
+  #         secretswithinconfigmap: sosecretshere
+  #         service-url: http://localghost:9005
+  #     car-json-data:
+  #       test: testString
+  #       test2: testString2
+  #   envFrom:
+  #   - secretRef:
+  #       name: example
+  #   - configMapRef:
+  #       name: example
   frontend:
     statefulset:
       enabled: true
@@ -83,6 +83,7 @@ microservices:
         name: example
     - configMapRef:
         name: example
+    restartPolicy: Always 
 
 generatedSecrets:
   enabled: true

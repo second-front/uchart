@@ -66,6 +66,7 @@
 {{- $command := $v.command }}
 {{- $args := $v.args }}
 {{- $workingDir := $v.workingDir }}
+{{- $restartPolicy := $v.restartPolicy }}
 {{- $livenessProbe := $v.livenessProbe }}
 {{- $readinessProbe := $v.readinessProbe }}
 {{- $startupProbe := $v.startupProbe }}
@@ -165,6 +166,9 @@ spec:
             {{- toYaml $args | nindent 12 }}
           {{- end }}
           imagePullPolicy: {{ $imagePullPolicy -}}
+          {{- if $restartPolicy }}
+          restartPolicy: {{ $restartPolicy }}
+          {{- end -}}
           {{- if or ($mergedEnvFrom) ($v.config) ($v.secrets) }}
           envFrom:
           {{- toYaml $mergedEnvFrom | nindent 14 }}
