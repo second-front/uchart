@@ -33,7 +33,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.5
+      targetRevision: 1.0.6
       chart: uchart
       helm:
         values: |

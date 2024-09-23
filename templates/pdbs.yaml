@@ -1,15 +1,8 @@
 {{ if .Values.podDisruptionBudget}}
 {{ $appLabel := .Values.podDisruptionBudget.appLabel | default "universal-app-chart" }}
 {{ $name := .Values.podDisruptionBudget.overrideName | default (printf "%s-%s" .Release.Name "-universal-app-chart") }}
-
-{{- if semverCompare ">=1.21-0" .Capabilities.KubeVersion.GitVersion -}}
-
-
-apiVersion: policy/v1
-{{- else -}}
-apiVersion: policy/v1beta1
-{{- end }}
 ---
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ $name }}
