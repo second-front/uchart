@@ -34,6 +34,33 @@ microservices:
         - SYS_NICE
         drop:
         - KILL
+    resources:
+      limits:
+        cpu: 400m
+        memory: 3Gi
+      requests:
+        cpu: 400m
+        memory: 3Gi
+    initContainers:
+      - name: theme
+        image: registry.gamewarden.io/steelbank/cgr/git:2.44.0-r2
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+          - -c
+          - |-
+            git clone https://oauth2:$token@code.gamewarden.io/sandbox/gamewarden-kc-theme.git /tmp/themes
+            cp -R /tmp/themes/theme/* /tmp/
+            rm -rf /tmp/themes
+        volumeMounts:
+          - name: theme
+            mountPath: /tmp/
+        env:
+          - name: token
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-keycloak-git
+                key: token
   examplejob:
     job:
       enabled: true
@@ -78,3 +105,30 @@ microservices:
         - SYS_NICE
         drop:
         - KILL
+    resources:
+      limits:
+        cpu: 400m
+        memory: 3Gi
+      requests:
+        cpu: 400m
+        memory: 3Gi
+    initContainers:
+      - name: theme
+        image: registry.gamewarden.io/steelbank/cgr/git:2.44.0-r2
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+          - -c
+          - |-
+            git clone https://oauth2:$token@code.gamewarden.io/sandbox/gamewarden-kc-theme.git /tmp/themes
+            cp -R /tmp/themes/theme/* /tmp/
+            rm -rf /tmp/themes
+        volumeMounts:
+          - name: theme
+            mountPath: /tmp/
+        env:
+          - name: token
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-keycloak-git
+                key: token
