@@ -1,0 +1,220 @@
+# @schema
+# type: object
+# properties:
+#   microservices:
+#     type: object
+#     additionalProperties:  # Allows any microservice name
+#       type: object
+#       properties:
+#         namespace:
+#           type: string
+#         resources:
+#           type: object
+#           properties:
+#             limits:
+#               type: object
+#               properties:
+#                 cpu:
+#                   type: string
+#                 memory:
+#                   type: string
+#             requests:
+#               type: object
+#               properties:
+#                 cpu:
+#                   type: string
+#                 memory:
+#                   type: string
+#         image:
+#           type: object
+#           properties:
+#             name:
+#               type: string
+#             tag:
+#               type: string
+#         command:
+#           type: array
+#           items:
+#             type: string
+#         config:
+#           type: object
+#           properties:
+#             data:
+#               type: object
+#               additionalProperties:
+#                 type: string
+#         secrets:
+#           type: object
+#           properties:
+#             data:
+#               type: object
+#               additionalProperties:
+#                 type: string
+#             generateKeys:
+#               type: array
+#               items:
+#                 type: string
+#         match:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               uri:
+#                 type: object
+#                 properties:
+#                   prefix:
+#                     type: string
+#         service:
+#           type: object
+#           properties:
+#             port:
+#               type: integer
+#             targetPort:
+#               type: integer
+#             additionalPorts:
+#               type: array
+#               items:
+#                 type: object
+#                 properties:
+#                   port:
+#                     type: integer
+#                   targetPort:
+#                     type: integer
+#                   protocol:
+#                     type: string
+#                   name:
+#                     type: string
+#         livenessProbe:
+#           type: object
+#           properties:
+#             initialDelaySeconds:
+#               type: integer
+#             periodSeconds:
+#               type: integer
+#             timeoutSeconds:
+#               type: integer
+#             successThreshold:
+#               type: integer
+#             failureThreshold:
+#               type: integer
+#             tcpSocket:
+#               type: object
+#               properties:
+#                 port:
+#                   type: integer
+#             httpGet:
+#               type: object
+#               properties:
+#                 path:
+#                   type: string
+#                 port:
+#                   type: integer
+#         readinessProbe:
+#           type: object
+#           properties:
+#             initialDelaySeconds:
+#               type: integer
+#             periodSeconds:
+#               type: integer
+#             timeoutSeconds:
+#               type: integer
+#             successThreshold:
+#               type: integer
+#             failureThreshold:
+#               type: integer
+#             tcpSocket:
+#               type: object
+#               properties:
+#                 port:
+#                   type: integer
+#         envFrom:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               secretRef:
+#                 type: object
+#                 properties:
+#                   name:
+#                     type: string
+#               configMapRef:
+#                 type: object
+#                 properties:
+#                   name:
+#                     type: string
+#         extraEnvs:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               name:
+#                 type: string
+#               value:
+#                 type: string
+#               valueFrom:
+#                 type: object
+#                 properties:
+#                   secretKeyRef:
+#                     type: object
+#                     properties:
+#                       name:
+#                         type: string
+#                       key:
+#                         type: string
+#                   configMapKeyRef:
+#                     type: object
+#                     properties:
+#                       name:
+#                         type: string
+#                       key:
+#                         type: string
+#         volumeMounts:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               name:
+#                 type: string
+#               mountPath:
+#                 type: string
+#         volumes:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               name:
+#                 type: string
+#               configMap:
+#                 type: object
+#                 properties:
+#                   name:
+#                     type: string
+#                   items:
+#                     type: array
+#                     items:
+#                       type: object
+#                       properties:
+#                         key:
+#                           type: string
+#                         path:
+#                           type: string
+#         topologySpreadConstraints:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               maxSkew:
+#                 type: integer
+#               topologyKey:
+#                 type: string
+#               whenUnsatisfiable:
+#                 type: string
+#               labelSelector:
+#                 type: object
+#                 properties:
+#                   matchLabels:
+#                     type: object
+#                     additionalProperties:
+#                       type: string
+# @schema
+microservices: {}

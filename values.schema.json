@@ -1,853 +1,1189 @@
 {
-    "$schema": "http://json-schema.org/schema#",
-    "type": "object",
-    "properties": {
-        "ciliumNetworkPolicies": {
-            "type": "object",
-            "properties": {
-                "appPolicy": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean"
-                        }
-                    }
-                },
-                "customPolicies": {
-                    "type": "array"
-                },
-                "enabled": {
-                    "type": "boolean"
-                }
-            }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "argocd": {
+      "properties": {
+        "createNamespace": {
+          "default": false,
+          "description": "Create all namespaces beforehand in sourceNamespaces (the main namespace auto-creates from argocd)",
+          "required": [],
+          "title": "createNamespace",
+          "type": "boolean"
         },
-        "clamav": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                }
-            }
+        "disableProjectCreation": {
+          "default": false,
+          "description": "Disable option for creation of project for applications created from subCharts if nesting",
+          "required": [],
+          "title": "disableProjectCreation",
+          "type": "boolean"
         },
-        "config": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "object"
-                },
-                "enabled": {
-                    "type": "boolean"
-                }
-            }
+        "projectOverride": {
+          "default": "",
+          "description": "Project override for the argocdWrapper microservice Application",
+          "required": [],
+          "title": "projectOverride",
+          "type": "string"
         },
-        "defaults": {
-            "type": "object",
+        "sourceNamespaces": {
+          "description": "Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "sourceNamespaces",
+          "type": "array"
+        },
+        "wrapperAppOff": {
+          "default": false,
+          "description": "Turn off the argocdWrapper Application.yaml template and instead deploy microservices without being under an argocd application",
+          "required": [],
+          "title": "wrapperAppOff",
+          "type": "boolean"
+        },
+        "wrapperAppWave": {
+          "default": "",
+          "description": "Set argocd sync wave number on just the argocdWrapper Application if used",
+          "required": [],
+          "title": "wrapperAppWave",
+          "type": "string"
+        },
+        "wrapperSync": {
+          "default": true,
+          "description": "Sync options - Turn on or off automated syncing with pruning for the argocdWrapper Application from microservice",
+          "required": [],
+          "title": "wrapperSync",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "disableProjectCreation",
+        "sourceNamespaces",
+        "createNamespace",
+        "wrapperAppOff",
+        "wrapperAppWave",
+        "wrapperSync",
+        "projectOverride"
+      ],
+      "title": "argocd",
+      "type": "object"
+    },
+    "ciliumNetworkPolicies": {
+      "properties": {
+        "appPolicy": {
+          "properties": {
+            "enabled": {
+              "default": true,
+              "required": [],
+              "title": "enabled",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled"
+          ],
+          "title": "appPolicy",
+          "type": "object"
+        },
+        "customPolicies": {
+          "description": "To add additional policies to the app namespace",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "customPolicies",
+          "type": "array"
+        },
+        "enabled": {
+          "default": false,
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled",
+        "appPolicy",
+        "customPolicies"
+      ],
+      "title": "ciliumNetworkPolicies",
+      "type": "object"
+    },
+    "config": {
+      "description": "Global application configmap - used for all microservices deployed to one namespace",
+      "properties": {
+        "annotations": {
+          "required": [],
+          "title": "annotations",
+          "type": "object"
+        },
+        "data": {
+          "required": [],
+          "title": "data",
+          "type": "object"
+        },
+        "enabled": {
+          "default": false,
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled",
+        "data",
+        "annotations"
+      ],
+      "title": "config",
+      "type": "object"
+    },
+    "defaults": {
+      "properties": {
+        "affinity": {
+          "description": "Ensure that pods are hosted on specific nodes",
+          "required": [],
+          "title": "affinity",
+          "type": "object"
+        },
+        "autoscaling": {
+          "properties": {
+            "enabled": {
+              "default": false,
+              "description": " -- Horizontal Autoscaling of pods",
+              "required": [],
+              "title": "enabled",
+              "type": "boolean"
+            },
+            "maxReplicas": {
+              "default": 10,
+              "required": [],
+              "title": "maxReplicas",
+              "type": "integer"
+            },
+            "minReplicas": {
+              "default": 1,
+              "required": [],
+              "title": "minReplicas",
+              "type": "integer"
+            },
+            "targetCPUUtilizationPercentage": {
+              "default": 80,
+              "required": [],
+              "title": "targetCPUUtilizationPercentage",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "enabled",
+            "minReplicas",
+            "maxReplicas",
+            "targetCPUUtilizationPercentage"
+          ],
+          "title": "autoscaling",
+          "type": "object"
+        },
+        "domain": {
+          "default": "gamewarden.io",
+          "description": "domain for istio virtual services",
+          "required": [],
+          "title": "domain",
+          "type": "string"
+        },
+        "envFrom": {
+          "description": "Extra environment variables from secrets or configMaps",
+          "items": {
+            "anyOf": [
+              {
+                "properties": {
+                  "configMapRef": {
+                    "properties": {
+                      "name": {
+                        "default": "default-config",
+                        "required": [],
+                        "title": "name",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "title": "configMapRef",
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "configMapRef"
+                ],
+                "type": "object"
+              }
+            ],
+            "required": []
+          },
+          "required": [],
+          "title": "envFrom",
+          "type": "array"
+        },
+        "extraEnvs": {
+          "description": "Extra environment variables",
+          "required": [],
+          "title": "extraEnvs",
+          "type": "object"
+        },
+        "image": {
+          "properties": {
+            "pullPolicy": {
+              "default": "IfNotPresent",
+              "required": [],
+              "title": "pullPolicy",
+              "type": "string"
+            },
+            "tag": {
+              "default": "",
+              "description": "Required - repository tag along with either repository or name (one is required)",
+              "required": [],
+              "title": "tag",
+              "type": "string"
+            }
+          },
+          "required": [
+            "pullPolicy",
+            "tag"
+          ],
+          "title": "image",
+          "type": "object"
+        },
+        "imagePullSecrets": {
+          "description": "Pull secrets for the image/s",
+          "items": {
+            "anyOf": [
+              {
+                "properties": {
+                  "name": {
+                    "default": "private-registry",
+                    "required": [],
+                    "title": "name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              }
+            ],
+            "required": []
+          },
+          "required": [],
+          "title": "imagePullSecrets",
+          "type": "array"
+        },
+        "minReadySeconds": {
+          "default": 0,
+          "required": [],
+          "title": "minReadySeconds",
+          "type": "integer"
+        },
+        "nodeSelector": {
+          "description": "Restrict a Pod to only be able to run on a particular Node.",
+          "required": [],
+          "title": "nodeSelector",
+          "type": "object"
+        },
+        "podAnnotations": {
+          "required": [],
+          "title": "podAnnotations",
+          "type": "object"
+        },
+        "podDisruptionBudget": {
+          "description": "Example Pod Disruption Budget values",
+          "required": [],
+          "title": "podDisruptionBudget",
+          "type": "object"
+        },
+        "podSecurityContext": {
+          "required": [],
+          "title": "podSecurityContext",
+          "type": "object"
+        },
+        "replicaCount": {
+          "default": 1,
+          "description": "Number of replicas for the microservice",
+          "required": [],
+          "title": "replicaCount",
+          "type": "integer"
+        },
+        "resources": {
+          "properties": {
+            "requests": {
+              "description": "by default run without limits, and no limitRanges are set\nlimits:\n  cpu: \"2\"\n  memory: 2Gi",
+              "properties": {
+                "cpu": {
+                  "default": "100m",
+                  "required": [],
+                  "title": "cpu",
+                  "type": "string"
+                },
+                "memory": {
+                  "default": "128Mi",
+                  "required": [],
+                  "title": "memory",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "cpu",
+                "memory"
+              ],
+              "title": "requests",
+              "type": "object"
+            }
+          },
+          "required": [
+            "requests"
+          ],
+          "title": "resources",
+          "type": "object"
+        },
+        "securityContext": {
+          "required": [],
+          "title": "securityContext",
+          "type": "object"
+        },
+        "service": {
+          "properties": {
+            "additionalPorts": {
+              "description": "Add additional ports to expose",
+              "required": [],
+              "title": "additionalPorts",
+              "type": "object"
+            },
+            "appProtocol": {
+              "default": "TCP",
+              "description": "Set the app procotol to allow explicit selection. (http, http2, https, tcp, tls, grpc, mongo, mysql, redis)",
+              "required": [],
+              "title": "appProtocol",
+              "type": "string"
+            },
+            "disablePortName": {
+              "default": false,
+              "description": "Set to true to remove the port name",
+              "required": [],
+              "title": "disablePortName",
+              "type": "boolean"
+            },
+            "enabled": {
+              "default": true,
+              "description": "Use a service with Microservice",
+              "required": [],
+              "title": "enabled",
+              "type": "boolean"
+            },
+            "headless": {
+              "default": false,
+              "description": "Set the service to headless",
+              "required": [],
+              "title": "headless",
+              "type": "boolean"
+            },
+            "name": {
+              "default": "http",
+              "description": "Set a name for the port",
+              "required": [],
+              "title": "name",
+              "type": "string"
+            },
+            "port": {
+              "default": 80,
+              "description": "Set the port you want to expose the service on.",
+              "required": [],
+              "title": "port",
+              "type": "integer"
+            },
+            "targetPort": {
+              "default": 8080,
+              "description": "Set the default targetPort of service to 8080 ( Port the application is listening on within the container )",
+              "required": [],
+              "title": "targetPort",
+              "type": "integer"
+            },
+            "type": {
+              "default": "ClusterIP",
+              "description": "Set the service type (ClusterIP, NodePort, LoadBalancer, ExternalName )",
+              "required": [],
+              "title": "type",
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "headless",
+            "type",
+            "port",
+            "name",
+            "disablePortName",
+            "targetPort",
+            "appProtocol",
+            "additionalPorts"
+          ],
+          "title": "service",
+          "type": "object"
+        },
+        "serviceAccount": {
+          "properties": {
+            "annotations": {
+              "description": "Annotations to add to the service account",
+              "required": [],
+              "title": "annotations",
+              "type": "object"
+            },
+            "create": {
+              "default": false,
+              "description": "Specifies whether a service account should be created",
+              "required": [],
+              "title": "create",
+              "type": "boolean"
+            },
+            "labels": {
+              "required": [],
+              "title": "labels",
+              "type": "object"
+            },
+            "name": {
+              "default": "",
+              "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
+              "required": [],
+              "title": "name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "create",
+            "annotations",
+            "labels",
+            "name"
+          ],
+          "title": "serviceAccount",
+          "type": "object"
+        },
+        "strategy": {
+          "description": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy",
+          "required": [],
+          "title": "strategy",
+          "type": "object"
+        },
+        "tolerations": {
+          "description": "Applied to pods, and allow (but do not require) the pods to schedule onto nodes with matching taints.",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "tolerations",
+          "type": "array"
+        },
+        "virtualService": {
+          "description": "istio virtual service from chart enabled",
+          "properties": {
+            "enabled": {
+              "default": false,
+              "required": [],
+              "title": "enabled",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled"
+          ],
+          "title": "virtualService",
+          "type": "object"
+        }
+      },
+      "required": [
+        "domain",
+        "virtualService",
+        "replicaCount",
+        "strategy",
+        "minReadySeconds",
+        "image",
+        "imagePullSecrets",
+        "serviceAccount",
+        "podAnnotations",
+        "podSecurityContext",
+        "securityContext",
+        "extraEnvs",
+        "envFrom",
+        "podDisruptionBudget",
+        "service",
+        "resources",
+        "autoscaling",
+        "nodeSelector",
+        "tolerations",
+        "affinity"
+      ],
+      "title": "defaults",
+      "type": "object"
+    },
+    "extraManifests": {
+      "description": "Extra kubernetes objects to deploy inline - Takes in MAP or LIST",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "extraManifests",
+      "type": [
+        "array",
+        "object"
+      ]
+    },
+    "fullnameOverride": {
+      "default": "",
+      "required": [],
+      "title": "fullnameOverride",
+      "type": "string"
+    },
+    "generatedSecrets": {
+      "description": "Used to get around ArgoCD generating new secrets with argocd ignore annotations",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "generatedSecrets",
+      "type": "object"
+    },
+    "global": {
+      "description": "# Global values are used for subcharts",
+      "properties": {
+        "applicationName": {
+          "default": "testapp",
+          "description": "Required",
+          "required": [],
+          "title": "applicationName",
+          "type": "string"
+        },
+        "customerName": {
+          "default": "testapp",
+          "description": "Required",
+          "required": [],
+          "title": "customerName",
+          "type": "string"
+        },
+        "destinationCluster": {
+          "default": "multi-tenant-development-cluster",
+          "description": "Required for using ArgocdWrapper method with subCharts key",
+          "required": [],
+          "title": "destinationCluster",
+          "type": "string"
+        },
+        "environment": {
+          "default": "dev",
+          "description": "Required",
+          "required": [],
+          "title": "environment",
+          "type": "string"
+        },
+        "gateway": {
+          "default": "istio-system/private",
+          "required": [],
+          "title": "gateway",
+          "type": "string"
+        },
+        "image": {
+          "properties": {
+            "defaultImageRegistry": {
+              "default": "registry.gamewarden.io",
+              "description": "Use this with \u003cmicroservice-name\u003e.image.name instead of using \u003cmicroservice-name\u003e.image.repository to reduce duplicate yaml code in values.yaml",
+              "required": [],
+              "title": "defaultImageRegistry",
+              "type": "string"
+            },
+            "defaultImageRepository": {
+              "default": "testapp",
+              "required": [],
+              "title": "defaultImageRepository",
+              "type": "string"
+            }
+          },
+          "required": [
+            "defaultImageRegistry",
+            "defaultImageRepository"
+          ],
+          "title": "image",
+          "type": "object"
+        },
+        "impactLevel": {
+          "default": "il2",
+          "description": "Required - Used for resource tracking with labels and used for ArgoCD naming",
+          "required": [],
+          "title": "impactLevel",
+          "type": "string"
+        },
+        "istio": {
+          "description": "Istio settings",
+          "properties": {
+            "mtls": {
+              "description": "enforce mtls PeerAuthentication",
+              "properties": {
+                "enabled": {
+                  "default": true,
+                  "required": [],
+                  "title": "enabled",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "enabled"
+              ],
+              "title": "mtls",
+              "type": "object"
+            }
+          },
+          "required": [
+            "mtls"
+          ],
+          "title": "istio",
+          "type": "object"
+        }
+      },
+      "required": [
+        "gateway",
+        "applicationName",
+        "customerName",
+        "impactLevel",
+        "environment",
+        "destinationCluster",
+        "image",
+        "istio"
+      ],
+      "title": "global",
+      "type": "object"
+    },
+    "imageCredentials": {
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "imageCredentials",
+      "type": "array"
+    },
+    "manifests": {
+      "description": "Extra kubernetes objects to deploy inline",
+      "required": [],
+      "title": "manifests",
+      "type": "object"
+    },
+    "microservices": {
+      "properties": {
+        "microservices": {
+          "additionalProperties": {
             "properties": {
-                "affinity": {
+              "command": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "config": {
+                "properties": {
+                  "data": {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
                     "type": "object"
+                  }
                 },
-                "autoscaling": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean"
-                        },
-                        "maxReplicas": {
-                            "type": "integer"
-                        },
-                        "minReplicas": {
-                            "type": "integer"
-                        },
-                        "targetCPUUtilizationPercentage": {
-                            "type": "integer"
-                        },
-                        "targetMemoryUtilizationPercentage": {
-                            "type": "integer"
-                        }
-                    }
-                },
-                "envFrom": {
-                    "type": "array"
-                },
-                "extraEnvs": {
-                    "type": "object"
-                },
-                "image": {
-                    "type": "object",
-                    "properties": {
-                        "pullPolicy": {
-                            "type": "string"
-                        },
-                        "tag": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "imagePullSecrets": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "minReadySeconds": {
-                    "type": "integer"
-                },
-                "nodeSelector": {
-                    "type": "object"
-                },
-                "podAnnotations": {
-                    "type": "object"
-                },
-                "podDisruptionBudget": {
-                    "type": "object"
-                },
-                "podSecurityContext": {
-                    "type": "object"
-                },
-                "replicaCount": {
-                    "type": "integer"
-                },
-                "resources": {
-                    "type": "object",
-                    "properties": {
-                        "requests": {
-                            "type": "object",
-                            "properties": {
-                                "cpu": {
-                                    "type": "string"
-                                },
-                                "memory": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "securityContext": {
-                    "type": "object"
-                },
-                "service": {
-                    "type": "object",
-                    "properties": {
-                        "additionalPorts": {
-                            "type": "object"
-                        },
-                        "appProtocol": {
-                            "type": "string"
-                        },
-                        "disablePortName": {
-                            "type": "boolean"
-                        },
-                        "enabled": {
-                            "type": "boolean"
-                        },
+                "type": "object"
+              },
+              "envFrom": {
+                "items": {
+                  "properties": {
+                    "configMapRef": {
+                      "properties": {
                         "name": {
-                            "type": "string"
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "secretRef": {
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "extraEnvs": {
+                "items": {
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    },
+                    "valueFrom": {
+                      "properties": {
+                        "configMapKeyRef": {
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "secretKeyRef": {
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "image": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "tag": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "livenessProbe": {
+                "properties": {
+                  "failureThreshold": {
+                    "type": "integer"
+                  },
+                  "httpGet": {
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "port": {
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "initialDelaySeconds": {
+                    "type": "integer"
+                  },
+                  "periodSeconds": {
+                    "type": "integer"
+                  },
+                  "successThreshold": {
+                    "type": "integer"
+                  },
+                  "tcpSocket": {
+                    "properties": {
+                      "port": {
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "timeoutSeconds": {
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              },
+              "match": {
+                "items": {
+                  "properties": {
+                    "uri": {
+                      "properties": {
+                        "prefix": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "namespace": {
+                "type": "string"
+              },
+              "readinessProbe": {
+                "properties": {
+                  "failureThreshold": {
+                    "type": "integer"
+                  },
+                  "initialDelaySeconds": {
+                    "type": "integer"
+                  },
+                  "periodSeconds": {
+                    "type": "integer"
+                  },
+                  "successThreshold": {
+                    "type": "integer"
+                  },
+                  "tcpSocket": {
+                    "properties": {
+                      "port": {
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "timeoutSeconds": {
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              },
+              "resources": {
+                "properties": {
+                  "limits": {
+                    "properties": {
+                      "cpu": {
+                        "type": "string"
+                      },
+                      "memory": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "requests": {
+                    "properties": {
+                      "cpu": {
+                        "type": "string"
+                      },
+                      "memory": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              },
+              "secrets": {
+                "properties": {
+                  "data": {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  "generateKeys": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "type": "object"
+              },
+              "service": {
+                "properties": {
+                  "additionalPorts": {
+                    "items": {
+                      "properties": {
+                        "name": {
+                          "type": "string"
                         },
                         "port": {
-                            "type": "integer"
+                          "type": "integer"
+                        },
+                        "protocol": {
+                          "type": "string"
                         },
                         "targetPort": {
-                            "type": "integer"
-                        },
-                        "type": {
-                            "type": "string"
+                          "type": "integer"
                         }
-                    }
-                },
-                "serviceAccount": {
-                    "type": "object",
-                    "properties": {
-                        "annotations": {
-                            "type": "object"
-                        },
-                        "create": {
-                            "type": "boolean"
-                        },
-                        "labels": {
-                            "type": "object"
-                        },
-                        "name": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "strategy": {
-                    "type": "object"
-                },
-                "tolerations": {
+                      },
+                      "type": "object"
+                    },
                     "type": "array"
-                },
-                "virtualService": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean"
-                        }
-                    }
-                }
-            }
-        },
-        "extraManifests": {
-            "type": ["array", "object"]
-        },
-        "fullnameOverride": {
-            "type": "string"
-        },
-        "global": {
-            "type": "object",
-            "properties": {
-                "applicationName": {
-                    "type": "string"
-                },
-                "domain": {
-                    "type": "string"
-                },
-                "gateway": {
-                    "type": "string"
-                },
-                "impactLevel": {
-                    "type": "string"
-                },
-                "customerName": {
-                    "type": "string"
-                },
-                "environment": {
-                    "type": "string"
-                },
-                "image": {
-                    "type": "object",
-                    "properties": {
-                        "defaultImageRegistry": {
-                            "type": "string"
-                        },
-                        "defaultImageRepository": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "istio": {
-                    "type": "object",
-                    "properties": {
-                        "mtls": {
-                            "type": "object",
-                            "properties": {
-                                "enabled": {
-                                    "type": "boolean"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "imageCredentials": {
-            "type": "array"
-        },
-        "manifests": {
-            "type": "object"
-        },
-        "microservices": {
-            "type": "object"
-        },
-        "milvus": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "minio-instance": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "minio-standalone": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "mongodb": {
-            "type": "object",
-            "properties": {
-                "auth": {
-                    "type": "object",
-                    "properties": {
-                        "existingSecret": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "enabled": {
-                    "type": "boolean"
-                },
-                "global": {
-                    "type": "object",
-                    "properties": {
-                        "imagePullSecrets": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "image": {
-                    "type": "object",
-                    "properties": {
-                        "pullPolicy": {
-                            "type": "string"
-                        },
-                        "registry": {
-                            "type": "string"
-                        },
-                        "repository": {
-                            "type": "string"
-                        },
-                        "tag": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "mysql": {
-            "type": "object",
-            "properties": {
-                "auth": {
-                    "type": "object",
-                    "properties": {
-                        "existingSecret": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "enabled": {
-                    "type": "boolean"
-                },
-                "primary": {
-                    "type": "object",
-                    "properties": {
-                        "resources": {
-                            "type": "object",
-                            "properties": {
-                                "limits": {
-                                    "type": "object",
-                                    "properties": {
-                                        "cpu": {
-                                            "type": "string"
-                                        },
-                                        "memory": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "requests": {
-                                    "type": "object",
-                                    "properties": {
-                                        "cpu": {
-                                            "type": "string"
-                                        },
-                                        "memory": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "secondary": {
-                    "type": "object",
-                    "properties": {
-                        "affinity": {
-                            "type": "object",
-                            "properties": {
-                                "podAntiAffinity": {
-                                    "type": "object",
-                                    "properties": {
-                                        "requiredDuringSchedulingIgnoredDuringExecution": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "labelSelector": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "matchExpressions": {
-                                                                "type": "array",
-                                                                "items": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "key": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "operator": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "values": {
-                                                                            "type": "array",
-                                                                            "items": {
-                                                                                "type": "string"
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    },
-                                                    "topologyKey": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "replicaCount": {
-                            "type": "integer"
-                        },
-                        "resources": {
-                            "type": "object",
-                            "properties": {
-                                "limits": {
-                                    "type": "object",
-                                    "properties": {
-                                        "cpu": {
-                                            "type": "string"
-                                        },
-                                        "memory": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "requests": {
-                                    "type": "object",
-                                    "properties": {
-                                        "cpu": {
-                                            "type": "string"
-                                        },
-                                        "memory": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "nameOverride": {
-            "type": "string"
-        },
-        "nats": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                },
-                "exporter": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean"
-                        }
-                    }
-                },
-                "fullnameOverride": {
-                    "type": "string"
-                },
-                "nats": {
-                    "type": "object",
-                    "properties": {
-                        "image": {
-                            "type": "object",
-                            "properties": {
-                                "registry": {
-                                    "type": "string"
-                                },
-                                "repository": {
-                                    "type": "string"
-                                },
-                                "tag": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "natsbox": {
-                    "type": "object",
-                    "properties": {
-                        "image": {
-                            "type": "object",
-                            "properties": {
-                                "registry": {
-                                    "type": "string"
-                                },
-                                "repository": {
-                                    "type": "string"
-                                },
-                                "tag": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "reloader": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean"
-                        }
-                    }
-                }
-            }
-        },
-        "neo4j": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "opensearch": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                },
-                "extraEnvs": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "value": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "global": {
-                    "type": "object",
-                    "properties": {
-                        "dockerRegistry": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "image": {
-                    "type": "object",
-                    "properties": {
-                        "repository": {
-                            "type": "string"
-                        },
-                        "tag": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "imagePullSecrets": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "persistence": {
-                    "type": "object",
-                    "properties": {
-                        "image": {
-                            "type": "string"
-                        },
-                        "imageTag": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "replicas": {
+                  },
+                  "port": {
                     "type": "integer"
-                }
-            }
-        },
-        "pgadmin": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
+                  },
+                  "targetPort": {
+                    "type": "integer"
+                  }
                 },
-                "existingSecret": {
-                    "type": "string"
-                },
-                "podLabels": {
-                    "type": "object",
-                    "properties": {
-                        "protect": {
+                "type": "object"
+              },
+              "topologySpreadConstraints": {
+                "items": {
+                  "properties": {
+                    "labelSelector": {
+                      "properties": {
+                        "matchLabels": {
+                          "additionalProperties": {
                             "type": "string"
+                          },
+                          "type": "object"
                         }
+                      },
+                      "type": "object"
+                    },
+                    "maxSkew": {
+                      "type": "integer"
+                    },
+                    "topologyKey": {
+                      "type": "string"
+                    },
+                    "whenUnsatisfiable": {
+                      "type": "string"
                     }
+                  },
+                  "type": "object"
                 },
-                "selectorLabels": {
-                    "type": "object",
-                    "properties": {
-                        "protect": {
-                            "type": "string"
-                        }
+                "type": "array"
+              },
+              "volumeMounts": {
+                "items": {
+                  "properties": {
+                    "mountPath": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
                     }
-                }
-            }
-        },
-        "postgresql": {
-            "type": "object",
-            "properties": {
-                "auth": {
-                    "type": "object",
-                    "properties": {
-                        "existingSecret": {
-                            "type": "string"
-                        },
-                        "secretKeys": {
-                            "type": "object",
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "volumes": {
+                "items": {
+                  "properties": {
+                    "configMap": {
+                      "properties": {
+                        "items": {
+                          "items": {
                             "properties": {
-                                "adminPasswordKey": {
-                                    "type": "string"
-                                },
-                                "replicationPasswordKey": {
-                                    "type": "string"
-                                },
-                                "userPasswordKey": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "enabled": {
-                    "type": "boolean"
-                },
-                "global": {
-                    "type": "object",
-                    "properties": {
-                        "imagePullSecrets": {
-                            "type": "array",
-                            "items": {
+                              "key": {
                                 "type": "string"
-                            }
-                        },
-                        "postgresql": {
-                            "type": "object",
-                            "properties": {
-                                "auth": {
-                                    "type": "object",
-                                    "properties": {
-                                        "existingSecret": {
-                                            "type": "string"
-                                        },
-                                        "secretKeys": {
-                                            "type": "object",
-                                            "properties": {
-                                                "adminPasswordKey": {
-                                                    "type": "string"
-                                                },
-                                                "replicationPasswordKey": {
-                                                    "type": "string"
-                                                },
-                                                "userPasswordKey": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "image": {
-                    "type": "object",
-                    "properties": {
-                        "registry": {
-                            "type": "string"
-                        },
-                        "repository": {
-                            "type": "string"
-                        },
-                        "tag": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "initContainers": {
-                    "type": "array"
-                }
-            }
-        },
-        "postgresql-ha": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                },
-                "initContainers": {
-                    "type": "array"
-                },
-                "persistence": {
-                    "type": "object",
-                    "properties": {
-                        "size": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "pgpool": {
-                    "type": "object",
-                    "properties": {
-                        "existingSecret": {
-                            "type": "string"
-                        },
-                        "image": {
-                            "type": "object",
-                            "properties": {
-                                "registry": {
-                                    "type": "string"
-                                },
-                                "repository": {
-                                    "type": "string"
-                                },
-                                "tag": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "postgresql": {
-                    "type": "object",
-                    "properties": {
-                        "existingSecret": {
-                            "type": "string"
-                        },
-                        "image": {
-                            "type": "object",
-                            "properties": {
-                                "registry": {
-                                    "type": "string"
-                                },
-                                "repository": {
-                                    "type": "string"
-                                },
-                                "tag": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "rbac": {
-            "type": "object",
-            "properties": {
-                "create": {
-                    "type": "boolean"
-                },
-                "rules": {
-                    "type": "array"
-                }
-            }
-        },
-        "redis": {
-            "type": "object",
-            "properties": {
-                "auth": {
-                    "type": "object",
-                    "properties": {
-                        "existingSecret": {
-                            "type": "string"
-                        },
-                        "existingSecretPasswordKey": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "enabled": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "secrets": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "strimzi-kafka-operator": {
-            "type": "object",
-            "properties": {
-                "defaultImageRegistry": {
-                    "type": "string"
-                },
-                "defaultImageRepository": {
-                    "type": "string"
-                },
-                "defaultImageTag": {
-                    "type": "string"
-                },
-                "enabled": {
-                    "type": "boolean"
-                },
-                "image": {
-                    "type": "object",
-                    "properties": {
-                        "imagePullSecrets": {
-                            "type": "string"
+                              },
+                              "path": {
+                                "type": "string"
+                              }
+                            },
+                            "type": "object"
+                          },
+                          "type": "array"
                         },
                         "name": {
-                            "type": "string"
-                        },
-                        "registry": {
-                            "type": "string"
-                        },
-                        "repository": {
-                            "type": "string"
-                        },
-                        "tag": {
-                            "type": "string"
+                          "type": "string"
                         }
+                      },
+                      "type": "object"
+                    },
+                    "name": {
+                      "type": "string"
                     }
-                }
-            }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "required": [],
+          "type": "object"
         }
+      },
+      "required": [],
+      "title": "microservices",
+      "type": "object"
+    },
+    "nameOverride": {
+      "default": "",
+      "description": "yaml-language-server: $schema=values.schema.json",
+      "required": [],
+      "title": "nameOverride",
+      "type": "string"
+    },
+    "networkPolicies": {
+      "properties": {
+        "appPolicy": {
+          "properties": {
+            "enabled": {
+              "default": true,
+              "required": [],
+              "title": "enabled",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled"
+          ],
+          "title": "appPolicy",
+          "type": "object"
+        },
+        "customPolicies": {
+          "description": "To add additional netpols to the app namespace",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "customPolicies",
+          "type": "array"
+        },
+        "enabled": {
+          "default": false,
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled",
+        "appPolicy",
+        "customPolicies"
+      ],
+      "title": "networkPolicies",
+      "type": "object"
+    },
+    "rbac": {
+      "properties": {
+        "create": {
+          "default": false,
+          "required": [],
+          "title": "create",
+          "type": "boolean"
+        },
+        "rules": {
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "rules",
+          "type": "array"
+        }
+      },
+      "required": [
+        "create",
+        "rules"
+      ],
+      "title": "rbac",
+      "type": "object"
+    },
+    "secrets": {
+      "description": "Global application secret - used for all microservices deployed to one namespace",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "secrets",
+      "type": "object"
+    },
+    "subCharts": {
+      "properties": {
+        "subCharts": {
+          "additionalProperties": {
+            "properties": {
+              "chart": {
+                "default": "uchart",
+                "type": "string"
+              },
+              "chartUrl": {
+                "default": "registry.gamewarden.io/charts",
+                "type": "string"
+              },
+              "enabled": {
+                "default": true,
+                "type": "boolean"
+              },
+              "name": {
+                "type": "string"
+              },
+              "namespace": {
+                "type": "string"
+              },
+              "project": {
+                "type": "string"
+              },
+              "revision": {
+                "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+                "type": "string"
+              },
+              "sync": {
+                "default": true,
+                "type": "boolean"
+              },
+              "valueFiles": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "values": {
+                "type": "object"
+              },
+              "valuesRepo": {
+                "type": "string"
+              },
+              "wave": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "required": [],
+          "type": "object"
+        }
+      },
+      "required": [],
+      "title": "subCharts",
+      "type": "object"
     }
+  },
+  "required": [
+    "nameOverride",
+    "fullnameOverride",
+    "global",
+    "ciliumNetworkPolicies",
+    "networkPolicies",
+    "imageCredentials",
+    "rbac",
+    "config",
+    "secrets",
+    "defaults",
+    "manifests",
+    "generatedSecrets",
+    "argocd"
+  ],
+  "type": "object"
 }

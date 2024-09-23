@@ -89,7 +89,7 @@ A universal application chart for gamewarden environments
 | defaults.strategy | object | `{}` |  |
 | defaults.tolerations | list | `[]` | Applied to pods, and allow (but do not require) the pods to schedule onto nodes with matching taints. |
 | defaults.virtualService | object | `{"enabled":false}` | istio virtual service from chart enabled |
-| extraManifests | list | `[]` | Extra kubernetes objects to deploy inline - Takes in MAP or LIST |
+| extraManifests | list | `[]` | Extra kubernetes objects to deploy inline - Takes in MAP or LIST @schema type: [array, object] @schema |
 | fullnameOverride | string | `""` |  |
 | generatedSecrets | object | `{"enabled":false}` | Used to get around ArgoCD generating new secrets with argocd ignore annotations |
 | global.applicationName | string | `"testapp"` | Required |
@@ -118,6 +118,10 @@ A universal application chart for gamewarden environments
 ```
 helm plugin install https://github.com/karuppiah7890/helm-schema-gen
 helm schema-gen values.yaml > values.schema.json
+or
+go install github.com/dadav/helm-schema/cmd/helm-schema@latest
+yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1) * select(fileIndex == 2) * select(fileIndex == 3)' values.yaml docs/helm-schema/microservices.yaml docs/helm-schema/subCharts.yaml docs/test-values/job-example-values.yaml > merged-values.yaml
+helm-schema -n -k additionalProperties -f merged-values.yaml
 ```
 
 ## Manually push new version of chart to registry and push tag to git

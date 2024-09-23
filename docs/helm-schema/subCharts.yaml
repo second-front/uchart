@@ -1,0 +1,41 @@
+# @schema
+# type: object
+# properties:
+#   subCharts:
+#     type: object
+#     additionalProperties:  # Allows any subchart name (e.g., clamav)
+#       type: object
+#       properties:
+#         enabled:
+#           type: boolean
+#           default: true
+#         chartUrl:
+#           type: string
+#           default: 'registry.gamewarden.io/charts'
+#         chart:
+#           type: string
+#           default: 'uchart'
+#         name:
+#           type: string
+#         revision:
+#           type: string  # Version of included chart
+#           pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'  # Enforce versioning format (optional)
+#         namespace:
+#           type: string
+#         values:
+#           type: object  # Allows any Helm values to be defined inline
+#         valueFiles:
+#           type: array
+#           items:
+#             type: string  # List of value file paths
+#         valuesRepo:
+#           type: string
+#         wave:
+#           type: string
+#         sync:
+#           type: boolean
+#           default: true
+#         project:
+#           type: string
+# @schema
+subCharts: {}

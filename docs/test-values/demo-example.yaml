@@ -24,8 +24,11 @@ defaults:
 
 extraManifests:
   test:
-    this: is
+    apiVersion: v1
     a: test
+    kind: test
+
+additional: property-test
 
 microservices:
   # backend:
