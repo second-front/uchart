@@ -1,11 +1,15 @@
+argocd:
+  projectOverride: "argocd-override"
+
 subCharts:
   clamav:
-    enabled: false
+    enabled: true
     chartUrl: 'registry.gamewarden.io/charts'
     name: clamav
     revision: 0.0.2
     values:
       test: test
+    project: "subChart-override"
   pgadmin:
     enabled: false
     revision: 0.1.0

@@ -20,7 +20,7 @@ metadata:
     argocd.argoproj.io/sync-wave: {{ $v.wave }}
 {{- end }}
 spec:
-  project: "{{ default (printf "%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName) $v.project }}"
+  project: "{{ default (default (printf "%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName) $v.project) .Values.argocd.projectOverride }}"
   destination:
     namespace: {{ $namespace }}
     {{- if eq $v.chart "uchart" }}
