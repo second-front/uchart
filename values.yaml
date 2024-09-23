@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=values.schema.json
 ---
 nameOverride: ''
 fullnameOverride: ''
@@ -209,7 +210,11 @@ defaults:
   # -- Ensure that pods are hosted on specific nodes
   affinity: {}
 
+
 # -- Extra kubernetes objects to deploy inline - Takes in MAP or LIST
+# @schema
+# type: [array, object]
+# @schema
 extraManifests: []
   #   yourNameOfFirstResource:
   #     apiVersion: kafka.strimzi.io/v1beta2
