@@ -50,7 +50,8 @@
 
 {{- $labels := $v.labels }}
 {{- $annotations := $v.annotations | default (dict) }}
-{{- $securityContext := $v.securityContext | default (dict "capabilities" (dict "drop" (list "ALL"))) }}
+{{- $podSecurityContext := $v.podSecurityContext | default .Values.defaults.podSecurityContext }}
+{{- $securityContext := $v.securityContext | default .Values.defaults.securityContext }}
 {{- $namespace := $v.namespace | default .Release.Namespace }}
 {{- $command := $v.command }}
 {{- $args := $v.args }}
@@ -84,6 +85,10 @@ spec:
           {{- with $initContainers }}
           initContainers:
             {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $podSecurityContext }}
+          securityContext:
+            {{- toYaml $podSecurityContext | nindent 12 }}
           {{- end }}
           restartPolicy: {{ $restartPolicy }}
           containers:
