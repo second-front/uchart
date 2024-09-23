@@ -14,4 +14,4 @@ maintainers:
   - email: lucas.pick@secondfront.com
     name: Lucas Pick
 annotations:
-  schema: "https://schemas.gamewarden.io/schemas/helm/uchart.json"
+  schema: "https://schemas.gamewarden.io/schemas/helm/uchart/uchart-latest.json"
