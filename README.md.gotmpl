@@ -46,6 +46,11 @@ yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1) * select(fileIndex 
 helm-schema -n -k additionalProperties -f merged-values.yaml
 ```
 
+## Chart schema available also at:
+```
+https://schemas.gamewarden.io/schemas/helm/uchart.json
+```
+
 ## Manually push new version of chart to registry and push tag to git
 ```
 helm package .

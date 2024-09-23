@@ -13,3 +13,5 @@ maintainers:
     name: Anthony Butt
   - email: lucas.pick@secondfront.com
     name: Lucas Pick
+annotations:
+  schema: "https://schemas.gamewarden.io/schemas/helm/uchart.json"
