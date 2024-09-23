@@ -192,7 +192,8 @@
             "required": []
           },
           "required": [],
-          "title": "envFrom"
+          "title": "envFrom",
+          "type": "array"
         },
         "extraEnvs": {
           "description": "Extra environment variables",
