@@ -1,0 +1,8 @@
+defaults:
+  strategy:
+    type: Recreate
+  envFrom:
+    - configMapRef:
+        name: uni-geodata
+    - secretRef:
+        name: app-secrets

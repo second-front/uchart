@@ -55,15 +55,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "disableProjectCreation",
-        "sourceNamespaces",
-        "createNamespace",
-        "wrapperAppOff",
-        "wrapperAppWave",
-        "wrapperSync",
-        "projectOverride"
-      ],
+      "required": [],
       "title": "argocd",
       "type": "object"
     },
@@ -78,9 +70,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "enabled"
-          ],
+          "required": [],
           "title": "appPolicy",
           "type": "object"
         },
@@ -100,11 +90,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "enabled",
-        "appPolicy",
-        "customPolicies"
-      ],
+      "required": [],
       "title": "ciliumNetworkPolicies",
       "type": "object"
     },
@@ -128,11 +114,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "enabled",
-        "data",
-        "annotations"
-      ],
+      "required": [],
       "title": "config",
       "type": "object"
     },
@@ -172,12 +154,7 @@
               "type": "integer"
             }
           },
-          "required": [
-            "enabled",
-            "minReplicas",
-            "maxReplicas",
-            "targetCPUUtilizationPercentage"
-          ],
+          "required": [],
           "title": "autoscaling",
           "type": "object"
         },
@@ -203,24 +180,19 @@
                         "type": "string"
                       }
                     },
-                    "required": [
-                      "name"
-                    ],
+                    "required": [],
                     "title": "configMapRef",
                     "type": "object"
                   }
                 },
-                "required": [
-                  "configMapRef"
-                ],
+                "required": [],
                 "type": "object"
               }
             ],
             "required": []
           },
           "required": [],
-          "title": "envFrom",
-          "type": "array"
+          "title": "envFrom"
         },
         "extraEnvs": {
           "description": "Extra environment variables",
@@ -244,10 +216,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "pullPolicy",
-            "tag"
-          ],
+          "required": [],
           "title": "image",
           "type": "object"
         },
@@ -264,9 +233,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "name"
-                ],
+                "required": [],
                 "type": "object"
               }
             ],
@@ -329,17 +296,12 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "cpu",
-                "memory"
-              ],
+              "required": [],
               "title": "requests",
               "type": "object"
             }
           },
-          "required": [
-            "requests"
-          ],
+          "required": [],
           "title": "resources",
           "type": "object"
         },
@@ -413,17 +375,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "enabled",
-            "headless",
-            "type",
-            "port",
-            "name",
-            "disablePortName",
-            "targetPort",
-            "appProtocol",
-            "additionalPorts"
-          ],
+          "required": [],
           "title": "service",
           "type": "object"
         },
@@ -455,12 +407,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "create",
-            "annotations",
-            "labels",
-            "name"
-          ],
+          "required": [],
           "title": "serviceAccount",
           "type": "object"
         },
@@ -489,35 +436,12 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "enabled"
-          ],
+          "required": [],
           "title": "virtualService",
           "type": "object"
         }
       },
-      "required": [
-        "domain",
-        "virtualService",
-        "replicaCount",
-        "strategy",
-        "minReadySeconds",
-        "image",
-        "imagePullSecrets",
-        "serviceAccount",
-        "podAnnotations",
-        "podSecurityContext",
-        "securityContext",
-        "extraEnvs",
-        "envFrom",
-        "podDisruptionBudget",
-        "service",
-        "resources",
-        "autoscaling",
-        "nodeSelector",
-        "tolerations",
-        "affinity"
-      ],
+      "required": [],
       "title": "defaults",
       "type": "object"
     },
@@ -549,9 +473,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "enabled"
-      ],
+      "required": [],
       "title": "generatedSecrets",
       "type": "object"
     },
@@ -608,10 +530,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "defaultImageRegistry",
-            "defaultImageRepository"
-          ],
+          "required": [],
           "title": "image",
           "type": "object"
         },
@@ -635,30 +554,17 @@
                   "type": "boolean"
                 }
               },
-              "required": [
-                "enabled"
-              ],
+              "required": [],
               "title": "mtls",
               "type": "object"
             }
           },
-          "required": [
-            "mtls"
-          ],
+          "required": [],
           "title": "istio",
           "type": "object"
         }
       },
-      "required": [
-        "gateway",
-        "applicationName",
-        "customerName",
-        "impactLevel",
-        "environment",
-        "destinationCluster",
-        "image",
-        "istio"
-      ],
+      "required": [],
       "title": "global",
       "type": "object"
     },
@@ -1039,9 +945,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "enabled"
-          ],
+          "required": [],
           "title": "appPolicy",
           "type": "object"
         },
@@ -1061,11 +965,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "enabled",
-        "appPolicy",
-        "customPolicies"
-      ],
+      "required": [],
       "title": "networkPolicies",
       "type": "object"
     },
@@ -1086,10 +986,7 @@
           "type": "array"
         }
       },
-      "required": [
-        "create",
-        "rules"
-      ],
+      "required": [],
       "title": "rbac",
       "type": "object"
     },
@@ -1103,9 +1000,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "enabled"
-      ],
+      "required": [],
       "title": "secrets",
       "type": "object"
     },
@@ -1170,20 +1065,6 @@
       "type": "object"
     }
   },
-  "required": [
-    "nameOverride",
-    "fullnameOverride",
-    "global",
-    "ciliumNetworkPolicies",
-    "networkPolicies",
-    "imageCredentials",
-    "rbac",
-    "config",
-    "secrets",
-    "defaults",
-    "manifests",
-    "generatedSecrets",
-    "argocd"
-  ],
+  "required": [],
   "type": "object"
 }

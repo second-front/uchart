@@ -43,7 +43,7 @@ helm schema-gen values.yaml > values.schema.json
 or
 go install github.com/dadav/helm-schema/cmd/helm-schema@latest
 yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1) * select(fileIndex == 2) * select(fileIndex == 3)' values.yaml docs/helm-schema/microservices.yaml docs/helm-schema/subCharts.yaml docs/test-values/job-example-values.yaml > merged-values.yaml
-helm-schema -n -k additionalProperties -f merged-values.yaml
+helm-schema -n -k additionalProperties -k required -f merged-values.yaml
 ```
 
 ## Chart schema available also at:
