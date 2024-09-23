@@ -36,6 +36,8 @@
 {{- $restartPolicy := $v.restartPolicy | default "Never" }}
 {{- $imagePullPolicy := $v.image.pullPolicy | default .Values.defaults.image.pullPolicy }}
 {{- $imagePullSecrets := $v.imagePullSecrets | default .Values.defaults.imagePullSecrets }}
+{{- $initContainers := $v.initContainers}}
+{{- $resources := $v.resources | default .Values.defaults.resources }}
 {{- $suspended := $v.suspended | default false }}
 {{- $envs := $v.envs }}
 {{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs }}
@@ -74,6 +76,10 @@ spec:
   backoffLimit: {{ $backoffLimit }}
   template:
     spec:
+      {{- with $initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: {{ $restartPolicy }}
       {{- with $imagePullSecrets }}
       imagePullSecrets:
@@ -85,6 +91,10 @@ spec:
           imagePullPolicy: {{ $imagePullPolicy }}
           {{- with $securityContext }}
           securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $resources }}
+          resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- if or ($mergedEnvFrom) ($v.config) ($v.secrets) }}

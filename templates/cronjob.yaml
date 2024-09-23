@@ -36,6 +36,8 @@
 {{- $restartPolicy := $v.restartPolicy | default "Never" }}
 {{- $imagePullPolicy := $v.image.pullPolicy | default .Values.defaults.image.pullPolicy }}
 {{- $imagePullSecrets := $v.imagePullSecrets | default .Values.defaults.imagePullSecrets }}
+{{- $initContainers := $v.initContainers}}
+{{- $resources := $v.resources | default .Values.defaults.resources }}
 {{- $suspended := $v.suspended | default false }}
 {{- $envs := $v.envs }}
 {{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs }}
@@ -79,6 +81,10 @@ spec:
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- with $initContainers }}
+          initContainers:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           restartPolicy: {{ $restartPolicy }}
           containers:
             - name: {{ $msvc }}
@@ -99,6 +105,10 @@ spec:
               {{- if or ($mergedEnvFrom) ($v.config) ($v.secrets) }}
               envFrom:
               {{- toYaml $mergedEnvFrom | nindent 14 }}
+              {{- end }}
+              {{- with $resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
               {{- end }}
               env:
                 {{- range $key, $value := $envs }}

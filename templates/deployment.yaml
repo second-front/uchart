@@ -33,6 +33,7 @@
 {{- $autoscalingEnabled := (($v.autoscaling).enabled) | default .Values.defaults.autoscaling.enabled }}
 {{- $replicaCount := $v.replicaCount | default .Values.defaults.replicaCount }}
 {{- $strategy := $v.strategy | default .Values.defaults.strategy }}
+{{- $annotations := $v.annotations | default (dict) }}
 {{- $podAnnotations := $v.podAnnotations | default .Values.defaults.podAnnotations }}
 {{- $imagePullSecrets := $v.imagePullSecrets | default .Values.defaults.imagePullSecrets }}
 {{- $terminationGracePeriodSeconds := $v.terminationGracePeriodSeconds }}
@@ -91,6 +92,10 @@ metadata:
     {{- include "universal-app-chart.labels" . | nindent 4 }}
     {{- include "universal-app-chart.istioLabels" . | nindent 4 }}
     {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
 spec:
   revisionHistoryLimit: 3
   {{- if not $autoscalingEnabled }}

@@ -1,6 +1,7 @@
 {{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
 {{- range $msvc, $v := .Values.microservices }}
 {{- with $v }}
+{{- $annotations := $v.annotations | default (dict) }}
   {{- if $v.config }}
     {{- range $configName, $configData := $v.config }}
 ---
@@ -9,6 +10,10 @@ kind: ConfigMap
 metadata:
   name: {{ $configName }}
   namespace: {{ $v.namespace | default $.Release.Namespace }}
+  annotations:
+{{- range $key, $value := $annotations }}
+    {{ $key }}: {{ $value | quote }}
+{{- end }}
 data:
 {{- range $key, $value := $configData }}
   {{- if contains "\n" $value }}
