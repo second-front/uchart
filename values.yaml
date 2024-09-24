@@ -263,6 +263,7 @@ subCharts: {}
   #   wave: ""                                    # optional - used to create the annotations for argocd sync waves
   #   sync: true                                  # default true - used to turn off automated sync and pruning for the subChart
   #   project: ""                                 # optional - default is inherited from created project - this is an override     
+  #   serverSideApply: true                       # default true
 
 argocd:
 # -- Disable option for creation of project for applications created from subCharts if nesting
@@ -281,3 +282,5 @@ argocd:
   wrapperSync: true
 # -- Project override for the argocdWrapper microservice Application
   projectOverride: ""
+# -- Server Side Apply on Application wrapper (not subCharts)
+  serverSideApply: true
