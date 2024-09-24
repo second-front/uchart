@@ -61,6 +61,16 @@ microservices:
               secretKeyRef:
                 name: keycloak-keycloak-git
                 key: token
+    volumeMounts:
+      - name: example-config-volume
+        mountPath: /wfConfig
+    volumes: |-
+      - name: example-config-volume
+        configMap:
+          name: example-lens
+          items:
+          - key: config.json
+            path: config.json
   examplejob:
     job:
       enabled: true
@@ -132,3 +142,13 @@ microservices:
               secretKeyRef:
                 name: keycloak-keycloak-git
                 key: token
+    volumeMounts:
+      - name: example-config-volume
+        mountPath: /wfConfig
+    volumes: |-
+      - name: example-config-volume
+        configMap:
+          name: example-lens
+          items:
+          - key: config.json
+            path: config.json
