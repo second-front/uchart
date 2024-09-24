@@ -13,7 +13,7 @@ argocd:
   wrapperAppWave: "1"
   wrapperSync: false
   # projectOverride: subChartProjectOverride
-
+  serverSideApply: false
 microservices:
   backend:
     statefulset:
@@ -36,6 +36,7 @@ subCharts:
     chartUrl: 'registry.gamewarden.io/charts'
     revision: 0.0.2
     wave: 3
+    serverSideApply: false
     # project: overrideProjectName
   redis:
     revision: 17.9.5

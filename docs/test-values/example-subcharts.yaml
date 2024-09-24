@@ -3,6 +3,7 @@ argocd:
 
 subCharts:
   clamav:
+    serverSideApply: false
     enabled: true
     chartUrl: 'registry.gamewarden.io/charts'
     name: clamav
