@@ -25,6 +25,7 @@ spec:
       - CreateNamespace=true
       - Validate=false
       - RespectIgnoreDifferences=true
+      - ServerSideApply=true
     managedNamespaceMetadata:
       labels:
         istio-injection: enabled
@@ -33,7 +34,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.8
+      targetRevision: 1.0.9
       chart: uchart
       helm:
         values: |

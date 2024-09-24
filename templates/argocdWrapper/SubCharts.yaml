@@ -38,6 +38,7 @@ spec:
       - CreateNamespace=true
       - Validate=false
       - RespectIgnoreDifferences=true
+      - ServerSideApply=true
     managedNamespaceMetadata:
       labels:
         istio-injection: enabled
