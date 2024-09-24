@@ -38,7 +38,9 @@ spec:
       - CreateNamespace=true
       - Validate=false
       - RespectIgnoreDifferences=true
+    {{- if not (eq $v.serverSideApply false) }}
       - ServerSideApply=true
+    {{- end }}
     managedNamespaceMetadata:
       labels:
         istio-injection: enabled

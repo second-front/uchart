@@ -25,7 +25,9 @@ spec:
       - CreateNamespace=true
       - Validate=false
       - RespectIgnoreDifferences=true
+    {{- if not (eq .Values.argocd.serverSideApply false) }}
       - ServerSideApply=true
+    {{- end }}
     managedNamespaceMetadata:
       labels:
         istio-injection: enabled
@@ -34,7 +36,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.9
+      targetRevision: 1.0.10
       chart: uchart
       helm:
         values: |
