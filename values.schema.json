@@ -930,7 +930,7 @@
     },
     "nameOverride": {
       "default": "",
-      "description": "yaml-language-server: $schema=values.schema.json",
+      "description": "",
       "required": [],
       "title": "nameOverride",
       "type": "string"

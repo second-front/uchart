@@ -59,7 +59,7 @@ microservices:
             name: backend
       gingerbreadMan:
         securityContext:
-          test: test
+          # test: test
         envs:
           testVar1: eat
           testVariableTwo: me
