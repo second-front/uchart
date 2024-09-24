@@ -21,7 +21,7 @@ microservices:
 
 # uchart
 
-chart version: 1.0.8
+chart version: 1.0.9
 
 A universal application chart for gamewarden environments
 
