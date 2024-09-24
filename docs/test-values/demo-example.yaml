@@ -22,11 +22,11 @@ defaults:
         name: default-config
 
 
-extraManifests:
-  test:
-    apiVersion: v1
-    a: test
-    kind: test
+# extraManifests:
+#   test:
+#     apiVersion: v1
+#     a: test
+#     kind: test
 
 additional: property-test
 

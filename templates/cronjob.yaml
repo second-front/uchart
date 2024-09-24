@@ -69,7 +69,11 @@ metadata:
     {{- toYaml $annotations | nindent 4 }}
   {{- end }}
 spec:
-  schedule: "{{ $v.cronjob.schedule }}"
+  schedule: "{{ default "*/5 * * * *" $v.cronjob.schedule }}"
+  concurrencyPolicy: "{{ default "Forbid" $v.cronjob.concurrencyPolicy }}"
+  successfulJobsHistoryLimit: {{ default 3 $v.cronjob.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ default 1 $v.cronjob.failedJobsHistoryLimit }}
+  suspend: {{ default false $v.cronjob.suspended }}
   jobTemplate:
     spec:
       backoffLimit: {{ $v.cronjob.backoffLimit | default 4 }}
