@@ -6,29 +6,6 @@
 {{- $statefulsetEnabled := (($v.statefulset).enabled) }}
 {{- if not $statefulsetEnabled }}
 
-{{/* Define image */}}
-{{- $image := printf "%s:%s" $v.image.repository $v.image.tag -}}
-{{ if $v.image.name }}
-  {{- if .Values.global.image.defaultImageRegistry }}
-    {{- if .Values.global.image.defaultImageRepository }}
-      {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $v.image.name $v.image.tag }}
-    {{- else }}
-      {{ $image = printf "%s/%s:%s" .Values.global.image.defaultImageRegistry $v.image.name $v.image.tag }}
-    {{- end }}
-  {{- end }}
-{{- else }}
-  {{- if .Values.global.image.defaultImageRegistry }}
-    {{- if .Values.global.image.defaultImageRepository }}
-      {{ $image = printf "%s/%s/%s:%s" .Values.global.image.defaultImageRegistry .Values.global.image.defaultImageRepository $msvc $v.image.tag }}
-    {{- else }}
-      {{ $image = printf "%s/%s:%s" .Values.global.image.defaultImageRegistry $msvc $v.image.tag }}
-    {{- end }}
-  {{- end }}
-  {{- if $v.image.repository }}
-    {{ $image = printf "%s:%s" $v.image.repository $v.image.tag }}
-  {{- end }}
-{{ end }}
-
 {{/* Variables */}}
 {{- $autoscalingEnabled := (($v.autoscaling).enabled) | default .Values.defaults.autoscaling.enabled }}
 {{- $replicaCount := $v.replicaCount | default .Values.defaults.replicaCount }}
@@ -141,7 +118,7 @@ spec:
         - name: {{ $msvc }}
           securityContext:
             {{- toYaml $securityContext | nindent 12 }}
-          image: {{ $image }}
+          image: {{ include "uchart.image" (dict "msvc" $msvc "image" $v.image "Values" .Values) }}
           {{- if $workingDir }}
           workingDir: {{ $workingDir }}
           {{- end }}
