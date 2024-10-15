@@ -1,0 +1,67 @@
+global:
+  applicationName: test
+  customerName: examplecompany
+  impactLevel: IL2
+  environment: development
+  gateway: istio-system/private
+  domain: practice.gamewarden.io
+  image:
+    defaultImageRegistry: registry.gamewarden.io
+    defaultImageRepository: testcustomer
+  istio:
+    mtls:
+      enabled: false
+
+ciliumNetworkPolicies:
+  enabled: false
+
+argocd:
+  wrapAll: true
+  disableProjectCreation: true
+  projectOverride: default
+  serverSideApply: false
+
+defaults:
+  envFrom:
+    - configMapRef:
+        name: default-config
+
+microservices:
+  frontend:
+    statefulset:
+      enabled: true
+    match:
+      - uri:
+          prefix: /api
+    image:
+      tag: 0.0.0
+    service:
+      enabled: false
+    resources:
+      limits:
+        cpu: 400m
+        memory: 3Gi
+      requests:
+        cpu: 400m
+        memory: 3Gi
+    envFrom:
+    - secretRef:
+        name: example
+    - configMapRef:
+        name: example
+    restartPolicy: Always 
+
+subCharts:
+  clamav:
+    serverSideApply: false
+    enabled: true
+    chartUrl: 'registry.gamewarden.io/charts'
+    chart: clamav
+    revision: 0.0.2
+    values:
+      test: values
+    valuesRepo: https://code.il2.gamewarden.io/gamewarden/tools/charts/testValues.git
+    valuesRevision: main
+    valueFiles:
+    - $clamav/testValues/base.yaml
+    - $clamav/testValues/dev.yaml

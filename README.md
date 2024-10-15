@@ -21,7 +21,7 @@ microservices:
 
 # uchart
 
-chart version: 1.0.10
+chart version: 1.0.11
 
 A universal application chart for gamewarden environments
 
@@ -45,7 +45,9 @@ A universal application chart for gamewarden environments
 | argocd.createNamespace | bool | `false` | Create all namespaces beforehand in sourceNamespaces (the main namespace auto-creates from argocd) |
 | argocd.disableProjectCreation | bool | `false` | Disable option for creation of project for applications created from subCharts if nesting |
 | argocd.projectOverride | string | `""` | Project override for the argocdWrapper microservice Application |
+| argocd.serverSideApply | bool | `true` | Server Side Apply on Application wrapper (not subCharts) |
 | argocd.sourceNamespaces | list | `[]` | Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName |
+| argocd.wrapAll | bool | `false` | wrapper all-in-one where the microservices and subCharts all are placed into a single wrapped application with multiple sources |
 | argocd.wrapperAppOff | bool | `false` | Turn off the argocdWrapper Application.yaml template and instead deploy microservices without being under an argocd application |
 | argocd.wrapperAppWave | string | `""` | Set argocd sync wave number on just the argocdWrapper Application if used |
 | argocd.wrapperSync | bool | `true` | Sync options - Turn on or off automated syncing with pruning for the argocdWrapper Application from microservice |
@@ -121,12 +123,13 @@ helm schema-gen values.yaml > values.schema.json
 or
 go install github.com/dadav/helm-schema/cmd/helm-schema@latest
 yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1) * select(fileIndex == 2) * select(fileIndex == 3)' values.yaml docs/helm-schema/microservices.yaml docs/helm-schema/subCharts.yaml docs/test-values/job-example-values.yaml > merged-values.yaml
-helm-schema -n -k additionalProperties -f merged-values.yaml
+helm-schema -n -k additionalProperties -k required -f merged-values.yaml
+rm merged-values.yaml
 ```
 
 ## Chart schema available also at:
 ```
-https://schemas.gamewarden.io/schemas/helm/uchart.json
+https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.11.json
 ```
 
 ## Manually push new version of chart to registry and push tag to git
