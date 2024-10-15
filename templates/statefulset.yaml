@@ -2,8 +2,7 @@
 {{- range $msvc, $v := .Values.microservices}}
 {{- with $ -}}
 
-{{ if not (empty $v) }}
-{{- if and (not $v.containers) (not $v.cronjob) (not $v.job) }}
+{{ if and (not (empty $v)) (not $v.containers) (not $v.cronjob) (not $v.job) (ne $v.enabled false) }}
 {{- $statefulsetEnabled := (($v.statefulset).enabled) }}
 {{- if $statefulsetEnabled }}
 {{- if $v.image.tag}}
@@ -235,7 +234,6 @@ spec:
         {{- end }}
       {{- end }}
 
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

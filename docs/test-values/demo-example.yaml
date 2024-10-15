@@ -32,6 +32,7 @@ additional: property-test
 
 microservices:
   backend:
+    enabled: false
     match:
       - uri:
           prefix: /api
@@ -70,6 +71,7 @@ microservices:
       argocd.argoproj.io/hook: PreSync
       argocd.argoproj.io/hook-delete-policy: HookSucceeded
   frontend:
+    enabled: false
     annotations:
       argocd.argoproj.io/hook: PreSync
       argocd.argoproj.io/hook-delete-policy: HookSucceeded

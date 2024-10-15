@@ -94,16 +94,16 @@ microservices:
     extraEnvs:
       - name: SPRING_DATASOURCE_USERNAME
         value: DBAdmin
-      - name: SPRING_DATASOURCE_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: example
-            key: APP_DB_PASS
-      - name: SPECIAL_LEVEL_KEY
-        valueFrom:
-          configMapKeyRef:
-            name: special-config
-            key: SPECIAL_LEVEL
+      # - name: SPRING_DATASOURCE_PASSWORD
+      #   valueFrom:
+      #     secretKeyRef:
+      #       name: example
+      #       key: APP_DB_PASS
+      # - name: SPECIAL_LEVEL_KEY
+      #   valueFrom:
+      #     configMapKeyRef:
+      #       name: special-config
+      #       key: SPECIAL_LEVEL
     envFrom:
     - secretRef:
         name: example
