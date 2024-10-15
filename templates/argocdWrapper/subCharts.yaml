@@ -1,4 +1,4 @@
-{{- if .Values.subCharts }}
+{{- if and .Values.subCharts (not .Values.argocd.wrapAll)}}
   {{- range $subChart, $v := .Values.subCharts}}
   {{- with $ -}}
   {{ if not (empty $v) }}

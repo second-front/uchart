@@ -1,5 +1,5 @@
 {{- $defaultProject := printf "%s-%s-%s" (required "customerName is required" .Values.global.customerName) (required "environment is required" .Values.global.environment) (required "applicationName is required" .Values.global.applicationName) -}}
-{{- if and .Values.subCharts .Values.microservices (not .Values.argocd.wrapperAppOff)}}
+{{- if and .Values.subCharts .Values.microservices .Values.argocd.wrapAll }}
 ---
 kind: Application
 apiVersion: argoproj.io/v1alpha1
@@ -31,12 +31,10 @@ spec:
     managedNamespaceMetadata:
       labels:
         istio-injection: enabled
-      annotations:
-        argocd.argoproj.io/manifest-generate-paths: .;**/values.yaml
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.10
+      targetRevision: 1.0.11
       chart: uchart
       helm:
         values: |
@@ -52,4 +50,48 @@ spec:
           {{- toYaml  .Values.argocd | nindent 12 }}
           config:
           {{- toYaml  .Values.config | nindent 12 }}
+
+{{- range $subChart, $v := .Values.subCharts}}
+{{- with $ -}}
+{{ if not (empty $v) -}}
+{{ if not (eq $v.enabled false) -}}
+
+{{/* Variables */}}
+{{- $name := $v.name | default $subChart -}}
+{{- $chartUrl := $v.chartUrl | default "registry.gamewarden.io/charts" -}}
+{{- $namespace := $v.namespace | default .Values.global.applicationName -}}
+{{- $revision := $v.revision | default $.Chart.Version }}
+    - repoURL: {{ $chartUrl }}
+      targetRevision: {{ $revision }}
+      chart: {{ $v.chart | default "uchart" }}
+      helm:
+        {{-  if $v.values }}
+        values: |
+          {{- toYaml $v.values | nindent 10 }}
+          global:
+            applicationName: {{ $namespace}}
+            customerName: {{ .Values.global.customerName }}
+            impactLevel: {{ .Values.global.impactLevel }}
+            environment: {{ .Values.global.environment }}
+            {{- if hasKey $v.values "global" }}
+            {{- range $key, $value := $v.values.global }}
+            {{ $key }}: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+          {{- if .Values.argocd.projectOverride }}
+          argocd:
+            projectOverride: {{ .Values.argocd.projectOverride }}
+          {{- end }}
+        {{- end }}
+      {{- if $v.valuesRepo }}
+        valueFiles:
+        {{- toYaml  $v.valueFiles | nindent 8 }}
+    - repoURL: {{ $v.valuesRepo }}
+      targetRevision: {{ $v.valuesRevision | default "main" }}
+      ref: {{ $name }}
+    {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
 {{- end }}

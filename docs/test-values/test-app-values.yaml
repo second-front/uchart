@@ -79,7 +79,7 @@ subCharts:
   uCharWithValuesRepo:
     values:
       test: values
-    valuesRepo: https://github.com/second-front/asi-values.git
+    valuesRepo: https://github.com/second-front/example-values.git
     valuesRevision: main
     valueFiles:
     - $values/test-dev/base.yaml
