@@ -55,12 +55,12 @@ microservices:
         volumeMounts:
           - name: theme
             mountPath: /tmp/
-        # env:
-        #   - name: token
-        #     valueFrom:
-        #       secretKeyRef:
-        #         name: keycloak-keycloak-git
-        #         key: token
+        env:
+          - name: token
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-keycloak-git
+                key: token
     volumeMounts:
       - name: example-config-volume
         mountPath: /wfConfig
@@ -99,11 +99,11 @@ microservices:
       #     secretKeyRef:
       #       name: example
       #       key: APP_DB_PASS
-      - name: SPECIAL_LEVEL_KEY
-        valueFrom:
-          configMapKeyRef:
-            name: special-config
-            key: SPECIAL_LEVEL
+      # - name: SPECIAL_LEVEL_KEY
+      #   valueFrom:
+      #     configMapKeyRef:
+      #       name: special-config
+      #       key: SPECIAL_LEVEL
     envFrom:
     - secretRef:
         name: example
@@ -136,12 +136,12 @@ microservices:
         volumeMounts:
           - name: theme
             mountPath: /tmp/
-        # env:
-        #   - name: token
-        #     valueFrom:
-        #       secretKeyRef:
-        #         name: keycloak-keycloak-git
-        #         key: token
+        env:
+          - name: token
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-keycloak-git
+                key: token
     volumeMounts:
       - name: example-config-volume
         mountPath: /wfConfig
