@@ -4,7 +4,8 @@
 {{ if not (empty $v) }}
 {{- $statefulsetEnabled := (($v.statefulset).enabled) }}
 {{- if not $statefulsetEnabled }}
-{{- if $v.containers }}
+{{- if and  $v.containers (ne $v.enabled false)}}
+
 
 {{/* Variables */}}
 {{/* TODO: Turn this into ternary statement */}}

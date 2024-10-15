@@ -2,6 +2,8 @@
 ## Example deployment under microservices:
 ```
   backend:
+    # ability to disable the service instead of null-ing out
+    enabled: true
     labels:
       protect: keycloak
     annotations:
