@@ -69,7 +69,7 @@ spec:
         values: |
           {{- toYaml $v.values | nindent 10 }}
           global:
-            applicationName: {{ $v.namespace}}
+            applicationName: {{ $namespace}}
             customerName: {{ .Values.global.customerName }}
             impactLevel: {{ .Values.global.impactLevel }}
             environment: {{ .Values.global.environment }}

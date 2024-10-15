@@ -1,6 +1,6 @@
 global:
-  applicationName: example
-  customerName: Example Company
+  applicationName: test
+  customerName: examplecompany
   impactLevel: IL2
   environment: development
   gateway: istio-system/private
@@ -18,6 +18,8 @@ ciliumNetworkPolicies:
 argocd:
   wrapAll: true
   disableProjectCreation: true
+  projectOverride: default
+  serverSideApply: false
 
 defaults:
   envFrom:
@@ -25,51 +27,12 @@ defaults:
         name: default-config
 
 microservices:
-  backend:
+  frontend:
+    statefulset:
+      enabled: true
     match:
       - uri:
           prefix: /api
-    image:
-      tag: 0.0.0
-    serviceAccount:
-      create: enabled
-    rbac:
-      rules:
-      - apiGroups: ["apps"]
-        resources: ["deployments"]
-        verbs: ["get", "list", "watch", "update"]
-    autoscaling:
-      #  -- Horizontal Autoscaling of pods
-      enabled: true
-      minReplicas: 1
-      maxReplicas: 100
-      targetCPUUtilizationPercentage: 80
-      # targetMemoryUtilizationPercentage: 80
-    ## - Support multiple configmaps like this
-    config:
-      airplane-data:
-        .env: |
-          logLevel: trace
-          secretswithinconfigmap: sosecretshere
-          service-url: http://localghost:9005
-      car-json-data:
-        test: testString
-        test2: testString2
-    envFrom:
-    - secretRef:
-        name: example
-    - configMapRef:
-        name: example
-    annotations:
-      argocd.argoproj.io/hook: PreSync
-      argocd.argoproj.io/hook-delete-policy: HookSucceeded
-  frontend:
-    annotations:
-      argocd.argoproj.io/hook: PreSync
-      argocd.argoproj.io/hook-delete-policy: HookSucceeded
-    statefulset:
-      enabled: true
-    prefix: /
     image:
       tag: 0.0.0
     service:
@@ -92,13 +55,13 @@ subCharts:
   clamav:
     serverSideApply: false
     enabled: true
-    chartUrl: 'registry.spacex.com/example'
-    chart: test
+    chartUrl: 'registry.gamewarden.io/charts'
+    chart: clamav
     revision: 0.0.2
     values:
       test: values
-    valuesRepo: https://github.com/second-front/values.git
+    valuesRepo: https://code.il2.gamewarden.io/gamewarden/tools/charts/testValues.git
     valuesRevision: main
     valueFiles:
-    - $clamav/test-dev/base.yaml
-    - $clamav/test-dev/dev.yaml
+    - $clamav/testValues/base.yaml
+    - $clamav/testValues/dev.yaml
