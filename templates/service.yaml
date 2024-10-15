@@ -11,8 +11,8 @@
     {{- $enabled = false }}
   {{- end }}
 {{- end }}
-{{- if and $enabled (not $v.containers) }}
-{{- if and (not $v.containers) (not $v.cronjob) (not $v.job) }}
+{{ if and $enabled (not (empty $v)) (not $v.containers) (not $v.cronjob) (not $v.job) (ne $v.enabled false) }}
+
 {{- $type := (($v.service).type) | default .Values.defaults.service.type }}
 {{- $headless := (($v.service).headless) | default .Values.defaults.service.headless }}
 {{- $port := (($v.service).port) | default .Values.defaults.service.port }}
@@ -122,7 +122,6 @@ spec:
     app.kubernetes.io/instance: {{ $.Release.Name }}
     authentication: istio-auth
     app.kubernetes.io/name: {{ printf "%s-%s" $.Release.Name $.Chart.Name | trunc 63 | trimSuffix "-" }}
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

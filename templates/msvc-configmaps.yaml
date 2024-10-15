@@ -1,9 +1,11 @@
 {{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
+
 {{- range $msvc, $v := .Values.microservices }}
 {{- with $v }}
 {{- $annotations := $v.annotations | default (dict) }}
   {{- if $v.config }}
     {{- range $configName, $configData := $v.config }}
+{{- if and $v (ne $v.enabled false)}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -25,6 +27,7 @@ data:
 {{- end }}
     {{- end }}
   {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

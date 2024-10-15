@@ -1,7 +1,8 @@
 {{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
 {{- range $msvc, $v := .Values.microservices}}
 {{- with $ }}
-{{- if $v }}
+{{ if and (not (empty $v)) (not $v.containers) (not $v.cronjob) (not $v.job) (ne $v.enabled false) }}
+
 {{/* Variables */}}
 {{- $enabled := (($v.autoscaling).enabled) | default .Values.defaults.autoscaling.enabled }}
 {{- $targetName := (($v.autoscaling).targetName) | default $msvc }}

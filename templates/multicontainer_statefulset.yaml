@@ -5,7 +5,7 @@
 {{ if not (empty $v) }}
 {{- $statefulsetEnabled := (($v.statefulset).enabled) }}
 {{- if $statefulsetEnabled }}
-{{- if $v.containers }}
+{{- if and  $v.containers (ne $v.enabled false)}}
 
 
 {{/* Variables */}}
