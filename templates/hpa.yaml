@@ -9,7 +9,7 @@
 {{- $minReplicas := (($v.autoscaling).minReplicas) | default .Values.defaults.autoscaling.minReplicas }}
 {{- $maxReplicas := (($v.autoscaling).maxReplicas) | default .Values.defaults.autoscaling.maxReplicas }}
 {{- $namespace := $v.namespace | default .Release.Namespace }}
-{{- $targetCPUUtilizationPercentage := (($v.autoscaling).targetCPUUtilizationPercentage) | default .Values.defaults.autoscaling.targetCPUUtilizationPercentage }}
+{{- $targetCPUUtilizationPercentage := (($v.autoscaling).targetCPUUtilizationPercentage) }}
 {{- $targetMemoryUtilizationPercentage := (($v.autoscaling).targetMemoryUtilizationPercentage) }}
 
 {{- if $enabled }}
@@ -27,22 +27,56 @@ spec:
   minReplicas: {{ $minReplicas }}
   maxReplicas: {{ $maxReplicas }}
   metrics:
-  {{- if $targetMemoryUtilizationPercentage }}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: {{ $targetMemoryUtilizationPercentage }}
-  {{- end }}
-  {{- if $targetCPUUtilizationPercentage }}
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ $targetCPUUtilizationPercentage }}
-  {{- end }}
+    {{- if and $v.autoscaling.metrics (not (empty $v.autoscaling.metrics)) }}
+    {{- range $m := $v.autoscaling.metrics }}
+    - type: {{ $m.type }}
+      {{- if eq $m.type "Resource" }}
+      resource:
+        name: {{ $m.resource.name }}
+        target:
+          type: {{ $m.resource.target.type }}
+          {{- if $m.resource.target.averageUtilization }}
+          averageUtilization: {{ $m.resource.target.averageUtilization }}
+          {{- else if $m.resource.target.averageValue }}
+          averageValue: {{ $m.resource.target.averageValue }}
+          {{- end }}
+      {{- else if eq $m.type "Pods" }}
+      pods:
+        metric:
+          name: {{ $m.pods.metric.name }}
+        target:
+          type: {{ $m.pods.target.type }}
+          averageValue: {{ $m.pods.target.averageValue }}
+      {{- else if eq $m.type "Object" }}
+      object:
+        metric:
+          name: {{ $m.object.metric.name }}
+        describedObject:
+          apiVersion: {{ $m.object.describedObject.apiVersion }}
+          kind: {{ $m.object.describedObject.kind }}
+          name: {{ $m.object.describedObject.name }}
+        target:
+          type: {{ $m.object.target.type }}
+          value: {{ $m.object.target.value }}
+      {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- if $targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ $targetMemoryUtilizationPercentage }}
+    {{- end }}
+    {{- if $targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ $targetCPUUtilizationPercentage }}
+    {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
