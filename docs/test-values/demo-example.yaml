@@ -16,10 +16,10 @@ ciliumNetworkPolicies:
   enabled: false
 
 
-# defaults:
-#   envFrom:
-#     - configMapRef:
-#         name: default-config
+defaults:
+  envFrom:
+    - configMapRef:
+        name: default-config
 
 
 # extraManifests:
@@ -33,8 +33,6 @@ additional: property-test
 microservices:
   backend:
     enabled: true
-    service:
-      enabled: false
     match:
       - uri:
           prefix: /api
