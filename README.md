@@ -59,7 +59,6 @@ A universal application chart for gamewarden environments
 | defaults.autoscaling.enabled | bool | `false` |  |
 | defaults.autoscaling.maxReplicas | int | `10` |  |
 | defaults.autoscaling.minReplicas | int | `1` |  |
-| defaults.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | defaults.domain | string | `"gamewarden.io"` | domain for istio virtual services |
 | defaults.envFrom | list | `[]` | Extra environment variables from secrets or configMaps |
 | defaults.extraEnvs | object | `{}` | Extra environment variables |

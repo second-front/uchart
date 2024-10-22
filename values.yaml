@@ -197,11 +197,10 @@ defaults:
       cpu: 100m
       memory: 128Mi
   autoscaling:
-    #  -- Horizontal Autoscaling of pods
+    #  -- Horizontal Autoscaling of pods - see [configuration example for usage](docs/Example-Microservices.md) for more information. 
     enabled: false
     minReplicas: 1
     maxReplicas: 10
-    targetCPUUtilizationPercentage: 80
 
   # -- Restrict a Pod to only be able to run on a particular Node.
   nodeSelector: {}
