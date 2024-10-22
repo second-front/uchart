@@ -152,6 +152,12 @@
               "required": [],
               "title": "targetCPUUtilizationPercentage",
               "type": "integer"
+            },
+            "metrics": {
+              "default": false,
+              "required": [],
+              "title": "metrics",
+              "type": "object"
             }
           },
           "required": [],

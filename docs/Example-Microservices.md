@@ -80,6 +80,43 @@
       car-json-data:
         test: testString
         support: keyValuePairsLikeThis
+    ## - Create Horizontal Pod Autoscaler for the microservice
+    autoscaling:
+      # -- Horizontal Autoscaling of pods
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 100
+      metrics:
+        - type: Resource  # CPU resource-based scaling
+          resource:
+            name: cpu
+            target:
+              type: Utilization
+              averageUtilization: 50  # Target average CPU utilization (percentage)
+        - type: Resource  # Memory resource-based scaling
+          resource:
+            name: memory
+            target:
+              type: Utilization
+              averageUtilization: 70  # Target average memory utilization (percentage)
+        - type: Pods  # Pods-based scaling (optional)
+          pods:
+            metric:
+              name: requests-per-second
+            target:
+              type: AverageValue
+              averageValue: 100m  # Target value per pod
+        - type: Object  # Custom metric-based scaling (optional)
+          object:
+            metric:
+              name: http_requests_total
+            describedObject:
+              apiVersion: networking.k8s.io/v1
+              kind: Ingress
+              name: my-ingress  # Object to scale based on
+            target:
+              type: Value
+              value: 1000  # Target value for the metric
 ```
 ## Example statefulset under microservices:
 ```
