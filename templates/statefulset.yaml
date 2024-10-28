@@ -7,56 +7,18 @@
 {{- if $statefulsetEnabled }}
 {{- if $v.image.tag}}
 
-{{/* Variables */}}
-{{- $autoscalingEnabled := (($v.autoscaling).enabled) | default .Values.defaults.autoscaling.enabled }}
-{{- $replicaCount := $v.replicaCount | default .Values.defaults.replicaCount }}
-{{- $minReadySeconds := $v.minReadySeconds | default .Values.defaults.minReadySeconds }}
+{{/* StatefulSet Variables */}}
 {{- $annotations := $v.annotations | default (dict) }}
-{{- $podAnnotations := $v.podAnnotations | default .Values.defaults.podAnnotations }}
-{{- $imagePullSecrets := $v.imagePullSecrets | default .Values.defaults.imagePullSecrets }}
-{{- $podSecurityContext := $v.podSecurityContext | default .Values.defaults.podSecurityContext }}
-{{- $terminationGracePeriodSeconds := $v.terminationGracePeriodSeconds }}
-{{- $createServiceAccount := (($v.serviceAccount).create) | default .Values.defaults.serviceAccount.create }}
-{{- $serviceAccountName := (($v.serviceAccount).name) | default .Values.defaults.serviceAccount.name }}
-{{- $securityContext := $v.securityContext | default .Values.defaults.securityContext }}
-{{- $imagePullPolicy := (($v.image).pullPolicy) | default .Values.defaults.image.pullPolicy }}
+{{- $appLabel := $v.appLabel | default $msvc }}
+{{- $autoscalingEnabled := (($v.autoscaling).enabled) | default .Values.defaults.autoscaling.enabled }}
 {{- $envs := $v.envs }}
-{{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs }}
-{{- $volumeClaimTemplates := $v.volumeClaimTemplates }}
-{{- $extraVolumes := $v.volumes | default .Values.defaults.volumes }}
-{{- $extraVolumeMounts := $v.volumeMounts | default .Values.defaults.volumeMounts }}
-
-{{- $mergedEnvFrom := $v.envFrom | default (list) }}
-{{- $defaultsEnvFrom := .Values.defaults.envFrom | default (list) }}
-{{- range $defaultsEnvFrom }}
-  {{- $mergedEnvFrom = append $mergedEnvFrom . }}
-{{- end }}
-
-{{- $serviceEnabled := (($v.service).enabled) | default .Values.defaults.service.enabled }}
-{{- $resources := $v.resources | default .Values.defaults.resources }}
-{{- $nodeSelector := $v.nodeSelector | default .Values.defaults.nodeSelector }}
-{{- $affinity := $v.affinity | default .Values.defaults.affinity }}
-{{- $topologySpreadConstraints := $v.topologySpreadConstraints }}
-{{- $tolerations := $v.tolerations | default .Values.defaults.tolerations }}
 {{- $labels := $v.labels }}
-{{- $selectorLabels := $v.selectorLabels }}
-{{- $command := $v.command }}
-{{- $args := $v.args }}
-{{- $workingDir := $v.workingDir }}
-{{- $restartPolicy := $v.restartPolicy }}
-{{- $livenessProbe := $v.livenessProbe }}
-{{- $readinessProbe := $v.readinessProbe }}
-{{- $startupProbe := $v.startupProbe }}
-{{- $initContainers := $v.initContainers}}
-{{- $serviceName := $v.serviceName | default $msvc }}
+{{- $minReadySeconds := $v.minReadySeconds | default .Values.defaults.minReadySeconds }}
 {{- $namespace := $v.namespace | default .Release.Namespace }}
-
-{{/* Service Vars */}}
-{{- $type := (($v.service).type) | default .Values.defaults.service.type }}
-{{- $port := (($v.service).port) | default .Values.defaults.service.port }}
-{{- $targetPort := (($v.service).targetPort) | default .Values.defaults.service.targetPort }}
-{{- $name := (($v.service).name) | default .Values.defaults.service.name }}
-{{- $additionalPorts := (($v.service).additionalPorts) | default .Values.defaults.service.additionalPorts }}
+{{- $replicaCount := $v.replicaCount | default .Values.defaults.replicaCount }}
+{{- $selectorLabels := $v.selectorLabels }}
+{{- $serviceName := $v.serviceName | default $msvc }}
+{{- $volumeClaimTemplates := $v.volumeClaimTemplates }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -78,11 +40,9 @@ spec:
   {{- end }}
   serviceName: {{ $serviceName }}
   minReadySeconds: {{ $minReadySeconds }}
-  {{- if $volumeClaimTemplates }}
+  {{ with $volumeClaimTemplates -}}
   volumeClaimTemplates:
-  {{- with $volumeClaimTemplates -}}
-  {{ tpl . $ | nindent 4 }}
-  {{- end }}
+  {{- toYaml . | nindent 4 }}
   {{- end }}
   selector:
     matchLabels:
@@ -91,149 +51,7 @@ spec:
       {{- include "universal-app-chart.istioLabels" . | nindent 6 }}
       {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 6 }} {{- end }}
   template:
-    metadata:
-      {{- with $podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        app: {{ $msvc }}
-        {{- include "universal-app-chart.selectorLabels" . | nindent 8 }}
-        {{- include "universal-app-chart.istioLabels" . | nindent 8 }}
-        {{- if $labels -}} {{- toYaml $labels | nindent 8 }} {{- end }}
-        {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 8 }} {{- end }}
-        {{- include "universal-app-chart.labels" . | nindent 8 }}
-    spec:
-      {{- with $imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "universal-app-chart.serviceAccountName" (list $createServiceAccount $serviceAccountName .) }}
-      securityContext:
-        {{- toYaml $podSecurityContext | nindent 8 }}
-    {{- if $initContainers }}
-      initContainers:
-      {{- with $initContainers -}}
-        {{ tpl . $ | nindent 8 }}
-      {{- end }}
-    {{- end }}
-      terminationGracePeriodSeconds: {{ default 15 $terminationGracePeriodSeconds | int }}
-      containers:
-        - name: {{ $msvc }}
-          securityContext:
-            {{- toYaml $securityContext | nindent 12 }}
-          image: {{ include "uchart.image" (dict "msvc" $msvc "image" $v.image "Values" .Values) }}
-          {{- if $workingDir }}
-          workingDir: {{ $workingDir }}
-          {{- end }}
-          {{- with $livenessProbe }}
-          livenessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with $readinessProbe }}
-          readinessProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with $startupProbe }}
-          startupProbe:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- if $command }}
-          command:
-            {{- toYaml $command | nindent 12 }}
-          {{- end }}
-          {{- if $args }}
-          args:
-            {{- toYaml $args | nindent 12 }}
-          {{- end }}
-          imagePullPolicy: {{ $imagePullPolicy -}}
-          {{- if $restartPolicy }}
-          restartPolicy: {{ $restartPolicy }}
-          {{- end -}}
-          {{- if or ($mergedEnvFrom) ($v.config) ($v.secrets) }}
-          envFrom:
-          {{- toYaml $mergedEnvFrom | nindent 14 }}
-          {{- end }}
-          env:
-            - name: "POD_NAME"
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: "POD_NAMESPACE"
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: "NAMESPACE"
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            {{- range $key, $value := $envs }}
-            - name: {{ $key }}
-              value: {{ $value | toString | quote }}
-            {{- end }}
-            {{- range $extraEnvs }}
-            - name: {{ .name | quote }}
-              {{- if .value }}
-              value: {{ with .value }}{{ tpl . $ | quote }}{{- end }}
-              {{- end -}}
-              {{- if .valueFrom }}
-              valueFrom:
-              {{- .valueFrom | toYaml | nindent 16 }}
-              {{- end -}}
-            {{- end }}
-          {{- if $extraVolumeMounts }}
-          volumeMounts:
-          {{- range $extraVolumeMounts }}
-            - name: {{ .name | quote }}
-              mountPath: {{ .mountPath | toYaml }}
-              {{- if .subPath }}
-              subPath: {{ .subPath | toYaml }}
-              {{- end -}}
-          {{- end }}
-          {{- end -}}
-
-{{- if $serviceEnabled }}
-          ports:
-            - name: {{ $name }}
-              containerPort: {{ $targetPort }}
-              protocol: TCP
-            {{- if $additionalPorts }}
-            {{- range $additionalPorts }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol -}}
-            {{- end }}
-            {{- end }}
-{{- end }}
-          resources:
-            {{- toYaml $resources | nindent 12 }}
-      {{- with $nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with $affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with $topologySpreadConstraints }}
-      topologySpreadConstraints:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with $tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- if $extraVolumes }}
-      volumes:
-        {{- with $extraVolumes -}}
-        {{ tpl . $ | nindent 8 }}
-        {{- end }}
-      {{- end }}
-
+    {{- include "podTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "appLabel" $appLabel "v" $v) | nindent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}

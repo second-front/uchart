@@ -240,7 +240,7 @@ microservices:
       port: 5015
       targetPort: 5015
       # appProtocol: http
-    volumeClaimTemplates: |
+    volumeClaimTemplates:
       - metadata:
           name: www
         spec:

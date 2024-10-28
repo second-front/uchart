@@ -46,7 +46,6 @@ microservices:
           name: rear
           tag: "isanotherwaytosayit"
         service:
-          enabled: true
           type: ClusterIP
           port: 80
           name: http
@@ -92,7 +91,6 @@ microservices:
           name: rear
           tag: "isanotherwaytosayit"
         service:
-          enabled: true
           type: ClusterIP
           port: 80
           name: http
@@ -124,7 +122,7 @@ microservices:
         volumeMounts:
           - name: example-config-volume
             mountPath: /wfConfig
-    volumes: |-
+    volumes:
       - name: example-config-volume
         configMap:
           name: example-lens
