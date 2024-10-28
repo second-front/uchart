@@ -36,6 +36,9 @@ microservices:
     match:
       - uri:
           prefix: /api
+    workingDir: /app
+    args:
+      - test
     image:
       tag: 0.0.0
     serviceAccount:

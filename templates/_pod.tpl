@@ -31,6 +31,7 @@
 {{- $resources := $v.resources | default .Values.defaults.resources -}}
 {{- $restartPolicy := $v.restartPolicy -}}
 {{- $securityContext := $v.securityContext | default .Values.defaults.securityContext }}
+{{- $selectorLabels := $v.selectorLabels }}
 {{- $serviceAccountName := (($v.serviceAccount).name) | default .Values.defaults.serviceAccount.name -}}
 {{- $serviceEnabled := (($v.service).enabled) | default .Values.defaults.service.enabled -}}
 {{- $startupProbe := $v.startupProbe -}}
@@ -53,50 +54,50 @@ metadata:
     {{- include "universal-app-chart.selectorLabels" $global | nindent 4 }}
     {{- include "universal-app-chart.istioLabels" $global | nindent 4 }}
     {{- if .labels -}} {{- toYaml .labels | nindent 4 }} {{- end }}
-    {{- if .selectorLabels -}} {{- toYaml .selectorLabels | nindent 4 }} {{- end }}
+    {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 4 }} {{- end }}
     {{- include "universal-app-chart.labels" $global | nindent 4 }}
 spec:
-  {{- if .imagePullSecrets }}
+  {{- if $imagePullSecrets }}
   imagePullSecrets:
-    {{- toYaml .imagePullSecrets | nindent 4 }}
+    {{- toYaml $imagePullSecrets | nindent 4 }}
   {{- end }}
   serviceAccountName: {{ include "universal-app-chart.serviceAccountName" (list .createServiceAccount .serviceAccountName .) }}
-  {{- if .initContainers }}
+  {{- if $initContainers }}
   initContainers:
-    {{ tpl .initContainers $ | nindent 4 }}
+    {{ tpl $initContainers $ | nindent 4 }}
   {{- end }}
   securityContext:
     {{- toYaml $podSecurityContext | nindent 4 }}
-  terminationGracePeriodSeconds: {{ default 15 .terminationGracePeriodSeconds | int }}
+  terminationGracePeriodSeconds: {{ default 15 $terminationGracePeriodSeconds | int }}
   containers:
     - name: {{ .msvc }}
       securityContext:
         {{- toYaml $securityContext | nindent 8 }}
       image: {{ include "uchart.image" (dict "msvc" .msvc "image" .image "Values" .Values) }}
-      {{- if .workingDir }}
-      workingDir: {{ .workingDir }}
+      {{- if $workingDir }}
+      workingDir: {{ $workingDir }}
       {{- end }}
-      {{- if .livenessProbe }}
+      {{- if $livenessProbe }}
       livenessProbe:
-        {{- toYaml .livenessProbe | nindent 8 }}
+        {{- toYaml $livenessProbe | nindent 8 }}
       {{- end }}
-      {{- if .readinessProbe }}
+      {{- if $readinessProbe }}
       readinessProbe:
-        {{- toYaml .readinessProbe | nindent 8 }}
+        {{- toYaml $readinessProbe | nindent 8 }}
       {{- end }}
-      {{- if .startupProbe }}
+      {{- if $startupProbe }}
       startupProbe:
-        {{- toYaml .startupProbe | nindent 8 }}
+        {{- toYaml $startupProbe | nindent 8 }}
       {{- end }}
-      {{- if .command }}
+      {{- if $command }}
       command:
-        {{- toYaml .command | nindent 8 }}
+        {{- toYaml $command | nindent 8 }}
       {{- end }}
-      {{- if .args }}
+      {{- if $args }}
       args:
-        {{- toYaml .args | nindent 8 }}
+        {{- toYaml $args | nindent 8 }}
       {{- end }}
-      imagePullPolicy: {{ .imagePullPolicy }}
+      imagePullPolicy: {{ $imagePullPolicy }}
       {{- if or ($mergedEnvFrom) ($v.config) ($v.secrets) }}
       envFrom:
       {{- toYaml $mergedEnvFrom | nindent 14 }}
@@ -114,7 +115,7 @@ spec:
         - name: {{ $key }}
           value: {{ $value | toString | quote }}
         {{- end }}
-        {{- range .extraEnvs }}
+        {{- range $extraEnvs }}
         - name: {{ .name | quote }}
           {{- if .value }}
           value: {{ with .value }}{{ tpl . $ | quote }}{{- end }}
@@ -124,7 +125,7 @@ spec:
           {{- .valueFrom | toYaml | nindent 12 }}
           {{- end -}}
         {{- end }}
-      {{- if .extraVolumeMounts }}
+      {{- if $extraVolumeMounts }}
       volumeMounts:
         {{- range .extraVolumeMounts }}
         - name: {{ .name | quote }}
@@ -149,24 +150,24 @@ spec:
         {{- end }}
         {{- end }}
 {{- end }}
-  {{- with .nodeSelector }}
+  {{- with $nodeSelector }}
   nodeSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .affinity }}
+  {{- with $affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .topologySpreadConstraints }}
+  {{- with $topologySpreadConstraints }}
   topologySpreadConstraints:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .tolerations }}
+  {{- with $tolerations }}
   tolerations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- if .extraVolumes }}
+{{- with $extraVolumes }}
   volumes:
-    {{ tpl .extraVolumes $ | nindent 4 }}
-  {{- end }}
+    {{- toYaml . | nindent 4 }}
+{{- end }}
 {{- end }}
