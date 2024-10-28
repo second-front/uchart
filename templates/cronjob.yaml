@@ -8,18 +8,12 @@
 {{- if ($v.cronjob).enabled }}
 
 {{/* Variables */}}
+{{- $annotations := $v.annotations | default (dict) }}
 {{- $completions := $v.completions | default 1 }}
+{{- $labels := $v.labels }}
+{{- $namespace := $v.namespace | default .Release.Namespace }}
 {{- $parallelism := $v.parallelism | default 1 }}
-{{- $restartPolicy := $v.restartPolicy | default "Never" }}
-{{- $imagePullPolicy := $v.image.pullPolicy | default .Values.defaults.image.pullPolicy }}
-{{- $imagePullSecrets := $v.imagePullSecrets | default .Values.defaults.imagePullSecrets }}
-{{- $initContainers := $v.initContainers}}
-{{- $resources := $v.resources | default .Values.defaults.resources }}
-{{- $suspended := $v.suspended | default false }}
-{{- $envs := $v.envs }}
-{{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs }}
-{{- $extraVolumes := $v.volumes | default .Values.defaults.volumes }}
-{{- $extraVolumeMounts := $v.volumeMounts | default .Values.defaults.volumeMounts }}
+{{- $securityContext := $v.securityContext | default (dict "capabilities" (dict "drop" (list "ALL"))) }}
 
 {{- $mergedEnvFrom := $v.envFrom | default (list) }}
 {{- $defaultsEnvFrom := .Values.defaults.envFrom | default (list) }}
@@ -27,12 +21,6 @@
   {{- $mergedEnvFrom = append $mergedEnvFrom . }}
 {{- end }}
 
-{{- $labels := $v.labels }}
-{{- $annotations := $v.annotations | default (dict) }}
-{{- $securityContext := $v.securityContext | default (dict "capabilities" (dict "drop" (list "ALL"))) }}
-{{- $namespace := $v.namespace | default .Release.Namespace }}
-{{- $command := $v.command }}
-{{- $args := $v.args }}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -59,74 +47,9 @@ spec:
       completions: {{ $completions }}
       parallelism: {{ $parallelism }}
       template:
-        spec:
-          {{- with $imagePullSecrets }}
-          imagePullSecrets:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with $initContainers }}
-          initContainers:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          restartPolicy: {{ $restartPolicy }}
-          {{- if $extraVolumes }}
-          volumes:
-            {{- with $extraVolumes -}}
-            {{ tpl . $ | nindent 12 }}
-            {{- end }}
-          {{- end }}
-          containers:
-            - name: {{ $msvc }}
-              image: {{ include "uchart.image" (dict "msvc" $msvc "image" $v.image "Values" .Values) }}
-              imagePullPolicy: {{ $imagePullPolicy }}
-              {{- with $securityContext }}
-              securityContext:
-                {{- toYaml . | nindent 16 }}
-              {{- end }}
-              {{- if $v.command }}
-              command:
-                {{- toYaml $command | nindent 14 }}
-              {{- end }}
-              {{- if $v.args }}
-              args:
-                {{- toYaml $args | nindent 14 }}
-              {{- end }}
-              {{- if or ($mergedEnvFrom) ($v.config) ($v.secrets) }}
-              envFrom:
-              {{- toYaml $mergedEnvFrom | nindent 14 }}
-              {{- end }}
-              {{- with $resources }}
-              resources:
-                {{- toYaml . | nindent 16 }}
-              {{- end }}
-              env:
-                {{- range $key, $value := $envs }}
-                - name: {{ $key }}
-                  value: {{ $value | toString | quote }}
-                {{- end }}
-                {{- range $extraEnvs }}
-                - name: {{ .name | quote }}
-                  {{- if .value }}
-                  value: {{ with .value }}{{ tpl . $ | quote }}{{- end }}
-                  {{- end -}}
-                  {{- if .valueFrom }}
-                  valueFrom:
-                  {{- .valueFrom | toYaml | nindent 14 }}
-                  {{- end -}}
-                {{- end }}
-              {{- if $extraVolumeMounts }}
-              volumeMounts:
-              {{- range $extraVolumeMounts }}
-                - name: {{ .name | quote }}
-                  mountPath: {{ .mountPath | toYaml }}
-                  {{- if .subPath }}
-                  subPath: {{ .subPath | toYaml }}
-                  {{- end -}}
-              {{- end }}
-              {{- end -}}
+        {{- include "podTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "v" $v) | nindent 8 }}
 {{- end }}
 {{- end }}
-
 {{- end }}
 {{- end }}
 {{- end }}
