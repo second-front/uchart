@@ -3,7 +3,7 @@ apiVersion: v2
 name: uchart
 description: A universal application chart for gamewarden environments
 type: application
-version: 1.0.13
+version: 1.0.14
 home: https:code.il2.gamewarden.io/gamewarden/tools/uchart
 sources: [https://code.il2.gamewarden.io/gamewarden/tools/uchart]
 icon: https://assets.website-files.com/6030224cd6bd6639e9d922c9/60e73ee577cd823be4d24834_GW-Icon.svg
