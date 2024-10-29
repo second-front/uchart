@@ -3,10 +3,10 @@
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: "Example Company-development-example"
+  name: Example Company-development-example
   namespace: argocd
 spec:
-  project: "Example Company-development-example"
+  project: Example Company-development-example
   destination:
     namespace: example
     name: multi-tenant-development-cluster
@@ -182,13 +182,13 @@ spec:
         values: |
           test: values
           global:
-            applicationName: 
+            applicationName:
             customerName: Example Company
             impactLevel: IL2
             environment: development
         valueFiles:
-        - $clamav/rabbimq/base.yaml
-        - $clamav/rabbimq/dev.yaml
+          - $clamav/rabbimq/base.yaml
+          - $clamav/rabbimq/dev.yaml
     - repoURL: registry.gamewarden.io/charts
       targetRevision: 0.0.1
       chart: redis
@@ -196,13 +196,13 @@ spec:
         values: |
           test: values
           global:
-            applicationName: 
+            applicationName:
             customerName: Example Company
             impactLevel: IL2
             environment: development
         valueFiles:
-        - $clamav/redis/base.yaml
-        - $clamav/redis/dev.yaml
+          - $clamav/redis/base.yaml
+          - $clamav/redis/dev.yaml
     - repoURL: https://github.com/second-front/values.git
       targetRevision: main
       ref: rabbitmq

@@ -1,7 +1,7 @@
 {{- define "uchart.image" -}}
   {{- $image := "" -}}
   {{- $msvc := index . "msvc" -}}
-  {{- with .image -}} 
+  {{- with .image -}}
     {{- if .name }}
       {{- if $.Values.global.image.defaultImageRegistry }}
         {{- if $.Values.global.image.defaultImageRepository }}

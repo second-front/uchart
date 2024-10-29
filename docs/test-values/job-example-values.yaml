@@ -1,3 +1,4 @@
+---
 defaults:
   envFrom:
     - configMapRef:
@@ -7,33 +8,33 @@ microservices:
   example-cronjob:
     cronjob:
       enabled: true
-      schedule: "*/5 * * * *"  # Runs every 5 minutes
-      concurrencyPolicy: "Forbid"
+      schedule: '*/5 * * * *'  # Runs every 5 minutes
+      concurrencyPolicy: Forbid
       successfulJobsHistoryLimit: 3
       failedJobsHistoryLimit: 1
       suspended: false  # CronJob is not suspended; set to true to disable it
     image:
-      repository: "example-repo"
-      tag: "1.0.0"
+      repository: example-repo
+      tag: 1.0.0
     command:
-      - "/bin/sh"
-      - "-c"
+      - /bin/sh
+      - -c
     args:
-      - "/scripts/example-command.sh"  # Command script to run
+      - /scripts/example-command.sh    # Command script to run
     envs:
-      ENV_VAR_1: "value1"
-      ENV_VAR_2: "value2"
+      ENV_VAR_1: value1
+      ENV_VAR_2: value2
     envFrom:
-    - secretRef:
-        name: example
-    - configMapRef:
-        name: example
+      - secretRef:
+          name: example
+      - configMapRef:
+          name: example
     securityContext:
       capabilities:
         add:
-        - SYS_NICE
+          - SYS_NICE
         drop:
-        - KILL
+          - KILL
     resources:
       limits:
         cpu: 400m
@@ -64,13 +65,13 @@ microservices:
     volumeMounts:
       - name: example-config-volume
         mountPath: /wfConfig
-    volumes: |-
+    volumes:
       - name: example-config-volume
         configMap:
           name: example-lens
           items:
-          - key: config.json
-            path: config.json
+            - key: config.json
+              path: config.json
   examplejob:
     job:
       enabled: true
@@ -82,15 +83,15 @@ microservices:
       argocd.argoproj.io/hook: PreSync
       argocd.argoproj.io/hook-delete-policy: HookSucceeded
     image:
-      tag: "1.0.0"
+      tag: 1.0.0
     command:
-      - "/bin/sh"
-      - "-c"
+      - /bin/sh
+      - -c
     args:
-      - "/scripts/example-command.sh"  # Command script to run
+      - /scripts/example-command.sh    # Command script to run
     envs:
-      ENV_VAR_1: "value1"
-      ENV_VAR_2: "value2"
+      ENV_VAR_1: value1
+      ENV_VAR_2: value2
     extraEnvs:
       - name: SPRING_DATASOURCE_USERNAME
         value: DBAdmin
@@ -105,16 +106,16 @@ microservices:
       #       name: special-config
       #       key: SPECIAL_LEVEL
     envFrom:
-    - secretRef:
-        name: example
-    - configMapRef:
-        name: example
+      - secretRef:
+          name: example
+      - configMapRef:
+          name: example
     securityContext:
       capabilities:
         add:
-        - SYS_NICE
+          - SYS_NICE
         drop:
-        - KILL
+          - KILL
     resources:
       limits:
         cpu: 400m
@@ -145,10 +146,10 @@ microservices:
     volumeMounts:
       - name: example-config-volume
         mountPath: /wfConfig
-    volumes: |-
+    volumes:
       - name: example-config-volume
         configMap:
           name: example-lens
           items:
-          - key: config.json
-            path: config.json
+            - key: config.json
+              path: config.json

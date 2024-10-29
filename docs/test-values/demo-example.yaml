@@ -1,3 +1,4 @@
+---
 global:
   applicationName: example
   customerName: Example Company
@@ -53,9 +54,9 @@ microservices:
           - NET_BIND_SERVICE
     rbac:
       rules:
-      - apiGroups: ["apps"]
-        resources: ["deployments"]
-        verbs: ["get", "list", "watch", "update"]
+        - apiGroups: [apps]
+          resources: [deployments]
+          verbs: [get, list, watch, update]
     autoscaling:
       # -- Horizontal Autoscaling of pods
       enabled: true
@@ -103,10 +104,10 @@ microservices:
         test: testString
         test2: testString2
     envFrom:
-    - secretRef:
-        name: example
-    - configMapRef:
-        name: example
+      - secretRef:
+          name: example
+      - configMapRef:
+          name: example
     annotations:
       argocd.argoproj.io/hook: PreSync
       argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -130,11 +131,11 @@ microservices:
         cpu: 400m
         memory: 3Gi
     envFrom:
-    - secretRef:
-        name: example
-    - configMapRef:
-        name: example
-    restartPolicy: Always 
+      - secretRef:
+          name: example
+      - configMapRef:
+          name: example
+    restartPolicy: Always
 
 generatedSecrets:
   enabled: false

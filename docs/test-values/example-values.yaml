@@ -1,7 +1,8 @@
+---
 ###  TEST values:
 # helm template . docs/example-values.yaml --debug
 ###
-nameOverride: ""
+nameOverride: ''
 
 # Used for subcharts
 global:
@@ -15,7 +16,7 @@ global:
     defaultImageRegistry: registry.gamewarden.io
     defaultImageRepository: agencies/agency-name
 
-fullnameOverride: ""
+fullnameOverride: ''
 imageCredentials:
   - registry: registry.gamewarden.io
     username: external-registry-pull-only
@@ -28,7 +29,7 @@ secrets:
 config:
   enabled: true
   annotations:
-    imageregistry: "https://hub.docker.com/"
+    imageregistry: https://hub.docker.com/
   data:
     logLevel: debug
     secretswithinconfigmap: testtest1
@@ -43,7 +44,7 @@ config:
             "authServiceUrl": "http://example"
         }
       }
-    testConfigAnother: "1234"
+    testConfigAnother: '1234'
 
 defaults:
   virtualService:
@@ -142,7 +143,7 @@ microservices:
       generateKeys:
         - DB_PASSWORD
         - JOB_SECRET
-    ## virtual services match per microservice    
+    ## virtual services match per microservice
     match:
       - uri:
           prefix: /
@@ -185,10 +186,10 @@ microservices:
       tcpSocket:
         port: 5015
     envFrom:
-    - secretRef:
-        name: example
-    - configMapRef:
-        name: example
+      - secretRef:
+          name: example
+      - configMapRef:
+          name: example
     extraEnvs:
       - name: SPRING_DATASOURCE_USERNAME
         value: DBAdmin
@@ -205,27 +206,27 @@ microservices:
     volumeMounts:
       - name: example-config-volume
         mountPath: /wfConfig
-    volumes: |-
+    volumes:
       - name: example-config-volume
         configMap:
           name: example-lens
           items:
-          - key: config.json
-            path: config.json
+            - key: config.json
+              path: config.json
     topologySpreadConstraints:
-    - maxSkew: 1
-      topologyKey: zone
-      whenUnsatisfiable: DoNotSchedule
-      labelSelector:
-        matchLabels:
-          foo: bar
+      - maxSkew: 1
+        topologyKey: zone
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            foo: bar
   backend:
     statefulset:
       enabled: true
     image:
       repository: registry.gamewarden.io/agencies/example/testapp
       tag: 1.1.1
-    ## virtual services match per microservice    
+    ## virtual services match per microservice
     match:
       - uri:
           prefix: /api
@@ -244,16 +245,16 @@ microservices:
       - metadata:
           name: www
         spec:
-          accessModes: [ "ReadWriteOnce" ]
-          storageClassName: "my-storage-class"
+          accessModes: [ReadWriteOnce]
+          storageClassName: my-storage-class
           resources:
             requests:
               storage: 1Gi
       - metadata:
           name: test
         spec:
-          accessModes: [ "ReadWriteOnce" ]
-          storageClassName: "my-storage-class"
+          accessModes: [ReadWriteOnce]
+          storageClassName: my-storage-class
           resources:
             requests:
               storage: 1Gi
@@ -281,7 +282,7 @@ microservices:
     secrets:
       stringData:
         test: test
-    initContainers: |
+    initContainers:
       - name: theme
         image: registry.gamewarden.io/steelbank/cgr/git:2.44.0-r2
         imagePullPolicy: IfNotPresent
@@ -302,9 +303,9 @@ microservices:
                 name: keycloak-keycloak-git
                 key: token
     topologySpreadConstraints:
-    - maxSkew: 1
-      topologyKey: zone
-      whenUnsatisfiable: DoNotSchedule
-      labelSelector:
-        matchLabels:
-          foo: bar
+      - maxSkew: 1
+        topologyKey: zone
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            foo: bar

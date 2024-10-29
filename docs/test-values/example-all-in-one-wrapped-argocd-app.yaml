@@ -1,3 +1,4 @@
+---
 global:
   applicationName: test
   customerName: examplecompany
@@ -45,17 +46,17 @@ microservices:
         cpu: 400m
         memory: 3Gi
     envFrom:
-    - secretRef:
-        name: example
-    - configMapRef:
-        name: example
-    restartPolicy: Always 
+      - secretRef:
+          name: example
+      - configMapRef:
+          name: example
+    restartPolicy: Always
 
 subCharts:
   clamav:
     serverSideApply: false
     enabled: true
-    chartUrl: 'registry.gamewarden.io/charts'
+    chartUrl: registry.gamewarden.io/charts
     chart: clamav
     revision: 0.0.2
     values:
@@ -63,5 +64,5 @@ subCharts:
     valuesRepo: https://code.il2.gamewarden.io/gamewarden/tools/charts/testValues.git
     valuesRevision: main
     valueFiles:
-    - $clamav/testValues/base.yaml
-    - $clamav/testValues/dev.yaml
+      - $clamav/testValues/base.yaml
+      - $clamav/testValues/dev.yaml

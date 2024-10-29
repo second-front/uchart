@@ -1,16 +1,17 @@
+---
 argocd:
-  projectOverride: "argocd-override"
+  projectOverride: argocd-override
 
 subCharts:
   clamav:
     serverSideApply: false
     enabled: true
-    chartUrl: 'registry.gamewarden.io/charts'
+    chartUrl: registry.gamewarden.io/charts
     name: clamav
     revision: 0.0.2
     values:
       test: test
-    project: "subChart-override"
+    project: subChart-override
   pgadmin:
     enabled: false
     revision: 0.1.0
@@ -74,7 +75,7 @@ subCharts:
                       operator: In
                       values:
                         - mysql
-                topologyKey: "kubernetes.io/hostname"
+                topologyKey: kubernetes.io/hostname
   postgresql:
     revision: 12.2.2
     enabled: false
@@ -82,7 +83,7 @@ subCharts:
       image:
         registry: registry.gamewarden.io
         repository: ironbank-proxy/ironbank/bitnami/postgres/postgresql11
-        tag: "11.22.0-debian-11-r2"
+        tag: 11.22.0-debian-11-r2
       global:
         imagePullSecrets:
           - private-registry
@@ -103,12 +104,12 @@ subCharts:
         containerSecurityContext:
           capabilities:
             drop:
-            - ALL
+              - ALL
       readReplicas:
         containerSecurityContext:
           capabilities:
             drop:
-            - ALL
+              - ALL
       initContainers: []
   postgresql-ha:
     enabled: false
@@ -117,17 +118,17 @@ subCharts:
       persistence:
         size: 8Gi
       pgpool:
-        existingSecret: "generated-secrets"
+        existingSecret: generated-secrets
         image:
           registry: registry.gamewarden.io
           repository: ironbank-proxy/ironbank/bitnami/pgpool
-          tag: "4.3.2-debian-10-r15-ubi9"
+          tag: 4.3.2-debian-10-r15-ubi9
       postgresql:
-        existingSecret: "generated-secrets"
+        existingSecret: generated-secrets
         image:
           registry: registry.gamewarden.io
           repository: ironabank-proxy/ironbank/bitnami/postgresql-repmgr
-          tag: "16.2.0"
+          tag: 16.2.0
       initContainers: []
   strimzi-kafka-operator:
     revision: 0.40.0
@@ -138,10 +139,10 @@ subCharts:
       defaultImageTag: 0.40.0
       image:
         imagePullSecrets: private-registry
-        registry: ""
-        repository: ""
+        registry: ''
+        repository: ''
         name: operator
-        tag: ""
+        tag: ''
 
   neo4j:
     revision: 5.18.1
@@ -194,13 +195,13 @@ subCharts:
         image:
           registry: registry.gamewarden.io
           repository: steelbank/cgr/nats
-          tag: "2.10.14-r0"
+          tag: 2.10.14-r0
       natsBox:
         container:
           image:
             registry: registry.gamewarden.io
             repository: steelbank/opensource/nats/nats-box
-            tag: "0.14.3"
+            tag: 0.14.3
       reloader:
         enabled: false
       exporter:
@@ -210,8 +211,8 @@ subCharts:
     enabled: false
     values:
       auth:
-        existingSecret: "generated-secrets"
-        existingSecretPasswordKey: "GENERATED_REDIS_PASSWORD"
+        existingSecret: generated-secrets
+        existingSecretPasswordKey: GENERATED_REDIS_PASSWORD
   mongodb:
     enabled: false
     revision: 13.12.1
@@ -219,11 +220,11 @@ subCharts:
       enabled: false
       global:
         imagePullSecrets:
-        - name: private-registry
+          - name: private-registry
       auth:
         existingSecret: generated-secrets
       image:
         registry: registry.gamewarden.io
         repository: ironbank-proxy/ironbank/bitnami/mongodb
         tag: 5.0.9
-        pullPolicy: "IfNotPresent"
+        pullPolicy: IfNotPresent
