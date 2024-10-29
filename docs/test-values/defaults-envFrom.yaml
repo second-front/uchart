@@ -1,3 +1,4 @@
+---
 defaults:
   strategy:
     type: Recreate

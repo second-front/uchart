@@ -1,5 +1,6 @@
+---
 global:
-  applicationName: "ice"
+  applicationName: ice
   customerName: testapp
   impactLevel: il2
   environment: dev
@@ -10,7 +11,7 @@ global:
 
 argocd:
 #   wrapperAppOff: true
-  wrapperAppWave: "1"
+  wrapperAppWave: '1'
   wrapperSync: false
   # projectOverride: subChartProjectOverride
   serverSideApply: false
@@ -30,10 +31,10 @@ microservices:
         memory: 3Gi
     image:
       repository: registry.gamewarden.io/gw/keycloak
-      tag: "nightly"
+      tag: nightly
 subCharts:
   clamav:
-    chartUrl: 'registry.gamewarden.io/charts'
+    chartUrl: registry.gamewarden.io/charts
     revision: 0.0.2
     wave: 3
     serverSideApply: false
@@ -42,16 +43,16 @@ subCharts:
     revision: 17.9.5
     values:
       auth:
-        existingSecret: "generated-secrets"
-        existingSecretPasswordKey: "GENERATED_REDIS_PASSWORD"
+        existingSecret: generated-secrets
+        existingSecretPasswordKey: GENERATED_REDIS_PASSWORD
   redis2:
     revision: 17.9.5
     name: redis
     values:
       nameOverride: redis2
       auth:
-        existingSecret: "generated-secrets"
-        existingSecretPasswordKey: "GENERATED_REDIS_PASSWORD"
+        existingSecret: generated-secrets
+        existingSecretPasswordKey: GENERATED_REDIS_PASSWORD
   opensearch:
     revision: 2.19.0
     namespace: otherNamespace
@@ -82,5 +83,5 @@ subCharts:
     valuesRepo: https://github.com/second-front/example-values.git
     valuesRevision: main
     valueFiles:
-    - $values/test-dev/base.yaml
-    - $values/test-dev/dev.yaml
+      - $values/test-dev/base.yaml
+      - $values/test-dev/dev.yaml

@@ -197,7 +197,7 @@ defaults:
       cpu: 100m
       memory: 128Mi
   autoscaling:
-    #  -- Horizontal Autoscaling of pods - see [configuration example for usage](docs/Example-Microservices.md) for more information. 
+    #  -- Horizontal Autoscaling of pods - see [configuration example for usage](docs/Example-Microservices.md) for more information.
     enabled: false
     minReplicas: 1
     maxReplicas: 10
@@ -261,7 +261,7 @@ subCharts: {}
   #   valuesRepo: ""                              # optional - git repo location of where the values files are retrieved from
   #   wave: ""                                    # optional - used to create the annotations for argocd sync waves
   #   sync: true                                  # default true - used to turn off automated sync and pruning for the subChart
-  #   project: ""                                 # optional - default is inherited from created project - this is an override     
+  #   project: ""                                 # optional - default is inherited from created project - this is an override
   #   serverSideApply: true                       # default true
 
 argocd:

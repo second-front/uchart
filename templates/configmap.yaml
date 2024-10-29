@@ -1,5 +1,4 @@
-
-{{- if .Values.config.enabled -}}
+{{- if and (or .Values.argocd.wrapperAppOff (not .Values.subCharts)) .Values.config.enabled -}}
 ---
 apiVersion: v1
 kind: ConfigMap

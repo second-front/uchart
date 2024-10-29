@@ -62,9 +62,9 @@ spec:
     {{- toYaml $imagePullSecrets | nindent 4 }}
   {{- end }}
   serviceAccountName: {{ include "universal-app-chart.serviceAccountName" (list .createServiceAccount .serviceAccountName .) }}
-  {{- if $initContainers }}
+  {{- with $initContainers }}
   initContainers:
-    {{ tpl $initContainers $ | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   securityContext:
     {{- toYaml $podSecurityContext | nindent 4 }}
@@ -117,8 +117,8 @@ spec:
         {{- end }}
         {{- range $extraEnvs }}
         - name: {{ .name | quote }}
-          {{- if .value }}
-          value: {{ with .value }}{{ tpl . $ | quote }}{{- end }}
+          {{- with .value }}
+          value: {{ toYaml . }}
           {{- end -}}
           {{- if .valueFrom }}
           valueFrom:

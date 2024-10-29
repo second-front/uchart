@@ -46,7 +46,6 @@ spec:
           - "argocd"
           disableProjectCreation: false
           projectOverride: "example-dev-example"
-
   project: default
   syncPolicy:
     automated:
