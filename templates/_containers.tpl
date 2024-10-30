@@ -1,17 +1,11 @@
 {{- define "containerTemplate" -}}
 {{- $v := .v -}}
 {{- $global := .global -}}
-{{/* ------------ */}}
-{{/* Service Vars */}}
-{{/* ------------ */}}
 {{- $additionalPorts := (($v.service).additionalPorts) | default .Values.defaults.service.additionalPorts -}}
 {{- $name := (($v.service).name) | default .Values.defaults.service.name -}}
 {{- $port := (($v.service).port) | default .Values.defaults.service.port -}}
 {{- $targetPort := (($v.service).targetPort) | default .Values.defaults.service.targetPort -}}
 {{- $type := (($v.service).type) | default .Values.defaults.service.type -}}
-{{/* ------------- */}}
-{{/* Pod Spec Vars */}}
-{{/* ------------- */}}
 {{- $affinity := $v.affinity | default .Values.defaults.affinity }}
 {{- $annotations := $v.annotations | default (dict) }}
 {{- $createServiceAccount := (($v.serviceAccount).create) | default .Values.defaults.serviceAccount.create }}
