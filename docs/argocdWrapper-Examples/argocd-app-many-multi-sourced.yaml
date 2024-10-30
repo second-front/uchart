@@ -25,7 +25,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.14
+      targetRevision: 1.0.15
       chart: uchart
       helm:
         values: |

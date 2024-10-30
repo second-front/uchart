@@ -34,7 +34,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.14
+      targetRevision: 1.0.15
       chart: uchart
       helm:
         values: |
@@ -66,18 +66,10 @@ spec:
       chart: {{ $v.chart | default "uchart" }}
       helm:
         {{-  if $v.values }}
+        {{- $globalValues := dict "applicationName" $v.namespace "customerName" .Values.global.customerName "impactLevel" .Values.global.impactLevel "environment" .Values.global.environment }}
+        {{- $mergedGlobal := merge $globalValues (default dict $v.values.global) }}
         values: |
-          {{- toYaml $v.values | nindent 10 }}
-          global:
-            applicationName: {{ $namespace}}
-            customerName: {{ .Values.global.customerName }}
-            impactLevel: {{ .Values.global.impactLevel }}
-            environment: {{ .Values.global.environment }}
-            {{- if hasKey $v.values "global" }}
-            {{- range $key, $value := $v.values.global }}
-            {{ $key }}: {{ $value | quote }}
-            {{- end }}
-            {{- end }}
+          {{- toYaml (merge $v.values (dict "global" $mergedGlobal)) | nindent 10 }}
           {{- if .Values.argocd.projectOverride }}
           argocd:
             projectOverride: {{ .Values.argocd.projectOverride }}

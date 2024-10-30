@@ -5,14 +5,16 @@ argocd:
 subCharts:
   clamav:
     serverSideApply: false
-    enabled: true
+    enabled: false
     chartUrl: registry.gamewarden.io/charts
     name: clamav
+    chart: clamav
     revision: 0.0.2
     values:
       test: test
     project: subChart-override
   pgadmin:
+    chart: pgadmin
     enabled: false
     revision: 0.1.0
     values:
@@ -24,6 +26,7 @@ subCharts:
   opensearch:
     enabled: false
     revision: 2.19.0
+    chart: "opensearch"
     values:
       extraEnvs:
         - name: DISABLE_INSTALL_DEMO_CONFIG
@@ -44,6 +47,7 @@ subCharts:
   mysql:
     enabled: false
     revision: 9.1.7-bb.1
+    chart: "mysql"
     values:
       # enable in customer values file to enable master/slave configuration
       # architecture: replication
@@ -78,12 +82,13 @@ subCharts:
                 topologyKey: kubernetes.io/hostname
   postgresql:
     revision: 12.2.2
-    enabled: false
+    enabled: true
+    chart: "postgresql"
     values:
       image:
         registry: registry.gamewarden.io
-        repository: ironbank-proxy/ironbank/bitnami/postgres/postgresql11
-        tag: 11.22.0-debian-11-r2
+        repository: ironbank-proxy/ironbank/bitnami/postgres
+        tag: "16.3.0"
       global:
         imagePullSecrets:
           - private-registry
@@ -114,6 +119,7 @@ subCharts:
   postgresql-ha:
     enabled: false
     revision: 11.1.4
+    chart: "postgresql-ha"
     values:
       persistence:
         size: 8Gi
