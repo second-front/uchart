@@ -14,11 +14,11 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- $name := default .Release.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- printf "%s" $name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -56,8 +56,12 @@ authentication: istio-auth
 Selector labels
 */}}
 {{- define "universal-app-chart.selectorLabels" -}}
+{{- if .Values.fullnameOverride -}}
 app.kubernetes.io/name: {{ include "universal-app-chart.fullname" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- else -}}
+app.kubernetes.io/name: {{ include "universal-app-chart.fullname" . }}
+{{- end }}
 {{- end }}
 
 {{/*
