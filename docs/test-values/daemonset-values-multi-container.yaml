@@ -1,0 +1,51 @@
+---
+defaults:
+  envFrom:
+    - configMapRef:
+        name: default-config
+
+microservices:
+  example-daemonset:
+    daemonset:
+      enabled: true
+    containers:
+      backend:
+        envs:
+          test1: "yes"
+          test2: noooo
+        labels:
+          protect: keycloak
+        resources:
+          limits:
+            cpu: 400m
+            memory: 3Gi
+          requests:
+            cpu: 400m
+            memory: 3Gi
+        image:
+          name: rear
+          tag: "isanotherwaytosayit"
+        service:
+          type: ClusterIP
+          port: 80
+          name: http
+          targetPort: 8080
+          appProtocol: http
+          additionalPorts:
+          - port: 5005
+            targetPort: 5005
+            protocol: TCP
+            name: backend
+      gingerbreadMan:
+        securityContext:
+          # test: test
+        envs:
+          testVar1: eat
+          testVariableTwo: me
+        image:
+          name: test1image
+          tag: test1
+      mainContainer:
+        image:
+          name: test2image
+          tag: test2

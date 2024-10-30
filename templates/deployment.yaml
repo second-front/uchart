@@ -4,6 +4,8 @@
 {{ if and (not (empty $v)) (not $v.containers) (not $v.cronjob) (not $v.job) (ne $v.enabled false) }}
 {{- $statefulsetEnabled := (($v.statefulset).enabled) }}
 {{- if not $statefulsetEnabled }}
+{{- $daemonsetEnabled := (($v.daemonset).enabled) }}
+{{- if not $daemonsetEnabled }}
 {{/* Deployment Variables */}}
 {{- $annotations := $v.annotations | default (dict) }}
 {{- $appLabel := $v.appLabel | default $msvc }}
@@ -45,6 +47,7 @@ spec:
       {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 6 }} {{- end }}
   template:
     {{- include "podTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "appLabel" $appLabel "v" $v) | nindent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

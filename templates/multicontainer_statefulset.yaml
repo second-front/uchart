@@ -5,8 +5,9 @@
 {{ if not (empty $v) }}
 {{- $statefulsetEnabled := (($v.statefulset).enabled) }}
 {{- if $statefulsetEnabled }}
+{{- $daemonsetEnabled := (($v.daemonset).enabled) }}
+{{- if not $daemonsetEnabled }}
 {{- if and  $v.containers (ne $v.enabled false)}}
-
 {{/* Variables */}}
 {{- $annotations := $v.annotations | default (dict) }}
 {{- $autoscalingEnabled := (($v.autoscaling).enabled) | default .Values.defaults.autoscaling.enabled }}
@@ -50,6 +51,7 @@ spec:
       {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 6 }} {{- end }}
   template:
     {{- include "containerTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "v" $v) | nindent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

@@ -28,7 +28,7 @@ spec:
   maxReplicas: {{ $maxReplicas }}
   metrics:
     {{- if and $v.autoscaling.metrics (not (empty $v.autoscaling.metrics)) }}
-    {{- range $m := $v.autoscaling.metrics }}
+      {{- range $m := $v.autoscaling.metrics }}
     - type: {{ $m.type }}
       {{- if eq $m.type "Resource" }}
       resource:
@@ -58,6 +58,24 @@ spec:
         target:
           type: {{ $m.object.target.type }}
           value: {{ $m.object.target.value }}
+      {{- else if eq $m.type "External" }}
+      external:
+        metric:
+          name: {{ $m.external.metric.name }}
+          {{- if $m.external.metric.selector }}
+          selector:
+            matchLabels:
+              {{- range $key, $value := $m.external.metric.selector.matchLabels }}
+              {{ $key }}: {{ $value | quote }}
+              {{- end }}
+          {{- end }}
+        target:
+          type: {{ $m.external.target.type }}
+          {{- if $m.external.target.averageValue }}
+          averageValue: {{ $m.external.target.averageValue }}
+          {{- else if $m.external.target.value }}
+          value: {{ $m.external.target.value }}
+          {{- end }}
       {{- end }}
     {{- end }}
     {{- end }}
