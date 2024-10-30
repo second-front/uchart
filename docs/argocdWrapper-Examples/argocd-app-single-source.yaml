@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -6,7 +7,7 @@ spec:
   destination:
     name: ''
     namespace: argocd
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
   source:
     path: ''
     repoURL: registry.gamewarden.io/charts
@@ -86,7 +87,7 @@ spec:
       selfHeal: true
 project: default
 destination:
-  server: 'https://kubernetes.default.svc'
+  server: https://kubernetes.default.svc
   namespace: argocd
 syncPolicy:
   automated:

@@ -1,3 +1,4 @@
+---
 ##  INFO
 ##    Multi container pods requires image tag to be set at the microservice level:
 ##
@@ -27,11 +28,11 @@ microservices:
   backendMultiContainer:
     replicaCount: 2
     image:
-      tag: null
+      tag:
     containers:
       backend:
         envs:
-          test1: "yes"
+          test1: yes
           test2: noooo
         labels:
           protect: keycloak
@@ -44,7 +45,7 @@ microservices:
             memory: 3Gi
         image:
           name: rear
-          tag: "isanotherwaytosayit"
+          tag: isanotherwaytosayit
         service:
           type: ClusterIP
           port: 80
@@ -52,10 +53,10 @@ microservices:
           targetPort: 8080
           appProtocol: http
           additionalPorts:
-          - port: 5005
-            targetPort: 5005
-            protocol: TCP
-            name: backend
+            - port: 5005
+              targetPort: 5005
+              protocol: TCP
+              name: backend
       gingerbreadMan:
         securityContext:
           # test: test
@@ -72,7 +73,7 @@ microservices:
 
   frontend:
     image:
-      tag: null
+      tag:
     statefulset:
       enabled: true
     replicaCount: 2
@@ -89,7 +90,7 @@ microservices:
             memory: 3Gi
         image:
           name: rear
-          tag: "isanotherwaytosayit"
+          tag: isanotherwaytosayit
         service:
           type: ClusterIP
           port: 80
@@ -97,10 +98,10 @@ microservices:
           targetPort: 8080
           appProtocol: http
           additionalPorts:
-          - port: 5005
-            targetPort: 5005
-            protocol: TCP
-            name: backend
+            - port: 5005
+              targetPort: 5005
+              protocol: TCP
+              name: backend
         envFrom:
           - secretRef:
               name: example
@@ -127,5 +128,5 @@ microservices:
         configMap:
           name: example-lens
           items:
-          - key: config.json
-            path: config.json
+            - key: config.json
+              path: config.json

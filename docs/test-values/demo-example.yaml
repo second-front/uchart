@@ -93,6 +93,16 @@ microservices:
             target:
               type: Value
               value: 1000  # Target value for the metric
+        - type: External
+          external:
+            metric:
+              name: queue_messages_ready
+              selector:
+                matchLabels:
+                  queue: worker_tasks
+            target:
+              type: AverageValue
+              averageValue: 30
         ## - Support multiple configmaps like this
     config:
       airplane-data:

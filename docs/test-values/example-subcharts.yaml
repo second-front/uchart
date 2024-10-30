@@ -26,7 +26,7 @@ subCharts:
   opensearch:
     enabled: false
     revision: 2.19.0
-    chart: "opensearch"
+    chart: opensearch
     values:
       extraEnvs:
         - name: DISABLE_INSTALL_DEMO_CONFIG
@@ -47,7 +47,7 @@ subCharts:
   mysql:
     enabled: false
     revision: 9.1.7-bb.1
-    chart: "mysql"
+    chart: mysql
     values:
       # enable in customer values file to enable master/slave configuration
       # architecture: replication
@@ -83,12 +83,12 @@ subCharts:
   postgresql:
     revision: 12.2.2
     enabled: true
-    chart: "postgresql"
+    chart: postgresql
     values:
       image:
         registry: registry.gamewarden.io
         repository: ironbank-proxy/ironbank/bitnami/postgres
-        tag: "16.3.0"
+        tag: 16.3.0
       global:
         imagePullSecrets:
           - private-registry
@@ -119,7 +119,7 @@ subCharts:
   postgresql-ha:
     enabled: false
     revision: 11.1.4
-    chart: "postgresql-ha"
+    chart: postgresql-ha
     values:
       persistence:
         size: 8Gi
