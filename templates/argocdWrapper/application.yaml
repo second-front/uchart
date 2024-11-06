@@ -36,7 +36,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.17
+      targetRevision: 1.0.18
       chart: uchart
       helm:
         values: |
@@ -52,4 +52,6 @@ spec:
           {{- toYaml  .Values.argocd | nindent 12 }}
           config:
           {{- toYaml  .Values.config | nindent 12 }}
+          generatedSecrets:
+          {{- toYaml  .Values.generatedSecrets | nindent 12 }}
 {{- end }}
