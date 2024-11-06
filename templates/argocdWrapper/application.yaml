@@ -52,4 +52,6 @@ spec:
           {{- toYaml  .Values.argocd | nindent 12 }}
           config:
           {{- toYaml  .Values.config | nindent 12 }}
+          generatedSecrets:
+          {{- toYaml  .Values.generatedSecrets | nindent 12 }}
 {{- end }}
