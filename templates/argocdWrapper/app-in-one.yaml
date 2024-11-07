@@ -52,6 +52,10 @@ spec:
           {{- toYaml  .Values.config | nindent 12 }}
           generatedSecrets:
           {{- toYaml  .Values.generatedSecrets | nindent 12 }}
+          extraManifests:
+          {{- toYaml  .Values.extraManifests | nindent 12 }}
+          manifests:
+          {{- toYaml  .Values.manifests | nindent 12 }}
 {{- range $subChart, $v := .Values.subCharts}}
 {{- with $ -}}
 {{ if not (empty $v) -}}
