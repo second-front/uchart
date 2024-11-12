@@ -63,6 +63,9 @@ spec:
   securityContext:
     {{- toYaml $podSecurityContext | nindent 4 }}
   terminationGracePeriodSeconds: {{ default 15 $terminationGracePeriodSeconds | int }}
+  {{- if $restartPolicy }}
+  restartPolicy: {{ $restartPolicy }}
+  {{- end }}
   containers:
     - name: {{ .msvc }}
       securityContext:
