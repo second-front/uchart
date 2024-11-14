@@ -40,6 +40,9 @@ microservices:
     workingDir: /app
     args:
       - test
+    volumeMounts:
+      - name: example-config-volume
+        mountPath: /wfConfig
     image:
       tag: 0.0.0
     serviceAccount:
@@ -104,6 +107,9 @@ microservices:
               type: AverageValue
               averageValue: 30
         ## - Support multiple configmaps like this
+    envs:
+      ENV_VAR_1: value1
+      ENV_VAR_2: value2
     config:
       airplane-data:
         .env: |
