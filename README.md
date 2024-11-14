@@ -1,7 +1,7 @@
-## Install
-
-helm install my-release oci://ghcr.io/second-front/uchart
-
+## Download
+```
+helm pull oci://ghcr.io/second-front/uchart
+```
 ## How to use for organizations
 1. Create a values.yaml in the root of a manifests project repo.
    ```touch base-values.yaml```
@@ -141,7 +141,8 @@ https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.21.json
 ```
 helm package .
 helm push $(ls *.tgz) oci://registry.gamewarden.io/charts
-helm push $(ls *.tgz) oci://ghcr.io/second-front/uchart
+helm push $(ls *.tgz) oci://ghcr.io/second-front
+helm push $(ls *.tgz) oci://ghcr.io/second-front/charts
 helm push $(ls *.tgz) oci://r.gamewarden.io/charts
 rm $(ls *.tgz)
 ```
