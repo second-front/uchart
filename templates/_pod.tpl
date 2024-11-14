@@ -108,7 +108,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        {{- range $key, $value := .envs }}
+        {{- range $key, $value := $envs }}
         - name: {{ $key }}
           value: {{ $value | toString | quote }}
         {{- end }}
@@ -124,7 +124,7 @@ spec:
         {{- end }}
       {{- if $extraVolumeMounts }}
       volumeMounts:
-        {{- range .extraVolumeMounts }}
+        {{- range $extraVolumeMounts }}
         - name: {{ .name | quote }}
           mountPath: {{ .mountPath | toYaml }}
           {{- if .subPath }}
