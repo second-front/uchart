@@ -1,3 +1,7 @@
+## Install
+
+helm install my-release oci://ghcr.io/second-front/uchart
+
 ## How to use for organizations
 1. Create a values.yaml in the root of a manifests project repo.
    ```touch base-values.yaml```
@@ -25,7 +29,7 @@ chart version: 1.0.21
 
 A universal application chart for gamewarden environments
 
-**Homepage:** <https:code.il2.gamewarden.io/gamewarden/tools/uchart>
+**Homepage:** <https://github.com/second-front/uchart>
 
 ## Maintainers
 
@@ -36,7 +40,7 @@ A universal application chart for gamewarden environments
 
 ## Source Code
 
-* <https://code.il2.gamewarden.io/gamewarden/tools/uchart>
+* <https://github.com/second-front/uchart>
 
 ## Values
 
@@ -73,7 +77,9 @@ A universal application chart for gamewarden environments
 | defaults.replicaCount | int | `1` | Number of replicas for the microservice |
 | defaults.resources.requests.cpu | string | `"100m"` |  |
 | defaults.resources.requests.memory | string | `"128Mi"` |  |
-| defaults.securityContext | object | `{}` |  |
+| defaults.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| defaults.securityContext.readOnlyRootFilesystem | bool | `true` |  |
+| defaults.securityContext.runAsNonRoot | bool | `true` |  |
 | defaults.service.additionalPorts | object | `{}` | Add additional ports to expose |
 | defaults.service.appProtocol | string | `"TCP"` | Set the app procotol to allow explicit selection. (http, http2, https, tcp, tls, grpc, mongo, mysql, redis) |
 | defaults.service.disablePortName | bool | `false` | Set to true to remove the port name |
@@ -135,6 +141,8 @@ https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.21.json
 ```
 helm package .
 helm push $(ls *.tgz) oci://registry.gamewarden.io/charts
+helm push $(ls *.tgz) oci://ghcr.io/second-front/uchart
+helm push $(ls *.tgz) oci://r.gamewarden.io/charts
 rm $(ls *.tgz)
 ```
 
