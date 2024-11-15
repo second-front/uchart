@@ -96,6 +96,7 @@ secrets:
 # Support secret types: "Opaque", "kubernetes.io/tls", "kubernetes.io/basic-auth", Opaque-nuget
 generateSecretsJob:
   enabled: false
+  # image: ''  # image used for the job
   secrets: {}
 # [example usage](docs/secrets-generation.yaml) 
 
