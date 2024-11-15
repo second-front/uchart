@@ -34,7 +34,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.21
+      targetRevision: 1.0.22
       chart: uchart
       helm:
         values: |
@@ -56,6 +56,8 @@ spec:
           {{- toYaml  .Values.extraManifests | nindent 12 }}
           manifests:
           {{- toYaml  .Values.manifests | nindent 12 }}
+          secretsJobGeneration:
+          {{- toYaml  .Values.secretsJobGeneration | nindent 12 }}
 {{- range $subChart, $v := .Values.subCharts}}
 {{- with $ -}}
 {{ if not (empty $v) -}}

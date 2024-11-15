@@ -92,6 +92,13 @@ secrets:
   #   - DB_PASSWORD
   #   - JOB_SECRET
 
+# ref: https://kubernetes.io/docs/concepts/configuration/secret/#secret-types
+# Support secret types: "Opaque", "kubernetes.io/tls", "kubernetes.io/basic-auth", Opaque-nuget
+generateSecretsJob:
+  enabled: false
+  secrets: {}
+# [example usage](docs/secrets-generation.yaml) 
+
 defaults:
   # -- domain for istio virtual services
   domain: gamewarden.io
