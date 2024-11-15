@@ -22,3 +22,9 @@
 *.tmproj
 .vscode/
 test.yaml
+# random files
+.custom-yamllint.yaml
+.gitlab-ci.yml
+.helmignore
+.pre-commit-config.yaml
+README.md.gotmpl
