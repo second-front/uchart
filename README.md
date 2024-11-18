@@ -25,7 +25,7 @@ microservices:
 
 # uchart
 
-chart version: 1.0.22
+chart version: 1.0.23
 
 A universal application chart for gamewarden environments
 
@@ -48,6 +48,7 @@ A universal application chart for gamewarden environments
 |-----|------|---------|-------------|
 | argocd.createNamespace | bool | `false` | Create all namespaces beforehand in sourceNamespaces (the main namespace auto-creates from argocd) |
 | argocd.disableProjectCreation | bool | `false` | Disable option for creation of project for applications created from subCharts if nesting |
+| argocd.namespace | string | `""` | Namespace override for all argocd applications deployment |
 | argocd.projectOverride | string | `""` | Project override for the argocdWrapper microservice Application |
 | argocd.serverSideApply | bool | `true` | Server Side Apply on Application wrapper (not subCharts) |
 | argocd.sourceNamespaces | list | `[]` | Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName |
@@ -98,6 +99,8 @@ A universal application chart for gamewarden environments
 | defaults.virtualService | object | `{"enabled":false}` | istio virtual service from chart enabled |
 | extraManifests | list | `[]` | Extra kubernetes objects to deploy inline - Takes in MAP or LIST @schema type: [array, object] @schema |
 | fullnameOverride | string | `""` |  |
+| generateSecretsJob.enabled | bool | `false` |  |
+| generateSecretsJob.secrets | object | `{}` |  |
 | generatedSecrets | object | `{"enabled":false}` | Used to get around ArgoCD generating new secrets with argocd ignore annotations |
 | global.applicationName | string | `"testapp"` | Required |
 | global.customerName | string | `"testapp"` | Required |
@@ -134,7 +137,7 @@ rm merged-values.yaml
 
 ## Chart schema available also at:
 ```
-https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.22.json
+https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.23.json
 ```
 
 ## Manually push new version of chart to registry and push tag to git
@@ -142,7 +145,6 @@ https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.22.json
 helm package .
 helm push $(ls *.tgz) oci://registry.gamewarden.io/charts
 helm push $(ls *.tgz) oci://ghcr.io/second-front
-helm push $(ls *.tgz) oci://ghcr.io/second-front/helm-charts
 helm push $(ls *.tgz) oci://r.gamewarden.io/charts
 rm $(ls *.tgz)
 ```

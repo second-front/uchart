@@ -280,6 +280,8 @@ argocd:
   # - customerNamespaceTwo
 # -- Create all namespaces beforehand in sourceNamespaces (the main namespace auto-creates from argocd)
   createNamespace: false
+# -- Namespace override for all argocd applications deployment
+  namespace: ""
 # -- Turn off the argocdWrapper Application.yaml template and instead deploy microservices without being under an argocd application
   wrapperAppOff: false
   ## Default within subCharts sets wrapperAppOff to true

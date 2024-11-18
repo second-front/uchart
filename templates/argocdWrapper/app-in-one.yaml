@@ -13,7 +13,7 @@ metadata:
 spec:
   project: "{{ default (printf "%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName) .Values.argocd.projectOverride }}"
   destination:
-    namespace: {{ .Values.global.applicationName }}
+    namespace: {{ .Values.argocd.namespace | default .Values.global.applicationName }}
     name: {{ .Values.global.destinationCluster }}
   syncPolicy:
     {{- if .Values.argocd.wrapperSync }}
@@ -34,7 +34,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.22
+      targetRevision: 1.0.23
       chart: uchart
       helm:
         values: |
