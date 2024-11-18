@@ -21,6 +21,7 @@ argocd:
   disableProjectCreation: true
   projectOverride: default
   serverSideApply: false
+  namespace: global-namespace
 
 defaults:
   envFrom:
