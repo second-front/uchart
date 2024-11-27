@@ -29,6 +29,7 @@ defaults:
     runAsUser: 1111
     runAsGroup: 1111
     runAsNonRoot: true
+
 # extraManifests:
 #   test:
 #     apiVersion: v1
@@ -55,6 +56,11 @@ microservices:
       create: enabled
     podSecurityContext:
       fsGroup: 2333
+    pdb:
+      minAvailable: 1
+      maxUnavailable: 2
+      annotations:
+        test: test
     securityContext:
       runAsUser: 2333
     rbac:
