@@ -21,8 +21,14 @@ defaults:
   envFrom:
     - configMapRef:
         name: default-config
-
-
+  podSecurityContext:
+    fsGroup: 1111
+    fsGroupChangePolicy: OnRootMismatch
+    runAsNonRoot: true
+  securityContext:
+    runAsUser: 1111
+    runAsGroup: 1111
+    runAsNonRoot: true
 # extraManifests:
 #   test:
 #     apiVersion: v1
@@ -47,14 +53,10 @@ microservices:
       tag: 0.0.0
     serviceAccount:
       create: enabled
+    podSecurityContext:
+      fsGroup: 2333
     securityContext:
-      readOnlyRootFilesystem: false
-      runAsNonRoot: false
-      capabilities:
-        drop:
-          - ALL
-        add:
-          - NET_BIND_SERVICE
+      runAsUser: 2333
     rbac:
       rules:
         - apiGroups: [apps]
