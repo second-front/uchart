@@ -20,11 +20,17 @@
 {{- $lifecycle := $v.lifecycle -}}
 {{- $livenessProbe := $v.livenessProbe -}}
 {{- $nodeSelector := $v.nodeSelector | default .Values.defaults.nodeSelector -}}
-{{- $podSecurityContext := $v.podSecurityContext | default .Values.defaults.podSecurityContext -}}
+
+{{- $defaultPodSecurityContext := .Values.defaults.podSecurityContext | default dict }}
+{{- $customPodSecurityContext := $v.podSecurityContext | default dict }}
+{{- $mergedPodSecurityContext := merge $customPodSecurityContext $defaultPodSecurityContext  }}
+
 {{- $readinessProbe := $v.readinessProbe -}}
 {{- $resources := $v.resources | default .Values.defaults.resources -}}
 {{- $restartPolicy := $v.restartPolicy -}}
-{{- $securityContext := $v.securityContext | default .Values.defaults.securityContext }}
+{{- $defaultSecurityContext := .Values.defaults.securityContext | default dict }}
+{{- $customSecurityContext := $v.securityContext | default dict }}
+{{- $mergedSecurityContext := merge $customSecurityContext $defaultSecurityContext }}
 {{- $selectorLabels := $v.selectorLabels }}
 {{- $serviceAccountName := (($v.serviceAccount).name) | default .Values.defaults.serviceAccount.name -}}
 {{- $serviceEnabled := (($v.service).enabled) | default .Values.defaults.service.enabled -}}
@@ -61,7 +67,7 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   securityContext:
-    {{- toYaml $podSecurityContext | nindent 4 }}
+    {{- toYaml $mergedPodSecurityContext | nindent 4 }}
   terminationGracePeriodSeconds: {{ default 15 $terminationGracePeriodSeconds | int }}
   {{- if $restartPolicy }}
   restartPolicy: {{ $restartPolicy }}
@@ -69,7 +75,7 @@ spec:
   containers:
     - name: {{ .msvc }}
       securityContext:
-        {{- toYaml $securityContext | nindent 8 }}
+        {{- toYaml $mergedSecurityContext | nindent 8 }}
       image: {{ include "uchart.image" (dict "msvc" .msvc "image" .image "Values" .Values) }}
       {{- if $workingDir }}
       workingDir: {{ $workingDir }}

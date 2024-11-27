@@ -39,6 +39,12 @@ metadata:
     {{- include "universal-app-chart.istioLabels" . | nindent 4 }}
 spec:
   type: {{ $type }}
+  {{- if ($v.service).externalTrafficPolicy }}
+  externalTrafficPolicy: {{ $v.service.externalTrafficPolicy }}
+  {{- end }}
+  {{- if ($v.service).internalTrafficPolicy }}
+  internalTrafficPolicy: {{ $v.service.internalTrafficPolicy }}
+  {{- end }}
 {{- if $headless }}
   clusterIP: None
 {{- end }}
@@ -96,6 +102,12 @@ metadata:
     app.kubernetes.io/name: {{ printf "%s-%s" $.Release.Name $.Chart.Name | trunc 63 | trimSuffix "-" }}
 spec:
   type: {{ $type }}
+  {{- if (($container.service).externalTrafficPolicy) }}
+  externalTrafficPolicy: {{ (($container.service).externalTrafficPolicy) }}
+  {{- end }}
+  {{- if (($container.service).internalTrafficPolicy) }}
+  internalTrafficPolicy: {{ (($container.service).internalTrafficPolicy) }}
+  {{- end }}
 {{- if $headless }}
   clusterIP: None
 {{- end }}
