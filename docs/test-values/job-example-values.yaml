@@ -75,6 +75,7 @@ microservices:
   examplejob:
     job:
       enabled: true
+    restartPolicy: OnFailure
     backoffLimit: 3
     completions: 1
     parallelism: 1

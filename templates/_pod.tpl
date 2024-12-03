@@ -69,7 +69,9 @@ spec:
   securityContext:
     {{- toYaml $mergedPodSecurityContext | nindent 4 }}
   terminationGracePeriodSeconds: {{ default 15 $terminationGracePeriodSeconds | int }}
-  {{- if $restartPolicy }}
+  {{- if or (($v.cronjob).enabled) (($v.job).enabled) }}
+  restartPolicy: {{ default "Never" $restartPolicy }}
+  {{- else if $restartPolicy }}
   restartPolicy: {{ $restartPolicy }}
   {{- end }}
   containers:

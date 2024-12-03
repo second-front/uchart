@@ -9,7 +9,7 @@ spec:
     server: https://kubernetes.default.svc
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.24
+      targetRevision: 1.0.25
       chart: uchart
       helm:
         values: |-
