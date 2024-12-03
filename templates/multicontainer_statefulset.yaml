@@ -39,7 +39,7 @@ spec:
   {{- end }}
   serviceName: {{ $serviceName }}
   minReadySeconds: {{ $minReadySeconds }}
-  {{- with $volumeClaimTemplates -}}
+  {{ with $volumeClaimTemplates -}}
   volumeClaimTemplates:
   {{- toYaml . | nindent 4 }}
   {{- end }}
