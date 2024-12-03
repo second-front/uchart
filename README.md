@@ -143,10 +143,13 @@ https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.26.json
 ## Manually push new version of chart to registry and push tag to git
 ```
 helm package .
-helm push $(ls *.tgz) oci://registry.gamewarden.io/charts
-helm push $(ls *.tgz) oci://ghcr.io/second-front
-helm push $(ls *.tgz) oci://r.gamewarden.io/charts
-rm $(ls *.tgz)
+package=$(ls *.tgz)
+helm push $package oci://registry.gamewarden.io/charts
+helm push $package oci://ghcr.io/second-front
+helm push $package oci://r.gamewarden.io/charts
+rm $package
+git tag -a ${package:7:-4}
+gp --tags
 ```
 
 ## How to update docs dynamically
