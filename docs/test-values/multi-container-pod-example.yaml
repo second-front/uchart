@@ -29,6 +29,7 @@ microservices:
     replicaCount: 2
     image:
       tag:
+    enabled: true
     containers:
       backend:
         envs:
@@ -77,6 +78,15 @@ microservices:
     statefulset:
       enabled: true
     replicaCount: 2
+    volumeClaimTemplates:
+    - metadata:
+        name: www
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "my-storage-class"
+        resources:
+          requests:
+            storage: 1Gi
     containers:
       backend:
         labels:
