@@ -54,6 +54,7 @@ microservices:
       tag: 0.0.0
     serviceAccount:
       create: enabled
+      name: backend
     podSecurityContext:
       fsGroup: 2333
     pdb:

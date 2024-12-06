@@ -9,7 +9,6 @@
 {{- $affinity := $v.affinity | default .Values.defaults.affinity -}}
 {{- $args := $v.args -}}
 {{- $command := $v.command -}}
-{{- $createServiceAccount := (($v.serviceAccount).create) | default .Values.defaults.serviceAccount.create -}}
 {{- $envs := $v.envs -}}
 {{- $extraEnvs := $v.extraEnvs | default .Values.defaults.extraEnvs -}}
 {{- $extraVolumeMounts := $v.volumeMounts | default .Values.defaults.volumeMounts -}}
@@ -61,7 +60,7 @@ spec:
   imagePullSecrets:
     {{- toYaml $imagePullSecrets | nindent 4 }}
   {{- end }}
-  serviceAccountName: {{ include "universal-app-chart.serviceAccountName" (list .createServiceAccount .serviceAccountName .) }}
+  serviceAccountName: {{ $serviceAccountName }}
   {{- with $initContainers }}
   initContainers:
     {{- toYaml . | nindent 4 }}
