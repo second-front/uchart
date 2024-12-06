@@ -3,7 +3,7 @@ apiVersion: v2
 name: uchart
 description: A universal application chart for gamewarden environments
 type: application
-version: 1.0.27
+version: 1.0.28
 home: https://github.com/second-front/uchart
 sources: [https://github.com/second-front/uchart]
 icon: https://assets.website-files.com/6030224cd6bd6639e9d922c9/60e73ee577cd823be4d24834_GW-Icon.svg

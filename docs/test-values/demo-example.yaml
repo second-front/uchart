@@ -57,6 +57,8 @@ microservices:
       name: backend
     podSecurityContext:
       fsGroup: 2333
+    podAnnotations:
+      test: test
     pdb:
       minAvailable: 1
       maxUnavailable: 2

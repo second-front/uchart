@@ -44,9 +44,9 @@
   {{- $mergedEnvFrom = append $mergedEnvFrom . }}
 {{- end }}
 metadata:
-  {{- if .podAnnotations }}
+  {{- if $v.podAnnotations }}
   annotations:
-    {{- toYaml .podAnnotations | nindent 4 }}
+    {{- toYaml $v.podAnnotations | nindent 4 }}
   {{- end }}
   labels:
     app: {{ .appLabel | default .msvc }}
