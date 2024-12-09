@@ -63,7 +63,19 @@ spec:
   serviceAccountName: {{ $serviceAccountName }}
   {{- with $initContainers }}
   initContainers:
-    {{- toYaml . | nindent 4 }}
+    {{- $foundOverrideTag := false -}}
+    {{- range $container := $initContainers }}
+      {{- if hasKey $container "overrideTag" }}
+        {{- $foundOverrideTag = true }}
+      {{- end }}
+    {{- end }}
+    {{- if $foundOverrideTag }}
+      {{- range $container := $initContainers }}
+          {{- include "universal-app-chart.initContainersTagOverride" $container | nindent 6 }}
+      {{- end }}
+    {{- else }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   securityContext:
     {{- toYaml $mergedPodSecurityContext | nindent 4 }}
