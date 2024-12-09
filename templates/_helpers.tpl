@@ -101,3 +101,67 @@ Remove the last commas after the last auth and base64 it
 {{- define "globalImagePullSecrets" -}}
 {{ include "PullSecrets" . | toJson | replace "\\n" ""| replace " " "" | replace ",}}\"" "}}" | replace "\"{" "{" | replace "\\" "" | b64enc }}
 {{- end }}
+
+{{- define "universal-app-chart.initContainersTagOverride" }}
+- name: {{ .name }}
+  {{- if .overrideTag }}
+  image: {{ printf "%s:%s" (regexReplaceAll ":[^:]+$" .image "") .overrideTag }}
+  {{- else }}
+  image: {{ .image }}
+  {{- end }}
+  {{- if .command }}
+  command:
+    {{- toYaml .command | nindent 6 }}
+  {{- end }}
+  {{- if .args }}
+  args:
+    {{- toYaml .args | nindent 6 }}
+  {{- end }}
+  {{- if .env }}
+  env:
+    {{- range .env }}
+    - name: {{ .name }}
+      value: {{ .value }}
+    {{- end }}
+  {{- end }}
+  {{- if .envFrom }}
+  envFrom:
+    {{- range .envFrom }}
+      {{- if .configMapRef }}
+    - configMapRef:
+        name: {{ .configMapRef.name }}
+      {{- end }}
+      {{- if .secretRef }}
+    - secretRef:
+        name: {{ .secretRef.name }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- if .resources }}
+  resources:
+    {{- toYaml .resources | nindent 6 }}
+  {{- end }}
+  {{- if .volumeMounts }}
+  volumeMounts:
+    {{- toYaml .volumeMounts | nindent 6 }}
+  {{- end }}
+  {{- if .securityContext }}
+  securityContext:
+    {{- toYaml .securityContext | nindent 6 }}
+  {{- end }}
+  {{- if .terminationMessagePath }}
+  terminationMessagePath: {{ .terminationMessagePath }}
+  {{- end }}
+  {{- if .terminationMessagePolicy }}
+  terminationMessagePolicy: {{ .terminationMessagePolicy }}
+  {{- end }}
+  {{- if .stdin }}
+  stdin: {{ .stdin }}
+  {{- end }}
+  {{- if .stdinOnce }}
+  stdinOnce: {{ .stdinOnce }}
+  {{- end }}
+  {{- if .tty }}
+  tty: {{ .tty }}
+  {{- end }}
+{{- end -}}
