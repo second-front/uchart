@@ -285,6 +285,7 @@ microservices:
     initContainers:
       - name: theme
         image: registry.gamewarden.io/steelbank/cgr/git:2.44.0-r2
+        overrideTag: '2.45.0'
         imagePullPolicy: IfNotPresent
         command:
           - sh
@@ -302,6 +303,34 @@ microservices:
               secretKeyRef:
                 name: keycloak-keycloak-git
                 key: token
+        envFrom:
+        - secretRef:
+            name: example
+        - configMapRef:
+            name: example
+        resources:
+          requests:
+            cpu: 40m
+            memory: "10Mi"
+          limits:
+            memory: "1Gi"
+      - name: two
+        image: registry.gamewarden.io/steelbank/cgr/git:1.0.0
+        overrideTag: '2.0.0'
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/sh
+        args:
+          - -c
+          - |
+            cp -r /test/* ${TEST_DIR}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: zone
