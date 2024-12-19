@@ -39,7 +39,7 @@ spec:
   imagePullSecrets:
     {{- toYaml . | nindent 8 }}
   {{- end }}
-  serviceAccountName: {{ include "universal-app-chart.serviceAccountName" (list $createServiceAccount $serviceAccountName .) }}
+  serviceAccountName: {{ $serviceAccountName }}
   securityContext:
     {{- toYaml $podSecurityContext | nindent 8 }}
 {{- if $initContainers }}
