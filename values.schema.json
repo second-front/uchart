@@ -1069,7 +1069,10 @@
       },
       "required": [],
       "title": "subCharts",
-      "type": "object"
+      "type": [
+        "boolean",
+        "object"
+      ]
     }
   },
   "required": [],

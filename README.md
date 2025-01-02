@@ -25,7 +25,7 @@ microservices:
 
 # uchart
 
-chart version: 1.0.29
+chart version: 1.0.30
 
 A universal application chart for gamewarden environments
 
@@ -93,7 +93,7 @@ A universal application chart for gamewarden environments
 | defaults.serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | defaults.serviceAccount.create | bool | `false` | Specifies whether a service account should be created |
 | defaults.serviceAccount.labels | object | `{}` |  |
-| defaults.serviceAccount.name | string | `""` | If not set and create is true, a name is generated using the fullname template |
+| defaults.serviceAccount.name | string | `"default"` | If not set and create is true, a name is generated using the fullname template |
 | defaults.strategy | object | `{}` |  |
 | defaults.tolerations | list | `[]` | Applied to pods, and allow (but do not require) the pods to schedule onto nodes with matching taints. |
 | defaults.virtualService | object | `{"enabled":false}` | istio virtual service from chart enabled |
@@ -122,7 +122,7 @@ A universal application chart for gamewarden environments
 | rbac.create | bool | `false` |  |
 | rbac.rules | list | `[]` |  |
 | secrets | object | `{"enabled":false}` | Global application secret - used for all microservices deployed to one namespace |
-| subCharts | object | `{}` | ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below |
+| subCharts | object | `{}` | ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below OR optional boolen to turn on wrapper for future subCharts |
 
 ## How to generate schema automatically
 ```
@@ -137,7 +137,7 @@ rm merged-values.yaml
 
 ## Chart schema available also at:
 ```
-https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.29.json
+https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.30.json
 ```
 
 ## Manually push new version of chart to registry and push tag to git

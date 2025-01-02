@@ -255,7 +255,7 @@ microservices: {}
 generatedSecrets:
   enabled: false
 
-# -- ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below
+# -- ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below OR optional boolen to turn on wrapper for future subCharts
 subCharts: {}
   # clamav:
   #   enabled: false                              # default is true
