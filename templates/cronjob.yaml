@@ -9,10 +9,10 @@
 
 {{/* Variables */}}
 {{- $annotations := $v.annotations | default (dict) }}
-{{- $completions := $v.completions | default 1 }}
 {{- $labels := $v.labels }}
+{{- $completions := $v.cronjob.completions | default 1 }}
 {{- $namespace := $v.namespace | default .Release.Namespace }}
-{{- $parallelism := $v.parallelism | default 1 }}
+{{- $parallelism := $v.cronjob.parallelism | default 1 }}
 
 {{- $mergedEnvFrom := $v.envFrom | default (list) }}
 {{- $defaultsEnvFrom := .Values.defaults.envFrom | default (list) }}

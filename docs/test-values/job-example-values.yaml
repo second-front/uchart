@@ -8,11 +8,14 @@ microservices:
   example-cronjob:
     cronjob:
       enabled: true
-      schedule: '*/5 * * * *'  # Runs every 5 minutes
+      schedule: '*/7 * * * *'  # Runs every 7 minutes
       concurrencyPolicy: Forbid
-      successfulJobsHistoryLimit: 3
-      failedJobsHistoryLimit: 1
+      successfulJobsHistoryLimit: 7
+      failedJobsHistoryLimit: 77
       suspended: false  # CronJob is not suspended; set to true to disable it
+      backoffLimit: 7
+      completions: 7
+      parallelism: 7
     image:
       repository: example-repo
       tag: 1.0.0
@@ -75,10 +78,10 @@ microservices:
   examplejob:
     job:
       enabled: true
-    restartPolicy: OnFailure
-    backoffLimit: 3
-    completions: 1
-    parallelism: 1
+      restartPolicy: OnFailure
+      backoffLimit: 7
+      completions: 7
+      parallelism: 7
     suspended: false  # Job will run if false, set to true to skip it
     annotations:
       argocd.argoproj.io/hook: PreSync
