@@ -5,7 +5,7 @@
   {{ if not (eq $v.enabled false) }}
 
 {{/* Variables */}}
-{{- $name := $v.name | default $subChart }}
+{{- $name := $v.name | default (printf "%s-%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName $subChart) -}}
 {{- $chartUrl := $v.chartUrl | default "registry.gamewarden.io/charts" }}
 {{- $namespace := $v.namespace | default .Values.argocd.namespace | default .Values.global.applicationName }}
 {{- $revision := $v.revision | default $.Chart.Version }}
@@ -13,7 +13,7 @@
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}-{{ $subChart }}"
+  name: {{ $name }}
   namespace: argocd
 {{-  if $v.wave }}
   annotations:

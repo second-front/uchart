@@ -25,7 +25,7 @@ microservices:
 
 # uchart
 
-chart version: 1.0.30
+chart version: 1.0.31
 
 A universal application chart for gamewarden environments
 
@@ -53,6 +53,7 @@ A universal application chart for gamewarden environments
 | argocd.serverSideApply | bool | `true` | Server Side Apply on Application wrapper (not subCharts) |
 | argocd.sourceNamespaces | list | `[]` | Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName |
 | argocd.wrapAll | bool | `false` | wrapper all-in-one where the microservices and subCharts all are placed into a single wrapped application with multiple sources |
+| argocd.wrapAllNameOverride | string | `""` | wrapper all-in-one argocd application name override |
 | argocd.wrapperAppOff | bool | `false` | Turn off the argocdWrapper Application.yaml template and instead deploy microservices without being under an argocd application |
 | argocd.wrapperAppWave | string | `""` | Set argocd sync wave number on just the argocdWrapper Application if used |
 | argocd.wrapperSync | bool | `true` | Sync options - Turn on or off automated syncing with pruning for the argocdWrapper Application from microservice |
@@ -137,7 +138,7 @@ rm merged-values.yaml
 
 ## Chart schema available also at:
 ```
-https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.30.json
+https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.31.json
 ```
 
 ## Manually push new version of chart to registry and push tag to git
