@@ -21,7 +21,10 @@ microservices:
     ...
 ```
 5. Configure available subcharts as needed like postgres, pgadmin, etc...
-6. See ***example*** deployed app for ***usage*** [here](https://code.il2.gamewarden.io/gamewarden/tools/charts/uchart/-/blob/main/docs/test-values)
+6. See ***example*** deployed app for ***usage*** [here](docs/test-values)
+
+## Supported Features
+[Supported Features](docs/Features.md)
 
 # uchart
 
