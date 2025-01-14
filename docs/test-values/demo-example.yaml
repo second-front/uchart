@@ -52,6 +52,8 @@ microservices:
         mountPath: /wfConfig
     image:
       tag: 0.0.0
+    # service:
+    #   disableIstioInjection: true
     serviceAccount:
       create: enabled
       name: backend

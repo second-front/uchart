@@ -186,6 +186,7 @@ defaults:
     name: http
     # -- Set to true to remove the port name
     disablePortName: false
+    # disableIstioInjection: true # used in rare circumstances where you do not want the service to be injected with the Istio sidecar
     # -- Set the default targetPort of service to 8080 ( Port the application is listening on within the container )
     targetPort: 8080
     # -- Set the app procotol to allow explicit selection. (http, http2, https, tcp, tls, grpc, mongo, mysql, redis)

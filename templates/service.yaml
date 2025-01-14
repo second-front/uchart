@@ -68,7 +68,9 @@ spec:
 {{- end }}
   selector:
     app: {{ $appLabel }}
+    {{- if not ($v.service).disableIstioInjection }}
     {{- include "universal-app-chart.istioLabels" . | nindent 4 }}
+    {{- end }}
     {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 4 }} {{- end }}
 {{- end }}
 {{- if and $enabled $v.containers }}
