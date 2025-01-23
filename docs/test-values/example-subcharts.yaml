@@ -47,7 +47,6 @@ subCharts:
   mysql:
     enabled: false
     revision: 9.1.7-bb.1
-    chart: mysql
     values:
       # enable in customer values file to enable master/slave configuration
       # architecture: replication
