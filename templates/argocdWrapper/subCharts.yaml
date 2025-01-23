@@ -29,7 +29,11 @@ spec:
     name: {{ .Values.global.destinationCluster }}
     {{- end }}
   syncPolicy:
-    {{- if (default true $v.sync) }}
+    {{- if eq $v.sync false }}
+    automated:
+      prune: false
+      selfHeal: false
+    {{- else }}
     automated:
       prune: true
       selfHeal: true
