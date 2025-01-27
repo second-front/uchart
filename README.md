@@ -28,7 +28,7 @@ microservices:
 
 # uchart
 
-chart version: 1.0.34
+chart version: 1.0.35
 
 A universal application chart for gamewarden environments
 
@@ -141,7 +141,7 @@ rm merged-values.yaml
 
 ## Chart schema available also at:
 ```
-https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.34.json
+https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.35.json
 ```
 
 ## Manually push new version of chart to registry and push tag to git

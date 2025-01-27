@@ -7,7 +7,7 @@ defaults:
 microservices:
   example-cronjob:
     cronjob:
-      enabled: true
+      enabled: false
       schedule: '*/7 * * * *'  # Runs every 7 minutes
       concurrencyPolicy: Forbid
       successfulJobsHistoryLimit: 7
@@ -115,11 +115,7 @@ microservices:
       - configMapRef:
           name: example
     securityContext:
-      capabilities:
-        add:
-          - SYS_NICE
-        drop:
-          - KILL
+      readOnlyRootFilesystem: false
     resources:
       limits:
         cpu: 400m
