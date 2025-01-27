@@ -22,14 +22,13 @@
 
 {{- $defaultPodSecurityContext := .Values.defaults.podSecurityContext | default dict }}
 {{- $customPodSecurityContext := $v.podSecurityContext | default dict }}
-{{- $mergedPodSecurityContext := merge $customPodSecurityContext $defaultPodSecurityContext  }}
-
+{{- $mergedPodSecurityContext := mergeOverwrite $defaultPodSecurityContext $customPodSecurityContext }}
 {{- $readinessProbe := $v.readinessProbe -}}
 {{- $resources := $v.resources | default .Values.defaults.resources -}}
 {{- $restartPolicy := $v.restartPolicy -}}
 {{- $defaultSecurityContext := .Values.defaults.securityContext | default dict }}
 {{- $customSecurityContext := $v.securityContext | default dict }}
-{{- $mergedSecurityContext := merge $customSecurityContext $defaultSecurityContext }}
+{{- $mergedSecurityContext := mergeOverwrite $defaultSecurityContext $customSecurityContext }}
 {{- $selectorLabels := $v.selectorLabels }}
 {{- $serviceAccountName := (($v.serviceAccount).name) | default .Values.defaults.serviceAccount.name -}}
 {{- $serviceEnabled := (($v.service).enabled) | default .Values.defaults.service.enabled -}}
