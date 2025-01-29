@@ -21,7 +21,6 @@ global:
   environment: dev
   destinationCluster: multi-tenant-development-cluster
 argocd:
-  disableProjectCreation: true
-  projectOverride: second-front-dev-example-app-dev
+  projectOverride: second-front-dev-example-app-dev # project created by Appinator
 domain: gamewarden.io
 ```
