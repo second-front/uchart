@@ -1,0 +1,27 @@
+# Appinator example
+```
+    - customer: second-front
+      destination: in-cluster
+      mainChartRevision: 1.0.36
+      mainChart: registry-com.gamewarden.io/charts/uchart  # this format is the OCI chart repo without protocol prefix
+      mainChartPath: "./"
+      name: example-app-dev
+      repoUrl: https://code.gamewarden.io/example/manifests.git
+      targetNamespace: "argocd"
+      targetRevision: main
+      valuesFileName: dev-values-new.yaml
+```
+
+# Values example
+```
+global:
+  applicationName: "exampleApp"
+  customerName: second-front
+  impactLevel: il2
+  environment: dev
+  destinationCluster: multi-tenant-development-cluster
+argocd:
+  disableProjectCreation: true
+  projectOverride: second-front-dev-example-app-dev
+domain: gamewarden.io
+```
