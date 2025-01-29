@@ -6,10 +6,9 @@
       mainChart: registry-com.gamewarden.io/charts/uchart  # this format is the OCI chart repo without protocol prefix
       mainChartPath: "./"
       name: example-app-dev
-      repoUrl: https://code.gamewarden.io/example/manifests.git
+      repoUrl: https://code.gamewarden.io/example/manifests.git  # this is where the helm values are pulled from
       targetNamespace: "argocd"
       targetRevision: main
-      valuesFileName: dev-values-new.yaml
 ```
 
 # Values example
