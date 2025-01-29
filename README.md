@@ -28,7 +28,7 @@ microservices:
 
 # uchart
 
-chart version: 1.0.35
+chart version: 1.0.36
 
 A universal application chart for gamewarden environments
 
@@ -50,7 +50,7 @@ A universal application chart for gamewarden environments
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | argocd.createNamespace | bool | `false` | Create all namespaces beforehand in sourceNamespaces (the main namespace auto-creates from argocd) |
-| argocd.disableProjectCreation | bool | `false` | Disable option for creation of project for applications created from subCharts if nesting |
+| argocd.disableProjectCreation | bool | `true` | Disable option for creation of project for applications created from subCharts if nesting |
 | argocd.namespace | string | `""` | Namespace override for all argocd applications deployment |
 | argocd.projectOverride | string | `""` | Project override for the argocdWrapper microservice Application |
 | argocd.serverSideApply | bool | `true` | Server Side Apply on Application wrapper (not subCharts) |
@@ -82,6 +82,7 @@ A universal application chart for gamewarden environments
 | defaults.replicaCount | int | `1` | Number of replicas for the microservice |
 | defaults.resources.requests.cpu | string | `"100m"` |  |
 | defaults.resources.requests.memory | string | `"128Mi"` |  |
+| defaults.securityContext.allowPrivilegeEscalation | bool | `false` |  |
 | defaults.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | defaults.securityContext.readOnlyRootFilesystem | bool | `true` |  |
 | defaults.securityContext.runAsNonRoot | bool | `true` |  |
@@ -126,7 +127,7 @@ A universal application chart for gamewarden environments
 | rbac.create | bool | `false` |  |
 | rbac.rules | list | `[]` |  |
 | secrets | object | `{"enabled":false}` | Global application secret - used for all microservices deployed to one namespace |
-| subCharts | object | `{}` | ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below OR optional boolen to turn on wrapper for future subCharts |
+| subCharts | bool | `true` | ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below OR optional boolen to turn on wrapper for future subCharts |
 
 ## How to generate schema automatically
 ```
@@ -141,7 +142,7 @@ rm merged-values.yaml
 
 ## Chart schema available also at:
 ```
-https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.35.json
+https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.36.json
 ```
 
 ## Manually push new version of chart to registry and push tag to git
