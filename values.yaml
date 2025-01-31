@@ -259,8 +259,7 @@ generatedSecrets:
 
 # -- ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below
 subCharts:
-  # -- Example subChart that is disabled
-  clamav:
+  clamav:                                       # Example subChart that is disabled
     enabled: false                              # default is true
     chartUrl: 'registry.gamewarden.io/charts'   # default is 'registry.gamewarden.io/charts'
     chart: "clamav"                             # default is 'uchart'
