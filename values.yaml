@@ -220,7 +220,7 @@ defaults:
   affinity: {}
 
 
-# -- Extra kubernetes objects to deploy inline - Takes in MAP or LIST
+# -- readonly - Extra kubernetes objects to deploy inline - Takes in MAP or LIST
 # @schema
 # type: [array, object]
 # @schema
@@ -239,7 +239,7 @@ extraManifests: []
   #       namespace: example
   #   spec: ...
 
-# -- Extra kubernetes objects to deploy inline
+# -- readonly - Extra kubernetes objects to deploy inline
 manifests: {}
   #   yourNameOfFirstResource:
   #     apiVersion: kafka.strimzi.io/v1beta2

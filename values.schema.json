@@ -1,5 +1,398 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "subchart": {
+      "additionalProperties": {
+        "properties": {
+          "chart": {
+            "default": "uchart",
+            "type": "string"
+          },
+          "chartUrl": {
+            "default": "registry.gamewarden.io/charts",
+            "type": "string"
+          },
+          "enabled": {
+            "default": true,
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+            "type": "string"
+          },
+          "sync": {
+            "default": true,
+            "type": "boolean"
+          },
+          "valueFiles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "values": {
+            "type": "object"
+          },
+          "valuesRepo": {
+            "type": "string"
+          },
+          "wave": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "required": [],
+      "type": "object"
+    },
+    "microservice": {
+      "additionalProperties": {
+        "properties": {
+          "command": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "config": {
+            "properties": {
+              "data": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          "envFrom": {
+            "items": {
+              "properties": {
+                "configMapRef": {
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "secretRef": {
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "extraEnvs": {
+            "items": {
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "valueFrom": {
+                  "properties": {
+                    "configMapKeyRef": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "secretKeyRef": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "image": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "tag": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "livenessProbe": {
+            "properties": {
+              "failureThreshold": {
+                "type": "integer"
+              },
+              "httpGet": {
+                "properties": {
+                  "path": {
+                    "type": "string"
+                  },
+                  "port": {
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              },
+              "initialDelaySeconds": {
+                "type": "integer"
+              },
+              "periodSeconds": {
+                "type": "integer"
+              },
+              "successThreshold": {
+                "type": "integer"
+              },
+              "tcpSocket": {
+                "properties": {
+                  "port": {
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              },
+              "timeoutSeconds": {
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "match": {
+            "items": {
+              "properties": {
+                "uri": {
+                  "properties": {
+                    "prefix": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "namespace": {
+            "type": "string"
+          },
+          "readinessProbe": {
+            "properties": {
+              "failureThreshold": {
+                "type": "integer"
+              },
+              "initialDelaySeconds": {
+                "type": "integer"
+              },
+              "periodSeconds": {
+                "type": "integer"
+              },
+              "successThreshold": {
+                "type": "integer"
+              },
+              "tcpSocket": {
+                "properties": {
+                  "port": {
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              },
+              "timeoutSeconds": {
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "resources": {
+            "properties": {
+              "limits": {
+                "properties": {
+                  "cpu": {
+                    "type": "string"
+                  },
+                  "memory": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "requests": {
+                "properties": {
+                  "cpu": {
+                    "type": "string"
+                  },
+                  "memory": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          "secrets": {
+            "properties": {
+              "data": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "generateKeys": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "service": {
+            "properties": {
+              "additionalPorts": {
+                "items": {
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "port": {
+                      "type": "integer"
+                    },
+                    "protocol": {
+                      "type": "string"
+                    },
+                    "targetPort": {
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "port": {
+                "type": "integer"
+              },
+              "targetPort": {
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "topologySpreadConstraints": {
+            "items": {
+              "properties": {
+                "labelSelector": {
+                  "properties": {
+                    "matchLabels": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "maxSkew": {
+                  "type": "integer"
+                },
+                "topologyKey": {
+                  "type": "string"
+                },
+                "whenUnsatisfiable": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "volumeMounts": {
+            "items": {
+              "properties": {
+                "mountPath": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "volumes": {
+            "items": {
+              "properties": {
+                "configMap": {
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "properties": {
+                          "key": {
+                            "type": "string"
+                          },
+                          "path": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "required": [],
+      "type": "object"
+    }
+  },
   "properties": {
     "argocd": {
       "properties": {
@@ -459,10 +852,7 @@
       },
       "required": [],
       "title": "extraManifests",
-      "type": [
-        "array",
-        "object"
-      ]
+      "type": ["array", "object"]
     },
     "fullnameOverride": {
       "default": "",
@@ -571,7 +961,7 @@
           "type": "object"
         }
       },
-      "required": [],
+      "required": ["applicationName", "destinationCluster"],
       "title": "global",
       "type": "object"
     },
@@ -590,346 +980,7 @@
       "type": "object"
     },
     "microservices": {
-      "properties": {
-        "microservices": {
-          "additionalProperties": {
-            "properties": {
-              "command": {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              "config": {
-                "properties": {
-                  "data": {
-                    "additionalProperties": {
-                      "type": "string"
-                    },
-                    "type": "object"
-                  }
-                },
-                "type": "object"
-              },
-              "envFrom": {
-                "items": {
-                  "properties": {
-                    "configMapRef": {
-                      "properties": {
-                        "name": {
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
-                    },
-                    "secretRef": {
-                      "properties": {
-                        "name": {
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
-                    }
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "extraEnvs": {
-                "items": {
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "value": {
-                      "type": "string"
-                    },
-                    "valueFrom": {
-                      "properties": {
-                        "configMapKeyRef": {
-                          "properties": {
-                            "key": {
-                              "type": "string"
-                            },
-                            "name": {
-                              "type": "string"
-                            }
-                          },
-                          "type": "object"
-                        },
-                        "secretKeyRef": {
-                          "properties": {
-                            "key": {
-                              "type": "string"
-                            },
-                            "name": {
-                              "type": "string"
-                            }
-                          },
-                          "type": "object"
-                        }
-                      },
-                      "type": "object"
-                    }
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "image": {
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "tag": {
-                    "type": "string"
-                  }
-                },
-                "type": "object"
-              },
-              "livenessProbe": {
-                "properties": {
-                  "failureThreshold": {
-                    "type": "integer"
-                  },
-                  "httpGet": {
-                    "properties": {
-                      "path": {
-                        "type": "string"
-                      },
-                      "port": {
-                        "type": "integer"
-                      }
-                    },
-                    "type": "object"
-                  },
-                  "initialDelaySeconds": {
-                    "type": "integer"
-                  },
-                  "periodSeconds": {
-                    "type": "integer"
-                  },
-                  "successThreshold": {
-                    "type": "integer"
-                  },
-                  "tcpSocket": {
-                    "properties": {
-                      "port": {
-                        "type": "integer"
-                      }
-                    },
-                    "type": "object"
-                  },
-                  "timeoutSeconds": {
-                    "type": "integer"
-                  }
-                },
-                "type": "object"
-              },
-              "match": {
-                "items": {
-                  "properties": {
-                    "uri": {
-                      "properties": {
-                        "prefix": {
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
-                    }
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "namespace": {
-                "type": "string"
-              },
-              "readinessProbe": {
-                "properties": {
-                  "failureThreshold": {
-                    "type": "integer"
-                  },
-                  "initialDelaySeconds": {
-                    "type": "integer"
-                  },
-                  "periodSeconds": {
-                    "type": "integer"
-                  },
-                  "successThreshold": {
-                    "type": "integer"
-                  },
-                  "tcpSocket": {
-                    "properties": {
-                      "port": {
-                        "type": "integer"
-                      }
-                    },
-                    "type": "object"
-                  },
-                  "timeoutSeconds": {
-                    "type": "integer"
-                  }
-                },
-                "type": "object"
-              },
-              "resources": {
-                "properties": {
-                  "limits": {
-                    "properties": {
-                      "cpu": {
-                        "type": "string"
-                      },
-                      "memory": {
-                        "type": "string"
-                      }
-                    },
-                    "type": "object"
-                  },
-                  "requests": {
-                    "properties": {
-                      "cpu": {
-                        "type": "string"
-                      },
-                      "memory": {
-                        "type": "string"
-                      }
-                    },
-                    "type": "object"
-                  }
-                },
-                "type": "object"
-              },
-              "secrets": {
-                "properties": {
-                  "data": {
-                    "additionalProperties": {
-                      "type": "string"
-                    },
-                    "type": "object"
-                  },
-                  "generateKeys": {
-                    "items": {
-                      "type": "string"
-                    },
-                    "type": "array"
-                  }
-                },
-                "type": "object"
-              },
-              "service": {
-                "properties": {
-                  "additionalPorts": {
-                    "items": {
-                      "properties": {
-                        "name": {
-                          "type": "string"
-                        },
-                        "port": {
-                          "type": "integer"
-                        },
-                        "protocol": {
-                          "type": "string"
-                        },
-                        "targetPort": {
-                          "type": "integer"
-                        }
-                      },
-                      "type": "object"
-                    },
-                    "type": "array"
-                  },
-                  "port": {
-                    "type": "integer"
-                  },
-                  "targetPort": {
-                    "type": "integer"
-                  }
-                },
-                "type": "object"
-              },
-              "topologySpreadConstraints": {
-                "items": {
-                  "properties": {
-                    "labelSelector": {
-                      "properties": {
-                        "matchLabels": {
-                          "additionalProperties": {
-                            "type": "string"
-                          },
-                          "type": "object"
-                        }
-                      },
-                      "type": "object"
-                    },
-                    "maxSkew": {
-                      "type": "integer"
-                    },
-                    "topologyKey": {
-                      "type": "string"
-                    },
-                    "whenUnsatisfiable": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "volumeMounts": {
-                "items": {
-                  "properties": {
-                    "mountPath": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "volumes": {
-                "items": {
-                  "properties": {
-                    "configMap": {
-                      "properties": {
-                        "items": {
-                          "items": {
-                            "properties": {
-                              "key": {
-                                "type": "string"
-                              },
-                              "path": {
-                                "type": "string"
-                              }
-                            },
-                            "type": "object"
-                          },
-                          "type": "array"
-                        },
-                        "name": {
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
-                    },
-                    "name": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                },
-                "type": "array"
-              }
-            },
-            "type": "object"
-          },
-          "required": [],
-          "type": "object"
-        }
-      },
+      "$ref": "#/$defs/microservice",
       "required": [],
       "title": "microservices",
       "type": "object"
@@ -1012,69 +1063,12 @@
       "type": "object"
     },
     "subCharts": {
-      "properties": {
-        "subCharts": {
-          "additionalProperties": {
-            "properties": {
-              "chart": {
-                "default": "uchart",
-                "type": "string"
-              },
-              "chartUrl": {
-                "default": "registry.gamewarden.io/charts",
-                "type": "string"
-              },
-              "enabled": {
-                "default": true,
-                "type": "boolean"
-              },
-              "name": {
-                "type": "string"
-              },
-              "namespace": {
-                "type": "string"
-              },
-              "project": {
-                "type": "string"
-              },
-              "revision": {
-                "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
-                "type": "string"
-              },
-              "sync": {
-                "default": true,
-                "type": "boolean"
-              },
-              "valueFiles": {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              "values": {
-                "type": "object"
-              },
-              "valuesRepo": {
-                "type": "string"
-              },
-              "wave": {
-                "type": "string"
-              }
-            },
-            "type": "object"
-          },
-          "required": [],
-          "type": "object"
-        }
-      },
+      "$ref": "#/$defs/subchart",
       "required": [],
       "title": "subCharts",
-      "type": [
-        "boolean",
-        "object"
-      ]
+      "type": "object"
     }
   },
-  "required": [],
+  "required": ["global", "microservices"],
   "type": "object"
 }
