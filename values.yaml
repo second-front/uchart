@@ -257,22 +257,23 @@ microservices: {}
 generatedSecrets:
   enabled: false
 
-# -- ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below OR optional boolen to turn on wrapper for future subCharts
-subCharts: {}
-  # clamav:
-  #   enabled: false                              # default is true
-  #   chartUrl: 'registry.gamewarden.io/charts'   # default is 'registry.gamewarden.io/charts'
-  #   chart: "uchart"                             # default is 'uchart'
-  #   name: clamav                                # default is set to the subChart key
-  #   revision: 0.0.2                             # required - version of included chart
-  #   namespace: otherNamespace                   # only desired if you want to deploy to a different namespace than your applicationName
-  #   values: {}                                  # optional - helm values in-line
-  #   valueFiles: []                              # optional - if used with valuesRepo, it will turn the subChart application into a multi-sourced application
-  #   valuesRepo: ""                              # optional - git repo location of where the values files are retrieved from
-  #   wave: ""                                    # optional - used to create the annotations for argocd sync waves
-  #   sync: true                                  # default true - used to turn off automated sync and pruning for the subChart
-  #   project: ""                                 # optional - default is inherited from created project - this is an override
-  #   serverSideApply: true                       # default true
+# -- ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below
+subCharts:
+  # -- Example subChart that is disabled
+  clamav:
+    enabled: false                              # default is true
+    chartUrl: 'registry.gamewarden.io/charts'   # default is 'registry.gamewarden.io/charts'
+    chart: "clamav"                             # default is 'uchart'
+    name: clamav                                # renames the argocd Application to be something different, default is the subChart key
+    revision: 0.0.2                             # required - version of included chart
+    # namespace: otherNamespace                   # only desired if you want to deploy to a different namespace than your applicationName
+    # values: {}                                  # optional - helm values in-line
+    # valueFiles: []                              # optional - if used with valuesRepo, it will turn the subChart application into a multi-sourced application
+    # valuesRepo: ""                              # optional - git repo location of where the values files are retrieved from
+    # wave: ""                                    # optional - used to create the annotations for argocd sync waves
+    # sync: true                                  # default true - used to turn off automated sync and pruning for the subChart
+    # project: ""                                 # optional - default is inherited from created project - this is an override
+    # serverSideApply: true                       # default true
 
 argocd:
 # -- Disable option for creation of project for applications created from subCharts if nesting

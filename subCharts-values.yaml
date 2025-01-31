@@ -1,0 +1,172 @@
+  clamav:
+    enabled: false
+    serverSideApply: false
+    chartUrl: 'registry.gamewarden.io/charts'
+    chart: clamav
+    revision: 0.0.2
+###
+  pgadmin:
+    enabled: false
+    chart: pgadmin
+    revision: '0.1.0'
+    values:
+      podLabels:
+        sidecar.istio.io/inject: "false"
+      networkPolicy:
+        enabled: false
+      image:
+        tag: "6.21"
+      virtualService:
+        enabled: false
+      extraSecretMounts:
+        - name: pgpassfile
+          secret: ###CUSTOMER_NAME###-db
+          subPath: pgpassfile
+          mountPath: "/pgpass"
+      existingSecret: "###CUSTOMER_NAME###-db"
+      envVarsFromSecrets:
+        - ###CUSTOMER_NAME###-db
+      env:
+        contextPath: /pgadmin
+      serverDefinitions:
+        servers:
+          firstServer:
+            Name: "###CUSTOMER_NAME###"
+            Group: "###CUSTOMER_NAME###"
+            Host: "###CUSTOMER_DB_HOST###"
+            Shared: true
+            PassFile: "/pgpass"
+###
+  strimzi-kafka-operator:
+    enabled: false
+    chart: strimzi-kafka-operator
+    revision: 0.44.0
+    serverSideApply: false
+    values:
+      defaultImageRegistry: registry.gamewarden.io
+      defaultImageRepository: ironbank-proxy/ironbank/opensource/strimzi
+      defaultImageTag: 0.44.0
+      image:
+        imagePullSecrets:
+          - name: private-registry
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+        allowPrivilegeEscalation: false
+      extraEnvs:
+        - name: STRIMZI_POD_SECURITY_PROVIDER_CLASS
+          value: restricted
+###
+  vault:
+    enabled: false
+    chart: vault
+    revision: 0.29.1
+    serverSideApply: false
+    values:
+      server:
+        image:
+          registry: registry.gamewarden.io
+          repository: registry1.dso.mil/ironbank/hashicorp/vault
+          name: bigbang/vault
+          tag: "1.18.3"
+          imagePullSecrets:
+            - name: private-registry
+          imagePullPolicy: Always
+        dev:
+          enabled: true
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+        allowPrivilegeEscalation: false
+###
+  redis:
+    enabled: false
+    chart: redis
+    revision: '17.9.5'
+    serverSideApply: false
+    values:
+      architecture: standalone
+      global:
+        imageRegistry: registry1.dso.mil/ironbank/bitnami
+      image:
+        repository: redis
+        tag: '7.4.2'
+      fullnameOverride: redis
+      master:
+        persistence:
+          enabled: true
+        containerSecurityContext:
+          enabled: true
+          runAsUser: 1001
+          runAsGroup: 1001
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: "0.5"
+            memory: 15Mi
+          limits:
+            memory: 5Gi
+      auth:
+        enabled: false
+###
+  rabbitmq:
+    enabled: false
+    chart: rabbitmq
+    revision: '14.7.0'
+    values:
+      enabled: true
+      fullnameOverride: rabbitmq
+      replicaCount: 1
+      memoryHighWatermark:
+        enabled: true
+      metrics:
+        enabled: true
+        serviceMonitor:
+          default:
+            enabled: true
+            metricRelabelings:
+            - sourceLabels: [__name__]
+              regex: "erlang_.*"
+              action: drop
+          detailed:
+            enabled: true
+            vhost:
+              - "/"
+            family:
+              - queue_coarse_metrics
+              - queue_delivery_metrics
+              - queue_consumer_count
+              - channel_queue_exchange_metrics
+              - channel_queue_metrics
+            metricRelabelings:
+            - sourceLabels: [queue]
+              # drop metrics for 'control' queues
+              regex: "^.+@.*"
+              action: drop
+      livenessProbe:
+        # normal startup takes around 3 minutes on our clusters, wait twice that
+        initialDelaySeconds: 360
+      extraConfiguration: |
+        collect_statistics_interval = 30000
+      extraEnvVars:
+        - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
+          value: "+sbwt none +sbwtdcpu none +sbwtdio none"
+      podLabels:
+        app: rabbitmq
+      affinity: null
+      updateStrategy:
+        type: RollingUpdate
+      persistence:
+        enabled: false
+      image:
+        registry: registry1.dso.mil
+        repository: ironbank/bitnami/rabbitmq
+        tag: "4.0.5"
+        pullPolicy: Always
+      networkPolicy:
+        enabled: false
