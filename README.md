@@ -28,7 +28,7 @@ microservices:
 
 # uchart
 
-chart version: 1.0.36
+chart version: 1.0.37
 
 A universal application chart for gamewarden environments
 
@@ -127,7 +127,7 @@ A universal application chart for gamewarden environments
 | rbac.create | bool | `false` |  |
 | rbac.rules | list | `[]` |  |
 | secrets | object | `{"enabled":false}` | Global application secret - used for all microservices deployed to one namespace |
-| subCharts | bool | `true` | ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below OR optional boolen to turn on wrapper for future subCharts |
+| subCharts | object | `{"clamav":{"chart":"clamav","chartUrl":"registry.gamewarden.io/charts","enabled":false,"name":"clamav","revision":"0.0.2"}}` | ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below |
 
 ## How to generate schema automatically
 ```
@@ -142,7 +142,7 @@ rm merged-values.yaml
 
 ## Chart schema available also at:
 ```
-https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.36.json
+https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.37.json
 ```
 
 ## Manually push new version of chart to registry and push tag to git
