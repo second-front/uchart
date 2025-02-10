@@ -56,162 +56,24 @@ subCharts:
     enabled: false
     revision: 0.29.1
     serverSideApply: false
-    values:
-      server:
-        image:
-          registry: registry.gamewarden.io
-          repository: registry1.dso.mil/ironbank/hashicorp/vault
-          name: bigbang/vault
-          tag: "1.18.3"
-          imagePullSecrets:
-            - name: private-registry
-          imagePullPolicy: Always
-        dev:
-          enabled: true
-      securityContext:
-        capabilities:
-          drop:
-            - ALL
-        allowPrivilegeEscalation: false
 ###
   redis:
     enabled: false
-    revision: '17.9.5'
+    revision: '20.7.0'
     serverSideApply: false
-    values:
-      architecture: standalone
-      global:
-        imageRegistry: registry1.dso.mil/ironbank/bitnami
-      image:
-        repository: redis
-        tag: '7.4.2'
-      fullnameOverride: redis
-      master:
-        persistence:
-          enabled: true
-        containerSecurityContext:
-          enabled: true
-          runAsUser: 1001
-          runAsGroup: 1001
-          runAsNonRoot: true
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
-        resources:
-          requests:
-            cpu: "0.5"
-            memory: 15Mi
-          limits:
-            memory: 5Gi
-      auth:
-        enabled: false
 ###
   rabbitmq:
     enabled: false
-    revision: '14.7.0'
-    values:
-      enabled: true
-      fullnameOverride: rabbitmq
-      replicaCount: 1
-      memoryHighWatermark:
-        enabled: true
-      metrics:
-        enabled: true
-        serviceMonitor:
-          default:
-            enabled: true
-            metricRelabelings:
-            - sourceLabels: [__name__]
-              regex: "erlang_.*"
-              action: drop
-          detailed:
-            enabled: true
-            vhost:
-              - "/"
-            family:
-              - queue_coarse_metrics
-              - queue_delivery_metrics
-              - queue_consumer_count
-              - channel_queue_exchange_metrics
-              - channel_queue_metrics
-            metricRelabelings:
-            - sourceLabels: [queue]
-              # drop metrics for 'control' queues
-              regex: "^.+@.*"
-              action: drop
-      livenessProbe:
-        # normal startup takes around 3 minutes on our clusters, wait twice that
-        initialDelaySeconds: 360
-      extraConfiguration: |
-        collect_statistics_interval = 30000
-      extraEnvVars:
-        - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
-          value: "+sbwt none +sbwtdcpu none +sbwtdio none"
-      podLabels:
-        app: rabbitmq
-      affinity: null
-      updateStrategy:
-        type: RollingUpdate
-      persistence:
-        enabled: false
-      image:
-        registry: registry1.dso.mil
-        repository: ironbank/bitnami/rabbitmq
-        tag: "4.0.5"
-        pullPolicy: Always
-      networkPolicy:
-        enabled: false
+    revision: '15.2.5'
 ###
   nats:
     enabled: false
-    revision: 1.2.4
-    values:
-      fullnameOverride: nats
-      container:
-        image:
-          registry: registry.gamewarden.io
-          repository: steelbank/cgr/nats
-          tag: "2.10.14-r0"
-      natsBox:
-        container:
-          image:
-            registry: registry.gamewarden.io
-            repository: steelbank/opensource/nats/nats-box
-            tag: "0.14.3"
-      reloader:
-        enabled: false
-      exporter:
-        enabled: false
+    revision: '1.2.10'
 ###
   postgresql:
     enabled: false
-    revision: 12.2.2
+    revision: '16.4.6'
     serverSideApply: false
-    values:
-      image:
-        registry: registry.gamewarden.io
-        repository: steelbank/2f_internal/bitnami/postgres-bitnami
-        tag: "16.4-r3"
-      global:
-        imagePullSecrets:
-          - private-registry
-        postgresql:
-          auth:
-            existingSecret: generated-secrets
-            secretKeys:
-              adminPasswordKey: GENERATED_DB_PASSWORD
-              userPasswordKey: GENERATED_DB_PASSWORD
-              replicationPasswordKey: GENERATED_ADMIN_PASSWORD
-          service:
-            ports:
-              postgresql: 5432
-      auth:
-        existingSecret: generated-secrets
-        secretKeys:
-          adminPasswordKey: GENERATED_DB_PASSWORD
-          userPasswordKey: GENERATED_DB_PASSWORD
-          replicationPasswordKey: GENERATED_ADMIN_PASSWORD
-      initContainers: []
 ###
   mysql:
     enabled: false
