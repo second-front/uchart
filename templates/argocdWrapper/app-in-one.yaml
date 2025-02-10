@@ -47,8 +47,10 @@ spec:
           {{- toYaml  .Values.defaults | nindent 12 }}
           ciliumNetworkPolicies:
           {{- toYaml  .Values.ciliumNetworkPolicies | nindent 12 }}
+          {{- if .Values.argocd.wrapAllNested }}
           argocd:
           {{- toYaml  .Values.argocd | nindent 12 }}
+          {{- end }}
           config:
           {{- toYaml  .Values.config | nindent 12 }}
           generatedSecrets:
