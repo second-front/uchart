@@ -127,43 +127,43 @@
               }
             }
           },
-          
           "envFrom": {
             "items": {
               "properties": {
                 "configMapRef": {
+                  "additionalProperties": false,
+                  "type": "object",
                   "properties": {
                     "name": {
                       "type": "string"
                     }
-                  },
-                  "type": "object"
+                  }
                 },
                 "secretRef": {
+                  "additionalProperties": false,
+                  "type": "object",
                   "properties": {
                     "name": {
                       "type": "string"
                     }
-                  },
-                  "type": "object"
+                  }
                 }
               },
+              "additionalProperties": false,
               "type": "object"
             },
+            "description": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables",
             "type": "array"
           },
           "envs": {
+            "additionalProperties": {
+              "type": "string"
+            },
             "type": "object",
-            "properties": {
-              "ENV_VAR_1": {
-                "type": "string"
-              },
-              "ENV_VAR_2": {
-                "type": "string"
-              }
-            }
+            "description": "Key value pair for environment variables: https://github.com/second-front/uchart/blob/main/docs/Example-Microservices.md?plain=1#L49-L51"
           },
           "extraEnvs": {
+            "description": "See example: https://github.com/second-front/uchart/blob/main/docs/Example-Microservices.md?plain=1#L54-L65",
             "items": {
               "properties": {
                 "name": {
@@ -175,6 +175,7 @@
                 "valueFrom": {
                   "properties": {
                     "configMapKeyRef": {
+                      "additionalProperties": false,
                       "properties": {
                         "key": {
                           "type": "string"
@@ -186,6 +187,7 @@
                       "type": "object"
                     },
                     "secretKeyRef": {
+                      "additionalProperties": false,
                       "properties": {
                         "key": {
                           "type": "string"
@@ -197,16 +199,20 @@
                       "type": "object"
                     }
                   },
+                  "additionalProperties": false,
                   "type": "object"
                 }
               },
-              "type": "object"
+              "additionalProperties": false,
+              "type": "object",
+              "required": ["name"]
             },
             "type": "array"
           },
           "image": {
             "properties": {
               "name": {
+                "description": "The name of the image. Defaults to microservice name.",
                 "type": "string"
               }
             },
@@ -215,9 +221,36 @@
             "type": "object"
           },
           "livenessProbe": {
+            "description": "See documentation: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
             "properties": {
               "failureThreshold": {
+                "description": "Number of failed checks to consider the liveness check failed.",
                 "type": "integer"
+              },
+              "initialDelaySeconds": {
+                "description": "Amount of seconds to send the first probe.",
+                "type": "integer"
+              },
+              "periodSeconds": {
+                "description": "How often the probe checks for liveness.",
+                "type": "integer"
+              },
+              "successThreshold": {
+                "description": "Minimum successful attempts needed to be deemed alive.",
+                "type": "integer"
+              },
+              "timeoutSeconds": {
+                "description": "Number of seconds after which a probe times out.",
+                "type": "integer"
+              },
+              "tcpSocket": {
+                "properties": {
+                  "port": {
+                    "type": "integer"
+                  }
+                },
+                "additionalProperties": false,
+                "type": "object"
               },
               "httpGet": {
                 "properties": {
@@ -228,29 +261,11 @@
                     "type": "integer"
                   }
                 },
+                "additionalProperties": false,
                 "type": "object"
-              },
-              "initialDelaySeconds": {
-                "type": "integer"
-              },
-              "periodSeconds": {
-                "type": "integer"
-              },
-              "successThreshold": {
-                "type": "integer"
-              },
-              "tcpSocket": {
-                "properties": {
-                  "port": {
-                    "type": "integer"
-                  }
-                },
-                "type": "object"
-              },
-              "timeoutSeconds": {
-                "type": "integer"
               }
             },
+            "additionalProperties": false,
             "type": "object"
           },
           "match": {
