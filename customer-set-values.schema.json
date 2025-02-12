@@ -268,37 +268,23 @@
             "additionalProperties": false,
             "type": "object"
           },
-          "match": {
-            "items": {
-              "properties": {
-                "uri": {
-                  "properties": {
-                    "prefix": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                }
-              },
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "namespace": {
-            "type": "string"
-          },
           "readinessProbe": {
+            "description:": "See documentation: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
             "properties": {
               "failureThreshold": {
+                "description": "Number of failed checks to consider the liveness check failed.",
                 "type": "integer"
               },
               "initialDelaySeconds": {
+                "description": "Amount of seconds to send the first probe.",
                 "type": "integer"
               },
               "periodSeconds": {
+                "description": "How often the probe checks for liveness.",
                 "type": "integer"
               },
               "successThreshold": {
+                "description": "Minimum successful attempts needed to be deemed alive.",
                 "type": "integer"
               },
               "tcpSocket": {
@@ -307,15 +293,19 @@
                     "type": "integer"
                   }
                 },
+                "additionalProperties": false,
                 "type": "object"
               },
               "timeoutSeconds": {
+                "description": "Number of seconds after which a probe times out.",
                 "type": "integer"
               }
             },
+            "additionalProperties": false,
             "type": "object"
           },
           "resources": {
+            "description": "See documentation: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
             "properties": {
               "limits": {
                 "properties": {
@@ -326,6 +316,7 @@
                     "type": "string"
                   }
                 },
+                "additionalProperties": false,
                 "type": "object"
               },
               "requests": {
@@ -337,29 +328,15 @@
                     "type": "string"
                   }
                 },
+                "additionalProperties": false,
                 "type": "object"
               }
             },
-            "type": "object"
-          },
-          "secrets": {
-            "properties": {
-              "data": {
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "type": "object"
-              },
-              "generateKeys": {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              }
-            },
+            "additionalProperties": false,
             "type": "object"
           },
           "service": {
+            "description": "See documentation: https://kubernetes.io/docs/concepts/services-networking/service/",
             "properties": {
               "additionalPorts": {
                 "items": {
@@ -375,8 +352,13 @@
                     },
                     "targetPort": {
                       "type": "integer"
+                    },
+                    "appProtocol": {
+                      "type": "string"
                     }
                   },
+                  "additionalProperties": false,
+                  "required": ["name", "port", "protocol", "targetPort"],
                   "type": "object"
                 },
                 "type": "array"
@@ -386,8 +368,15 @@
               },
               "targetPort": {
                 "type": "integer"
+              },
+              "appProtocol": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
               }
             },
+            "additionalProperties": false,
             "type": "object"
           },
           "topologySpreadConstraints": {
