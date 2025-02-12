@@ -300,7 +300,7 @@
                 "type": "object"
               },
               "readinessProbe": {
-                "description:": "See documentation: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+                "description": "See documentation: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
                 "properties": {
                   "failureThreshold": {
                     "description": "Number of failed checks to consider the liveness check failed.",
@@ -786,7 +786,7 @@
             }
           },
           "readinessProbe": {
-            "description:": "See documentation: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+            "description": "See documentation: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
             "properties": {
               "failureThreshold": {
                 "description": "Number of failed checks to consider the liveness check failed.",
