@@ -220,6 +220,34 @@
             "additionalProperties": false,
             "type": "object"
           },
+          "job": {
+            "description": "See documentation: https://kubernetes.io/docs/concepts/workloads/controllers/job/",
+            "additionalProperties": false,
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "restartPolicy": {
+                "type": "string"
+              },
+              "backoffLimit": {
+                "type": "integer"
+              },
+              "completions": {
+                "type": "integer"
+              },
+              "parallelism": {
+                "type": "integer"
+              }
+            }
+          },
+          "labels": {
+            "description": "Add resource labels to microservice.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
           "livenessProbe": {
             "description": "See documentation: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
             "properties": {
@@ -335,6 +363,13 @@
             "additionalProperties": false,
             "type": "object"
           },
+          "selectorLabels": {
+            "description": "Add selector labels to microservice.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
           "service": {
             "description": "See documentation: https://kubernetes.io/docs/concepts/services-networking/service/",
             "properties": {
@@ -378,6 +413,17 @@
             },
             "additionalProperties": false,
             "type": "object"
+          },
+          "statefulset": {
+            "description": "Make microservice statefulset instead of a deployment.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["enabled"],
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
           },
           "topologySpreadConstraints": {
             "description": "See documentation: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/",
