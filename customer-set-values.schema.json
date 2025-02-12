@@ -114,16 +114,20 @@
                 "type": "integer"
               },
               "schedule": {
+                "description": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#schedule-syntax",
                 "type": "string"
               },
               "successfulJobsHistoryLimit": {
+                "description": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#jobs-history-limits",
                 "type": "integer"
               },
               "suspended": {
+                "description": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#schedule-suspension",
                 "type": "boolean"
               }
             }
           },
+          
           "envFrom": {
             "items": {
               "properties": {
