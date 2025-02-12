@@ -2,34 +2,22 @@ subCharts:
   pgadmin:
     enabled: false
     chart: pgadmin
-    revision: '0.1.0'
+    revision: '0.1.5'
     values:
-      podLabels:
-        sidecar.istio.io/inject: "false"
-      networkPolicy:
-        enabled: false
-      image:
-        tag: "6.21"
-      virtualService:
-        enabled: false
-      extraSecretMounts:
-        - name: pgpassfile
-          secret: ###CUSTOMER_NAME###-db
-          subPath: pgpassfile
-          mountPath: "/pgpass"
-      existingSecret: "###CUSTOMER_NAME###-db"
-      envVarsFromSecrets:
-        - ###CUSTOMER_NAME###-db
-      env:
-        contextPath: /pgadmin
+      existingSecret: "###CUSTOMER_NAME###"
       serverDefinitions:
         servers:
           firstServer:
-            Name: "###CUSTOMER_NAME###"
             Group: "###CUSTOMER_NAME###"
             Host: "###CUSTOMER_DB_HOST###"
+            MaintenanceDB: "###CUSTOMER_NAME###"
+            Name: "###CUSTOMER_NAME###"
+            PassFile: /var/lib/pgadmin/pgpass
+            Port: 5432
             Shared: true
-            PassFile: "/pgpass"
+            SharedUsername: DBAdmin
+            SSLMode: prefer
+            Username: DBAdmin
 ###
   strimzi-kafka-operator:
     enabled: false
