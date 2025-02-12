@@ -29,6 +29,9 @@
             "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
             "type": "string"
           },
+          "serverSideApply": {
+            "type": "boolean"
+          },
           "sync": {
             "default": true,
             "type": "boolean"
@@ -49,6 +52,8 @@
             "type": "string"
           }
         },
+        "description": "Included additional helm charts to install.",
+        "required": ["revision"],
         "additionalProperties": false,
         "type": "object"
       },
