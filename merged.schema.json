@@ -1,0 +1,1653 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+      "argocd": {
+          "type": "object",
+          "properties": {
+              "disableProjectCreation": {
+                  "type": "boolean"
+              },
+              "namespace": {
+                  "type": "string"
+              },
+              "projectOverride": {
+                  "type": "string"
+              },
+              "serverSideApply": {
+                  "type": "boolean"
+              },
+              "wrapAll": {
+                  "type": "boolean"
+              },
+              "wrapAllNameOverride": {
+                  "type": "string"
+              },
+              "wrapperAppWave": {
+                  "type": "string"
+              },
+              "wrapperSync": {
+                  "type": "boolean"
+              }
+          }
+      },
+      "ciliumNetworkPolicies": {
+          "type": "object",
+          "properties": {
+              "enabled": {
+                  "type": "boolean"
+              }
+          }
+      },
+      "config": {
+          "type": "object",
+          "properties": {
+              "annotations": {
+                  "type": "object",
+                  "properties": {
+                      "imageregistry": {
+                          "type": "string"
+                      }
+                  }
+              },
+              "data": {
+                  "type": "object",
+                  "properties": {
+                      "config.json": {
+                          "type": "string"
+                      },
+                      "logLevel": {
+                          "type": "string"
+                      },
+                      "secretswithinconfigmap": {
+                          "type": "string"
+                      },
+                      "service-url": {
+                          "type": "string"
+                      },
+                      "testConfigAnother": {
+                          "type": "string"
+                      }
+                  }
+              },
+              "enabled": {
+                  "type": "boolean"
+              }
+          }
+      },
+      "defaults": {
+          "type": "object",
+          "properties": {
+              "envFrom": {
+                  "type": "array",
+                  "items": {
+                      "type": "object",
+                      "properties": {
+                          "configMapRef": {
+                              "type": "object",
+                              "properties": {
+                                  "name": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "podSecurityContext": {
+                  "type": "object",
+                  "properties": {
+                      "fsGroup": {
+                          "type": "integer"
+                      },
+                      "fsGroupChangePolicy": {
+                          "type": "string"
+                      },
+                      "runAsNonRoot": {
+                          "type": "boolean"
+                      }
+                  }
+              },
+              "resources": {
+                  "type": "object",
+                  "properties": {
+                      "limits": {
+                          "type": "object",
+                          "properties": {
+                              "cpu": {
+                                  "type": "string"
+                              },
+                              "memory": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "requests": {
+                          "type": "object",
+                          "properties": {
+                              "cpu": {
+                                  "type": "string"
+                              },
+                              "memory": {
+                                  "type": "string"
+                              }
+                          }
+                      }
+                  }
+              },
+              "securityContext": {
+                  "type": "object",
+                  "properties": {
+                      "runAsGroup": {
+                          "type": "integer"
+                      },
+                      "runAsNonRoot": {
+                          "type": "boolean"
+                      },
+                      "runAsUser": {
+                          "type": "integer"
+                      }
+                  }
+              },
+              "strategy": {
+                  "type": "object",
+                  "properties": {
+                      "type": {
+                          "type": "string"
+                      }
+                  }
+              },
+              "virtualService": {
+                  "type": "object",
+                  "properties": {
+                      "enabled": {
+                          "type": "boolean"
+                      }
+                  }
+              }
+          }
+      },
+      "extraManifests": {
+          "type": "array",
+          "items": {
+              "type": "object",
+              "properties": {
+                  "apiVersion": {
+                      "type": "string"
+                  },
+                  "kind": {
+                      "type": "string"
+                  },
+                  "metadata": {
+                      "type": "object",
+                      "properties": {
+                          "name": {
+                              "type": "string"
+                          },
+                          "namespace": {
+                              "type": "string"
+                          }
+                      }
+                  },
+                  "spec": {
+                      "type": "object",
+                      "properties": {
+                          "entityOperator": {
+                              "type": "object",
+                              "properties": {
+                                  "topicOperator": {
+                                      "type": "object"
+                                  },
+                                  "userOperator": {
+                                      "type": "object"
+                                  }
+                              }
+                          },
+                          "kafka": {
+                              "type": "object",
+                              "properties": {
+                                  "config": {
+                                      "type": "object",
+                                      "properties": {
+                                          "default.replication.factor": {
+                                              "type": "integer"
+                                          },
+                                          "message.max.bytes": {
+                                              "type": "integer"
+                                          },
+                                          "min.insync.replicas": {
+                                              "type": "integer"
+                                          },
+                                          "offsets.topic.replication.factor": {
+                                              "type": "integer"
+                                          },
+                                          "transaction.state.log.min.isr": {
+                                              "type": "integer"
+                                          },
+                                          "transaction.state.log.replication.factor": {
+                                              "type": "integer"
+                                          }
+                                      }
+                                  },
+                                  "listeners": {
+                                      "type": "array",
+                                      "items": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "port": {
+                                                  "type": "integer"
+                                              },
+                                              "tls": {
+                                                  "type": "boolean"
+                                              },
+                                              "type": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      }
+                                  },
+                                  "replicas": {
+                                      "type": "integer"
+                                  },
+                                  "storage": {
+                                      "type": "object",
+                                      "properties": {
+                                          "type": {
+                                              "type": "string"
+                                          },
+                                          "volumes": {
+                                              "type": "array",
+                                              "items": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "deleteClaim": {
+                                                          "type": "boolean"
+                                                      },
+                                                      "id": {
+                                                          "type": "integer"
+                                                      },
+                                                      "size": {
+                                                          "type": "string"
+                                                      },
+                                                      "type": {
+                                                          "type": "string"
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          },
+                          "zookeeper": {
+                              "type": "object",
+                              "properties": {
+                                  "replicas": {
+                                      "type": "integer"
+                                  },
+                                  "storage": {
+                                      "type": "object",
+                                      "properties": {
+                                          "deleteClaim": {
+                                              "type": "boolean"
+                                          },
+                                          "size": {
+                                              "type": "string"
+                                          },
+                                          "type": {
+                                              "type": "string"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "fullnameOverride": {
+          "type": "string"
+      },
+      "generateSecretsJob": {
+          "type": "object",
+          "properties": {
+              "enabled": {
+                  "type": "boolean"
+              },
+              "secrets": {
+                  "type": "object",
+                  "properties": {
+                      "example-basic-auth-secret": {
+                          "type": "object",
+                          "properties": {
+                              "stringData": {
+                                  "type": "object",
+                                  "properties": {
+                                      "username": {
+                                          "type": "string"
+                                      }
+                                  }
+                              },
+                              "type": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "example-second-secret": {
+                          "type": "object",
+                          "properties": {
+                              "stringData": {
+                                  "type": "object",
+                                  "properties": {
+                                      "exampleOpaqueSecretKey": {
+                                          "type": "string"
+                                      },
+                                      "randomKey": {
+                                          "type": "string"
+                                      }
+                                  }
+                              },
+                              "type": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "example-secret": {
+                          "type": "object",
+                          "properties": {
+                              "stringData": {
+                                  "type": "object",
+                                  "properties": {
+                                      "NUGET_KEY": {
+                                          "type": "string"
+                                      },
+                                      "exampleOpaqueSecretKey": {
+                                          "type": "string"
+                                      },
+                                      "randomKey": {
+                                          "type": "string"
+                                      }
+                                  }
+                              },
+                              "type": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "example-tls-secret": {
+                          "type": "object",
+                          "properties": {
+                              "type": {
+                                  "type": "string"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "generatedSecrets": {
+          "type": "object",
+          "properties": {
+              "enabled": {
+                  "type": "boolean"
+              }
+          }
+      },
+      "global": {
+          "type": "object",
+          "properties": {
+              "applicationName": {
+                  "type": "string"
+              },
+              "customerName": {
+                  "type": "string"
+              },
+              "destinationCluster": {
+                  "type": "string"
+              },
+              "domain": {
+                  "type": "string"
+              },
+              "environment": {
+                  "type": "string"
+              },
+              "gateway": {
+                  "type": "string"
+              },
+              "image": {
+                  "type": "object",
+                  "properties": {
+                      "defaultImageRegistry": {
+                          "type": "string"
+                      },
+                      "defaultImageRepository": {
+                          "type": "string"
+                      }
+                  }
+              },
+              "impactLevel": {
+                  "type": "string"
+              },
+              "istio": {
+                  "type": "object",
+                  "properties": {
+                      "mtls": {
+                          "type": "object",
+                          "properties": {
+                              "enabled": {
+                                  "type": "boolean"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "imageCredentials": {
+          "type": "array",
+          "items": {
+              "type": "object",
+              "properties": {
+                  "password": {
+                      "type": "string"
+                  },
+                  "registry": {
+                      "type": "string"
+                  },
+                  "username": {
+                      "type": "string"
+                  }
+              }
+          }
+      },
+      "microservices": {
+          "type": "object",
+          "properties": {
+              "backend": {
+                  "type": "object",
+                  "properties": {
+                      "image": {
+                          "type": "object",
+                          "properties": {
+                              "repository": {
+                                  "type": "string"
+                              },
+                              "tag": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "labels": {
+                          "type": "object",
+                          "properties": {
+                              "protect": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "namespace": {
+                          "type": "string"
+                      },
+                      "resources": {
+                          "type": "object",
+                          "properties": {
+                              "limits": {
+                                  "type": "object",
+                                  "properties": {
+                                      "cpu": {
+                                          "type": "string"
+                                      },
+                                      "memory": {
+                                          "type": "string"
+                                      }
+                                  }
+                              },
+                              "requests": {
+                                  "type": "object",
+                                  "properties": {
+                                      "cpu": {
+                                          "type": "string"
+                                      },
+                                      "memory": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "statefulset": {
+                          "type": "object",
+                          "properties": {
+                              "enabled": {
+                                  "type": "boolean"
+                              }
+                          }
+                      }
+                  }
+              },
+              "backendMultiContainer": {
+                  "type": "object",
+                  "properties": {
+                      "containers": {
+                          "type": "object",
+                          "properties": {
+                              "backend": {
+                                  "type": "object",
+                                  "properties": {
+                                      "envs": {
+                                          "type": "object",
+                                          "properties": {
+                                              "test1": {
+                                                  "type": "boolean"
+                                              },
+                                              "test2": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      },
+                                      "image": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "tag": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      },
+                                      "labels": {
+                                          "type": "object",
+                                          "properties": {
+                                              "protect": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      },
+                                      "resources": {
+                                          "type": "object",
+                                          "properties": {
+                                              "limits": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "cpu": {
+                                                          "type": "string"
+                                                      },
+                                                      "memory": {
+                                                          "type": "string"
+                                                      }
+                                                  }
+                                              },
+                                              "requests": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "cpu": {
+                                                          "type": "string"
+                                                      },
+                                                      "memory": {
+                                                          "type": "string"
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      },
+                                      "service": {
+                                          "type": "object",
+                                          "properties": {
+                                              "additionalPorts": {
+                                                  "type": "array",
+                                                  "items": {
+                                                      "type": "object",
+                                                      "properties": {
+                                                          "name": {
+                                                              "type": "string"
+                                                          },
+                                                          "port": {
+                                                              "type": "integer"
+                                                          },
+                                                          "protocol": {
+                                                              "type": "string"
+                                                          },
+                                                          "targetPort": {
+                                                              "type": "integer"
+                                                          }
+                                                      }
+                                                  }
+                                              },
+                                              "appProtocol": {
+                                                  "type": "string"
+                                              },
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "port": {
+                                                  "type": "integer"
+                                              },
+                                              "targetPort": {
+                                                  "type": "integer"
+                                              },
+                                              "type": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      }
+                                  }
+                              },
+                              "gingerbreadMan": {
+                                  "type": "object",
+                                  "properties": {
+                                      "envs": {
+                                          "type": "object",
+                                          "properties": {
+                                              "testVar1": {
+                                                  "type": "string"
+                                              },
+                                              "testVariableTwo": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      },
+                                      "image": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "tag": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      },
+                                      "securityContext": {
+                                          "type": "null"
+                                      }
+                                  }
+                              },
+                              "mainContainer": {
+                                  "type": "object",
+                                  "properties": {
+                                      "image": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "tag": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "enabled": {
+                          "type": "boolean"
+                      },
+                      "image": {
+                          "type": "object",
+                          "properties": {
+                              "tag": {
+                                  "type": "null"
+                              }
+                          }
+                      },
+                      "replicaCount": {
+                          "type": "integer"
+                      }
+                  }
+              },
+              "example-cronjob": {
+                  "type": "object",
+                  "properties": {
+                      "args": {
+                          "type": "array",
+                          "items": {
+                              "type": "string"
+                          }
+                      },
+                      "command": {
+                          "type": "array",
+                          "items": {
+                              "type": "string"
+                          }
+                      },
+                      "cronjob": {
+                          "type": "object",
+                          "properties": {
+                              "backoffLimit": {
+                                  "type": "integer"
+                              },
+                              "completions": {
+                                  "type": "integer"
+                              },
+                              "concurrencyPolicy": {
+                                  "type": "string"
+                              },
+                              "enabled": {
+                                  "type": "boolean"
+                              },
+                              "failedJobsHistoryLimit": {
+                                  "type": "integer"
+                              },
+                              "parallelism": {
+                                  "type": "integer"
+                              },
+                              "schedule": {
+                                  "type": "string"
+                              },
+                              "successfulJobsHistoryLimit": {
+                                  "type": "integer"
+                              },
+                              "suspended": {
+                                  "type": "boolean"
+                              }
+                          }
+                      },
+                      "envFrom": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "secretRef": {
+                                      "type": "object",
+                                      "properties": {
+                                          "name": {
+                                              "type": "string"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "envs": {
+                          "type": "object",
+                          "properties": {
+                              "ENV_VAR_1": {
+                                  "type": "string"
+                              },
+                              "ENV_VAR_2": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "image": {
+                          "type": "object",
+                          "properties": {
+                              "repository": {
+                                  "type": "string"
+                              },
+                              "tag": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "initContainers": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "command": {
+                                      "type": "array",
+                                      "items": {
+                                          "type": "string"
+                                      }
+                                  },
+                                  "env": {
+                                      "type": "array",
+                                      "items": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "valueFrom": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "secretKeyRef": {
+                                                          "type": "object",
+                                                          "properties": {
+                                                              "key": {
+                                                                  "type": "string"
+                                                              },
+                                                              "name": {
+                                                                  "type": "string"
+                                                              }
+                                                          }
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  },
+                                  "image": {
+                                      "type": "string"
+                                  },
+                                  "imagePullPolicy": {
+                                      "type": "string"
+                                  },
+                                  "name": {
+                                      "type": "string"
+                                  },
+                                  "volumeMounts": {
+                                      "type": "array",
+                                      "items": {
+                                          "type": "object",
+                                          "properties": {
+                                              "mountPath": {
+                                                  "type": "string"
+                                              },
+                                              "name": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "resources": {
+                          "type": "object",
+                          "properties": {
+                              "limits": {
+                                  "type": "object",
+                                  "properties": {
+                                      "cpu": {
+                                          "type": "string"
+                                      },
+                                      "memory": {
+                                          "type": "string"
+                                      }
+                                  }
+                              },
+                              "requests": {
+                                  "type": "object",
+                                  "properties": {
+                                      "cpu": {
+                                          "type": "string"
+                                      },
+                                      "memory": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "securityContext": {
+                          "type": "object",
+                          "properties": {
+                              "capabilities": {
+                                  "type": "object",
+                                  "properties": {
+                                      "add": {
+                                          "type": "array",
+                                          "items": {
+                                              "type": "string"
+                                          }
+                                      },
+                                      "drop": {
+                                          "type": "array",
+                                          "items": {
+                                              "type": "string"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "volumeMounts": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "mountPath": {
+                                      "type": "string"
+                                  },
+                                  "name": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      },
+                      "volumes": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "configMap": {
+                                      "type": "object",
+                                      "properties": {
+                                          "items": {
+                                              "type": "array",
+                                              "items": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "key": {
+                                                          "type": "string"
+                                                      },
+                                                      "path": {
+                                                          "type": "string"
+                                                      }
+                                                  }
+                                              }
+                                          },
+                                          "name": {
+                                              "type": "string"
+                                          }
+                                      }
+                                  },
+                                  "name": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "example-daemonset": {
+                  "type": "object",
+                  "properties": {
+                      "args": {
+                          "type": "array",
+                          "items": {
+                              "type": "string"
+                          }
+                      },
+                      "command": {
+                          "type": "array",
+                          "items": {
+                              "type": "string"
+                          }
+                      },
+                      "containers": {
+                          "type": "object",
+                          "properties": {
+                              "backend": {
+                                  "type": "object",
+                                  "properties": {
+                                      "envs": {
+                                          "type": "object",
+                                          "properties": {
+                                              "test1": {
+                                                  "type": "string"
+                                              },
+                                              "test2": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      },
+                                      "image": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "tag": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      },
+                                      "labels": {
+                                          "type": "object",
+                                          "properties": {
+                                              "protect": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      },
+                                      "resources": {
+                                          "type": "object",
+                                          "properties": {
+                                              "limits": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "cpu": {
+                                                          "type": "string"
+                                                      },
+                                                      "memory": {
+                                                          "type": "string"
+                                                      }
+                                                  }
+                                              },
+                                              "requests": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "cpu": {
+                                                          "type": "string"
+                                                      },
+                                                      "memory": {
+                                                          "type": "string"
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      },
+                                      "service": {
+                                          "type": "object",
+                                          "properties": {
+                                              "additionalPorts": {
+                                                  "type": "array",
+                                                  "items": {
+                                                      "type": "object",
+                                                      "properties": {
+                                                          "name": {
+                                                              "type": "string"
+                                                          },
+                                                          "port": {
+                                                              "type": "integer"
+                                                          },
+                                                          "protocol": {
+                                                              "type": "string"
+                                                          },
+                                                          "targetPort": {
+                                                              "type": "integer"
+                                                          }
+                                                      }
+                                                  }
+                                              },
+                                              "appProtocol": {
+                                                  "type": "string"
+                                              },
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "port": {
+                                                  "type": "integer"
+                                              },
+                                              "targetPort": {
+                                                  "type": "integer"
+                                              },
+                                              "type": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      }
+                                  }
+                              },
+                              "gingerbreadMan": {
+                                  "type": "object",
+                                  "properties": {
+                                      "envs": {
+                                          "type": "object",
+                                          "properties": {
+                                              "testVar1": {
+                                                  "type": "string"
+                                              },
+                                              "testVariableTwo": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      },
+                                      "image": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "tag": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      },
+                                      "securityContext": {
+                                          "type": "null"
+                                      }
+                                  }
+                              },
+                              "mainContainer": {
+                                  "type": "object",
+                                  "properties": {
+                                      "image": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "tag": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "daemonset": {
+                          "type": "object",
+                          "properties": {
+                              "enabled": {
+                                  "type": "boolean"
+                              }
+                          }
+                      },
+                      "envFrom": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "secretRef": {
+                                      "type": "object",
+                                      "properties": {
+                                          "name": {
+                                              "type": "string"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "envs": {
+                          "type": "object",
+                          "properties": {
+                              "ENV_VAR_1": {
+                                  "type": "string"
+                              },
+                              "ENV_VAR_2": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "image": {
+                          "type": "object",
+                          "properties": {
+                              "repository": {
+                                  "type": "string"
+                              },
+                              "tag": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "initContainers": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "command": {
+                                      "type": "array",
+                                      "items": {
+                                          "type": "string"
+                                      }
+                                  },
+                                  "env": {
+                                      "type": "array",
+                                      "items": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "valueFrom": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "secretKeyRef": {
+                                                          "type": "object",
+                                                          "properties": {
+                                                              "key": {
+                                                                  "type": "string"
+                                                              },
+                                                              "name": {
+                                                                  "type": "string"
+                                                              }
+                                                          }
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  },
+                                  "image": {
+                                      "type": "string"
+                                  },
+                                  "imagePullPolicy": {
+                                      "type": "string"
+                                  },
+                                  "name": {
+                                      "type": "string"
+                                  },
+                                  "volumeMounts": {
+                                      "type": "array",
+                                      "items": {
+                                          "type": "object",
+                                          "properties": {
+                                              "mountPath": {
+                                                  "type": "string"
+                                              },
+                                              "name": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "resources": {
+                          "type": "object",
+                          "properties": {
+                              "limits": {
+                                  "type": "object",
+                                  "properties": {
+                                      "cpu": {
+                                          "type": "string"
+                                      },
+                                      "memory": {
+                                          "type": "string"
+                                      }
+                                  }
+                              },
+                              "requests": {
+                                  "type": "object",
+                                  "properties": {
+                                      "cpu": {
+                                          "type": "string"
+                                      },
+                                      "memory": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "securityContext": {
+                          "type": "object",
+                          "properties": {
+                              "capabilities": {
+                                  "type": "object",
+                                  "properties": {
+                                      "add": {
+                                          "type": "array",
+                                          "items": {
+                                              "type": "string"
+                                          }
+                                      },
+                                      "drop": {
+                                          "type": "array",
+                                          "items": {
+                                              "type": "string"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "volumeMounts": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "mountPath": {
+                                      "type": "string"
+                                  },
+                                  "name": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      },
+                      "volumes": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "configMap": {
+                                      "type": "object",
+                                      "properties": {
+                                          "items": {
+                                              "type": "array",
+                                              "items": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "key": {
+                                                          "type": "string"
+                                                      },
+                                                      "path": {
+                                                          "type": "string"
+                                                      }
+                                                  }
+                                              }
+                                          },
+                                          "name": {
+                                              "type": "string"
+                                          }
+                                      }
+                                  },
+                                  "name": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "examplejob": {
+                  "type": "object",
+                  "properties": {
+                      "annotations": {
+                          "type": "object",
+                          "properties": {
+                              "argocd.argoproj.io/hook": {
+                                  "type": "string"
+                              },
+                              "argocd.argoproj.io/hook-delete-policy": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "args": {
+                          "type": "array",
+                          "items": {
+                              "type": "string"
+                          }
+                      },
+                      "command": {
+                          "type": "array",
+                          "items": {
+                              "type": "string"
+                          }
+                      },
+                      "envFrom": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "secretRef": {
+                                      "type": "object",
+                                      "properties": {
+                                          "name": {
+                                              "type": "string"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "envs": {
+                          "type": "object",
+                          "properties": {
+                              "ENV_VAR_1": {
+                                  "type": "string"
+                              },
+                              "ENV_VAR_2": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "extraEnvs": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "name": {
+                                      "type": "string"
+                                  },
+                                  "value": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      },
+                      "image": {
+                          "type": "object",
+                          "properties": {
+                              "tag": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "initContainers": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "command": {
+                                      "type": "array",
+                                      "items": {
+                                          "type": "string"
+                                      }
+                                  },
+                                  "env": {
+                                      "type": "array",
+                                      "items": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "string"
+                                              },
+                                              "valueFrom": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "secretKeyRef": {
+                                                          "type": "object",
+                                                          "properties": {
+                                                              "key": {
+                                                                  "type": "string"
+                                                              },
+                                                              "name": {
+                                                                  "type": "string"
+                                                              }
+                                                          }
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  },
+                                  "image": {
+                                      "type": "string"
+                                  },
+                                  "imagePullPolicy": {
+                                      "type": "string"
+                                  },
+                                  "name": {
+                                      "type": "string"
+                                  },
+                                  "volumeMounts": {
+                                      "type": "array",
+                                      "items": {
+                                          "type": "object",
+                                          "properties": {
+                                              "mountPath": {
+                                                  "type": "string"
+                                              },
+                                              "name": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "job": {
+                          "type": "object",
+                          "properties": {
+                              "backoffLimit": {
+                                  "type": "integer"
+                              },
+                              "completions": {
+                                  "type": "integer"
+                              },
+                              "enabled": {
+                                  "type": "boolean"
+                              },
+                              "parallelism": {
+                                  "type": "integer"
+                              },
+                              "restartPolicy": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "resources": {
+                          "type": "object",
+                          "properties": {
+                              "limits": {
+                                  "type": "object",
+                                  "properties": {
+                                      "cpu": {
+                                          "type": "string"
+                                      },
+                                      "memory": {
+                                          "type": "string"
+                                      }
+                                  }
+                              },
+                              "requests": {
+                                  "type": "object",
+                                  "properties": {
+                                      "cpu": {
+                                          "type": "string"
+                                      },
+                                      "memory": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "securityContext": {
+                          "type": "object",
+                          "properties": {
+                              "readOnlyRootFilesystem": {
+                                  "type": "boolean"
+                              }
+                          }
+                      },
+                      "suspended": {
+                          "type": "boolean"
+                      },
+                      "volumeMounts": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "mountPath": {
+                                      "type": "string"
+                                  },
+                                  "name": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      },
+                      "volumes": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "configMap": {
+                                      "type": "object",
+                                      "properties": {
+                                          "items": {
+                                              "type": "array",
+                                              "items": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "key": {
+                                                          "type": "string"
+                                                      },
+                                                      "path": {
+                                                          "type": "string"
+                                                      }
+                                                  }
+                                              }
+                                          },
+                                          "name": {
+                                              "type": "string"
+                                          }
+                                      }
+                                  },
+                                  "name": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "nameOverride": {
+          "type": "string"
+      },
+      "podDisruptionBudget": {
+          "type": "object"
+      },
+      "secrets": {
+          "type": "object",
+          "properties": {
+              "stringData": {
+                  "type": "object",
+                  "properties": {
+                      "BigSecret": {
+                          "type": "string"
+                      },
+                      "Single-Secret-Name": {
+                          "type": "string"
+                      }
+                  }
+              }
+          }
+      },
+      "subCharts": {
+          "type": "object",
+          "properties": {
+              "clamav": {
+                  "type": "object",
+                  "properties": {
+                      "chart": {
+                          "type": "string"
+                      },
+                      "chartUrl": {
+                          "type": "string"
+                      },
+                      "enabled": {
+                          "type": "boolean"
+                      },
+                      "name": {
+                          "type": "string"
+                      },
+                      "project": {
+                          "type": "string"
+                      },
+                      "revision": {
+                          "type": "string"
+                      },
+                      "serverSideApply": {
+                          "type": "boolean"
+                      },
+                      "valueFiles": {
+                          "type": "array",
+                          "items": {
+                              "type": "string"
+                          }
+                      },
+                      "values": {
+                          "type": "object",
+                          "properties": {
+                              "test": {
+                                  "type": "string"
+                              }
+                          }
+                      },
+                      "valuesRepo": {
+                          "type": "string"
+                      },
+                      "valuesRevision": {
+                          "type": "string"
+                      },
+                      "wave": {
+                          "type": "integer"
+                      }
+                  }
+              }
+          }
+      }
+  }
+}
