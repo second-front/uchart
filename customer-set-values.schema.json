@@ -380,6 +380,7 @@
             "type": "object"
           },
           "topologySpreadConstraints": {
+            "description": "See documentation: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/",
             "items": {
               "properties": {
                 "labelSelector": {
@@ -391,6 +392,7 @@
                       "type": "object"
                     }
                   },
+                  "additionalProperties": false,
                   "type": "object"
                 },
                 "maxSkew": {
@@ -401,27 +403,50 @@
                 },
                 "whenUnsatisfiable": {
                   "type": "string"
+                },
+                "matchLabelKeys": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
                 }
               },
+              "additionalProperties": false,
               "type": "object"
             },
             "type": "array"
           },
           "volumeMounts": {
+            "description": "See documentation: https://kubernetes.io/docs/concepts/storage/volumes/",
             "items": {
               "properties": {
+                "readOnly": {
+                  "type": "boolean"
+                },
+                "subPath": {
+                  "type": "string"
+                },
                 "mountPath": {
                   "type": "string"
                 },
                 "name": {
                   "type": "string"
+                },
+                "mountPropagation": {
+                  "type": "string"
+                },
+                "subPathExpr": {
+                  "type": "string"
                 }
               },
+              "required": ["mountPath", "name"],
+              "additionalProperties": false,
               "type": "object"
             },
             "type": "array"
           },
           "volumes": {
+            "description": "See documentation: https://kubernetes.io/docs/concepts/storage/volumes/",
             "items": {
               "properties": {
                 "configMap": {
@@ -436,6 +461,8 @@
                             "type": "string"
                           }
                         },
+                        "required": ["key", "path"],
+                        "additionalProperties": false,
                         "type": "object"
                       },
                       "type": "array"
@@ -444,12 +471,64 @@
                       "type": "string"
                     }
                   },
+                  "required": ["name"],
+                  "additionalProperties": false,
                   "type": "object"
                 },
                 "name": {
                   "type": "string"
+                },
+                "image": {
+                  "properties": {
+                    "reference": {
+                      "type": "string"
+                    },
+                    "pullPolicy": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reference"],
+                  "type": "object",
+                  "additionalProperties": false
+                },
+                "persistentVolumeClaim": {
+                  "type": "object",
+                  "required": ["claimName"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "claimName": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "secret": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "secretName": {
+                      "type": "string"
+                    },
+                    "optional": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": ["secretName"]
+                },
+                "emptyDir": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "sizeLimit": {
+                      "type": "string"
+                    },
+                    "medium": {
+                      "type": "string"
+                    }
+                  }
                 }
               },
+              "required": ["name"],
+              "additionalProperties": false,
               "type": "object"
             },
             "type": "array"
