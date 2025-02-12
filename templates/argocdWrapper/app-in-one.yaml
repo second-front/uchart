@@ -1,5 +1,5 @@
 {{- $defaultProject := printf "%s-%s-%s" (required "customerName is required" .Values.global.customerName) (required "environment is required" .Values.global.environment) (required "applicationName is required" .Values.global.applicationName) -}}
-{{- if .Values.argocd.wrapAll }}
+{{- if and .Values.subCharts .Values.microservices .Values.argocd.wrapAll }}
 {{- $appName := .Values.argocd.wrapAllNameOverride | default (printf "%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName ) -}}
 ---
 kind: Application
@@ -48,7 +48,7 @@ spec:
           ciliumNetworkPolicies:
           {{- toYaml  .Values.ciliumNetworkPolicies | nindent 12 }}
           argocd:
-            {{- toYaml  .Values.argocd | nindent 12 }}
+          {{- toYaml  .Values.argocd | nindent 12 }}
           config:
           {{- toYaml  .Values.config | nindent 12 }}
           generatedSecrets:

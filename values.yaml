@@ -296,6 +296,6 @@ argocd:
 # -- Server Side Apply on Application wrapper (not subCharts)
   serverSideApply: true
 # -- wrapper all-in-one where the microservices and subCharts all are placed into a single wrapped application with multiple sources
-  wrapAll: true
+  wrapAll: false
 # -- wrapper all-in-one argocd application name override
   wrapAllNameOverride: ""
