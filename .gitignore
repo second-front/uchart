@@ -1,1 +1,6 @@
-*test.yaml
+# Compiled Helm chart dependencies
+Chart.lock
+charts/
+
+# Testing
+__snapshot__/

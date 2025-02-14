@@ -1,0 +1,14 @@
+---
+global:
+  customer: test
+  complianceLevel: il2
+  environment: dev
+
+workloads:
+  main:
+    containers:
+      main:
+        image:
+          registry: ghcr.io
+          repository: mendhak/http-https-echo
+          tag: 31

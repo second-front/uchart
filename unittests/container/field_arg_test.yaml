@@ -1,0 +1,109 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: container args override
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default should pass
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        notExists:
+          path: spec.template.spec.containers[0].args
+
+  - it: single string should pass
+    set:
+      workloads.main.containers.main.args: sleep infinity
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - sleep infinity
+
+  - it: multiline string should pass
+    set:
+      workloads.main.containers.main.args: |
+        echo hello
+        echo world
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - |-
+              echo hello
+              echo world
+
+  - it: single quoted string should pass
+    set:
+      workloads.main.containers.main.args: "sleep infinity"
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - sleep infinity
+
+  - it: list of strings should pass
+    set:
+      workloads.main.containers.main.args:
+        - sleep
+        - infinity
+        - "test"
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - sleep
+            - infinity
+            - test
+
+  - it: args from defaultContainerOptions should pass
+    set:
+      workloads.main.defaultContainerOptions:
+        args: value_of_args
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - value_of_args
+
+  - it: args from defaultContainerOptions with container override should pass
+    set:
+      workloads.main.defaultContainerOptions:
+        args: value_of_args
+      workloads.main.containers.main.args:
+        - value 1
+        - value 2
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - value 1
+            - value 2

@@ -1,0 +1,97 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: workload types
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default should pass
+    asserts:
+      - documentIndex: &deploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *deploymentDoc
+        equal:
+          path: metadata.labels['app.kubernetes.io/component']
+          value: main
+
+  - it: additional workloads should pass
+    set:
+      workloads:
+        second:
+          containers:
+            main:
+              image:
+                repository: mendhak/http-https-echo
+                tag: 31
+    asserts:
+      - hasDocuments:
+          count: 2
+      - documentIndex: &firstDeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *firstDeploymentDoc
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME-main
+      - documentIndex: *firstDeploymentDoc
+        equal:
+          path: metadata.labels['app.kubernetes.io/component']
+          value: main
+      - documentIndex: &secondDeploymentDoc 1
+        isKind:
+          of: Deployment
+      - documentIndex: *secondDeploymentDoc
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME-second
+      - documentIndex: *secondDeploymentDoc
+        equal:
+          path: metadata.labels['app.kubernetes.io/component']
+          value: second
+
+  - it: additional workloads with nameOverride should pass
+    set:
+      workloads:
+        main:
+          nameOverride: "{{ .Release.Name }}"
+        second:
+          nameOverride: testOverride
+          containers:
+            main:
+              image:
+                repository: mendhak/http-https-echo
+                tag: 31
+    asserts:
+      - hasDocuments:
+          count: 2
+      - documentIndex: &firstDeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *firstDeploymentDoc
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME
+      - documentIndex: *firstDeploymentDoc
+        equal:
+          path: metadata.labels['app.kubernetes.io/component']
+          value: main
+      - documentIndex: &secondDeploymentDoc 1
+        isKind:
+          of: Deployment
+      - documentIndex: *secondDeploymentDoc
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME-testOverride
+      - documentIndex: *secondDeploymentDoc
+        equal:
+          path: metadata.labels['app.kubernetes.io/component']
+          value: second
+  
+  - it: disabled should pass
+    set:
+      workloads.main.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0

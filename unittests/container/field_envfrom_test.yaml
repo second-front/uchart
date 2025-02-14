@@ -1,0 +1,195 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: container envFrom values
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default should pass
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        notExists:
+          path: spec.template.spec.containers[0].envFrom
+
+  - it: explicit envFrom should pass
+    set:
+      workloads.main.containers.main.envFrom:
+        - secretRef:
+            name: myCustomSecret
+          prefix: test
+        - configMapRef:
+            name: myCustomConfig
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[0]
+          value:
+            secretRef:
+              name: myCustomSecret
+            prefix: test
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[1]
+          value:
+            configMapRef:
+              name: myCustomConfig
+
+  - it: envFrom from defaultContainerOptions should pass
+    set:
+      workloads.main.defaultContainerOptions:
+        envFrom:
+          - secretRef:
+              name: myCustomSecret
+            prefix: test
+          - configMapRef:
+              name: myCustomConfig
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[0]
+          value:
+            secretRef:
+              name: myCustomSecret
+            prefix: test
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[1]
+          value:
+            configMapRef:
+              name: myCustomConfig
+
+  - it: envFrom from defaultContainerOptions with container override should pass
+    set:
+      workloads.main.defaultContainerOptions:
+        envFrom:
+          - secretRef:
+              name: myCustomSecret
+            prefix: test
+          - configMapRef:
+              name: myCustomConfig
+      workloads.main.containers.main.envFrom:
+        - secretRef:
+            name: myCustomSecretOverride
+          prefix: test
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[0]
+          value:
+            secretRef:
+              name: myCustomSecretOverride
+            prefix: test
+      - documentIndex: *DeploymentDoc
+        notExists:
+          path: spec.template.spec.containers[0].envFrom[1]
+
+  - it: envFrom configmap id reference should pass
+    set:
+      workloads.main.containers.main.envFrom:
+        - configMap: config
+          prefix: test
+        - configMapRef:
+            id: config
+      configMaps:
+        config:
+          data:
+            test: test
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[0]
+          value:
+            configMapRef:
+              name: RELEASE-NAME-config
+            prefix: test
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[1]
+          value:
+            configMapRef:
+              name: RELEASE-NAME-config
+
+  - it: envFrom Secret id reference should pass
+    set:
+      workloads.main.containers.main.envFrom:
+        - secret: secret
+          prefix: test
+        - secretRef:
+            id: secret
+          prefix: test
+      secrets:
+        secret:
+          stringData:
+            test: test
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[0]
+          value:
+            secretRef:
+              name: RELEASE-NAME-secret
+            prefix: test
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[1]
+          value:
+            secretRef:
+              name: RELEASE-NAME-secret
+            prefix: test
+
+  - it: envFrom with templated name reference should pass
+    set:
+      workloads.main.containers.main.envFrom:
+        - configMap: "{{ .Release.Name }}-config"
+        - configMapRef:
+            name: "{{ .Release.Name }}-config2"
+        - secret: "{{ .Release.Name }}-secret"
+        - secretRef:
+            name: "{{ .Release.Name }}-secret2"
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[0]
+          value:
+            configMapRef:
+              name: RELEASE-NAME-config
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[1]
+          value:
+            configMapRef:
+              name: RELEASE-NAME-config2
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[2]
+          value:
+            secretRef:
+              name: RELEASE-NAME-secret
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[3]
+          value:
+            secretRef:
+              name: RELEASE-NAME-secret2

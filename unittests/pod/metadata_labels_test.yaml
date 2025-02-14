@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: "pod metadata: labels"
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default pod labels
+    documentSelector: &DeploymentSelector
+      path: $[?(@.kind == "Deployment")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels
+          value:
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/component: main
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.gamewarden.io/complianceLevel: il2
+
+  - it: pod labels from defaultPodOptions should be included
+    set:
+      defaultPodOptions:
+        labels:
+          defaultPodOptionsLabel: test
+    documentSelector: *DeploymentSelector
+    asserts:
+      - isSubset:
+          path: spec.template.metadata.labels
+          content:
+            defaultPodOptionsLabel: test
+
+  - it: pod labels from pod options should be included
+    set:
+      workloads:
+        main:
+          pod:
+            labels:
+              podOptionsLabel: test
+    documentSelector: *DeploymentSelector
+    asserts:
+      - isSubset:
+          path: spec.template.metadata.labels
+          content:
+            podOptionsLabel: test
+
+  - it: pod labels from global labels should be included
+    set:
+      global:
+        labels:
+          globalLabel: test
+    documentSelector: *DeploymentSelector
+    asserts:
+      - isSubset:
+          path: spec.template.metadata.labels
+          content:
+            globalLabel: test

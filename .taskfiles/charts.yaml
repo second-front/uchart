@@ -1,0 +1,33 @@
+---
+version: "3"
+
+tasks:
+  test:
+    desc: Test chart
+    preconditions:
+      # Requires https://github.com/kstasik/schema-tools
+      - which helm schematools yq
+      - test -d "{{.CHART_DIR}}"
+      - test -d "{{.CHART_TEST_DIR}}"
+    vars:
+      GLOB: "{{.GLOB | default \"**/*_test.yaml\"}}"
+      CHART_DIR: "{{.PROJECT_DIR}}"
+      CHART_TYPE:
+        sh: yq eval '.type // "application"' {{.PROJECT_DIR}}/Chart.yaml
+      CHART_TEST_DIR: |-
+        {{.CHART_DIR}}{{- if eq .CHART_TYPE "library" -}}/test-chart{{- end -}}
+    dir: "{{.CHART_TEST_DIR}}"
+    cmds:
+    - helm dep update --skip-refresh
+    - helm unittest --color -f "unittests/{{.GLOB}}" .
+    silent: true
+
+  dependency-cleanup:
+    aliases:
+      - cleanup
+    desc: clean up chart dependencies
+    dir: "{{.PROJECT_DIR}}"
+    cmds:
+    - find {{.PROJECT_DIR}} -mindepth 1 -type f -name 'Chart.lock' -print0 | xargs -r -0 rm
+    - find {{.PROJECT_DIR}} -mindepth 1 -type d -name 'charts' -print0 | xargs -r -0 rm -rf
+    silent: true
