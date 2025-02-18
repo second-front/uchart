@@ -1,0 +1,112 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: configmap metadata
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default metadata should pass
+    set:
+      configMaps:
+        config:
+          data:
+            test: test
+    asserts:
+      - hasDocuments:
+          count: 2
+      - documentIndex: &ConfigmapDocument 0
+        isKind:
+          of: ConfigMap
+      - documentIndex: *ConfigmapDocument
+        notExists:
+          path: metadata.annotations
+      - documentIndex: *ConfigmapDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/environment: dev
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+
+  - it: custom metadata should pass
+    set:
+      configMaps:
+        config:
+          data:
+            test: test
+          annotations:
+            test_annotation: test
+          labels:
+            test_label: test
+    asserts:
+      - hasDocuments:
+          count: 2
+      - documentIndex: &ConfigmapDocument 0
+        isKind:
+          of: ConfigMap
+      - documentIndex: *ConfigmapDocument
+        equal:
+          path: metadata.annotations
+          value:
+            test_annotation: test
+      - documentIndex: *ConfigmapDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/environment: dev
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+            test_label: test
+
+  - it: custom metadata with global metadata should pass
+    set:
+      global:
+        labels:
+          global_label: test
+        annotations:
+          global_annotation: test
+      configMaps:
+        config:
+          data:
+            test: test
+          annotations:
+            test_annotation: test
+          labels:
+            test_label: test
+    asserts:
+      - hasDocuments:
+          count: 2
+      - documentIndex: &ConfigmapDocument 0
+        isKind:
+          of: ConfigMap
+      - documentIndex: *ConfigmapDocument
+        equal:
+          path: metadata.annotations
+          value:
+            global_annotation: test
+            test_annotation: test
+      - documentIndex: *ConfigmapDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/environment: dev
+            argocd.argoproj.io/instance: RELEASE-NAME
+            global_label: test
+            helm.sh/chart: uchart-2.0.0
+            test_label: test
