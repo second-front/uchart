@@ -5,5 +5,6 @@
 
   {{- /* Build the templates */ -}}
   {{- include "2f.uchart.render.configMaps" . | nindent 0 -}}
+  {{- include "2f.uchart.render.secrets" . | nindent 0 -}}
   {{- include "2f.uchart.render.workloads" . | nindent 0 -}}
 {{- end -}}
