@@ -8,9 +8,9 @@
     {{- fail (printf "Not a valid workload.type (%s)" $workloadValues.type) -}}
   {{- end -}}
 
-  {{- $enabledContainers := include "2f.uchart.lib.workload.enabledContainers" (dict "root" $root "workloadObject" $workloadValues) | fromYaml }}
+  {{- $enabledContainers := include "2f.uchart.lib.utils.enabledObjects" (dict "root" $root "objects" $workloadValues.containers) | fromYaml }}
   {{- /* Validate at least one container is enabled */ -}}
   {{- if not $enabledContainers -}}
-    {{- fail (printf "No containers enabled for workload (%s)" $workloadValues) -}}
+    {{- fail (printf "No containers enabled for workload (%s)" $workloadValues.id) -}}
   {{- end -}}
 {{- end -}}

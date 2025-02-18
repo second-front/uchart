@@ -8,7 +8,7 @@
   {{- $containers := list -}}
 
   {{- /* Fetch configured containers for this workload */ -}}
-  {{- $enabledContainers := include "2f.uchart.lib.workload.enabledContainers" (dict "root" $root "workloadObject" $workloadObject) | fromYaml }}
+  {{- $enabledContainers := include "2f.uchart.lib.utils.enabledObjects" (dict "root" $root "objects" $workloadObject.containers) | fromYaml }}
   {{- $renderedContainers := dict -}}
 
   {{- range $key, $containerValues := $enabledContainers -}}
@@ -16,7 +16,7 @@
     {{- $containerObject := (include "2f.uchart.lib.container.valuesToObject" (dict "root" $root "workloadObject" $workloadObject "containerType" "default" "id" $key "values" $containerValues)) | fromYaml -}}
 
     {{- /* Perform validations on the Container before rendering */ -}}
-    {{- include "2f.uchart.lib.container.validate" (dict "root" $ "object" $workloadObject "containerObject" $containerObject) -}}
+    {{- include "2f.uchart.lib.container.validate" (dict "root" $root "object" $workloadObject "containerObject" $containerObject) -}}
 
     {{- /* Generate the Container spec */ -}}
     {{- $renderedContainer := include "2f.uchart.lib.container.spec" (dict "root" $root "workloadObject" $workloadObject "containerObject" $containerObject) | fromYaml -}}

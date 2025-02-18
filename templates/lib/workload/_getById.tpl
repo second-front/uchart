@@ -3,7 +3,7 @@
   {{- $root := .root -}}
   {{- $id := .id -}}
 
-  {{- $enabledWorkloads := include "2f.uchart.lib.workload.enabledWorkloads" (dict "root" $root) | fromYaml -}}
+  {{- $enabledWorkloads := include "2f.uchart.lib.utils.enabledObjects" (dict "root" $root "objects" $root.Values.workloads) | fromYaml -}}
   {{- $workloadValues := get $enabledWorkloads $id -}}
 
   {{- if not (empty $workloadValues) -}}

@@ -3,7 +3,7 @@
   {{- $root := $ -}}
 
   {{- /* Generate named configMaps as required */ -}}
-  {{- $enabledConfigMaps := (include "2f.uchart.lib.configMap.enabledConfigMaps" (dict "root" $root) | fromYaml ) -}}
+  {{- $enabledConfigMaps := (include "2f.uchart.lib.utils.enabledObjects" (dict "root" $root "objects" $root.Values.configMaps) | fromYaml ) -}}
   {{- range $key, $configMap := $enabledConfigMaps -}}
     {{- $configMapValues := (mustDeepCopy $configMap) -}}
 

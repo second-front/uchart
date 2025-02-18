@@ -3,7 +3,7 @@
   {{- $root := $ -}}
 
   {{- /* Generate named Secrets as required */ -}}
-  {{- $enabledSecrets := (include "2f.uchart.lib.secret.enabledSecrets" (dict "root" $root) | fromYaml ) -}}
+  {{- $enabledSecrets := (include "2f.uchart.lib.utils.enabledObjects" (dict "root" $root "objects" $root.Values.secrets) | fromYaml ) -}}
   {{- range $key, $secret := $enabledSecrets -}}
     {{- $secretValues := (mustDeepCopy $secret) -}}
 

@@ -95,3 +95,14 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+
+  - it: workloads should require container field
+    set:
+      workloads.main.enabled: false
+      workloads:
+        broken:
+          enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: No containers enabled for workload (broken)
+
