@@ -100,7 +100,6 @@
             "description": "For creating a multi-containered pod: ",
             "type": "object",
             "additionalProperties": false,
-            "required": ["image"],
             "properties": {
               "annotations": {
                 "description": "Add resource annotations.",
