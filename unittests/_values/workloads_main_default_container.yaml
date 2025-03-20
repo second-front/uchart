@@ -1,8 +1,10 @@
+# yaml-language-server: $schema=../../values.schema.json
 ---
 global:
   customer: test
   complianceLevel: il2
   environment: dev
+  imageRegistry: r.gamewarden.io
 
 workloads:
   main:

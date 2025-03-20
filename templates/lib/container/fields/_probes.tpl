@@ -24,7 +24,7 @@
       {{- else -}}
         {{- $probeSpec := dig "spec" dict $probeValues -}}
 
-        {{- $primaryService := include "2f.uchart.lib.service.primaryForController" (dict "root" $root "workloadId" $workloadObject.id) | fromYaml -}}
+        {{- $primaryService := include "2f.uchart.lib.service.primaryForWorkload" (dict "root" $root "workloadId" $workloadObject.id) | fromYaml -}}
         {{- $primaryServiceDefaultPort := dict -}}
         {{- if $primaryService -}}
           {{- $primaryServiceDefaultPort = include "2f.uchart.lib.service.primaryPort" (dict "root" $root "serviceObject" $primaryService) | fromYaml -}}
@@ -37,10 +37,10 @@
             {{- $probeType = $probeValues.type | default "TCP" -}}
           {{- end -}}
 
-          {{- $_ := set $probeDefinition "initialDelaySeconds" (include "2f.uchart.lib.defaultKeepNonNullValue" (dict "value" $probeSpec.initialDelaySeconds "default" 0) | int) -}}
-          {{- $_ := set $probeDefinition "failureThreshold" (include "2f.uchart.lib.defaultKeepNonNullValue" (dict "value" $probeSpec.failureThreshold "default" 3) | int) -}}
-          {{- $_ := set $probeDefinition "timeoutSeconds" (include "2f.uchart.lib.defaultKeepNonNullValue" (dict "value" $probeSpec.timeoutSeconds "default" 1) | int) -}}
-          {{- $_ := set $probeDefinition "periodSeconds" (include "2f.uchart.lib.defaultKeepNonNullValue" (dict "value" $probeSpec.periodSeconds "default" 10) | int) -}}
+          {{- $_ := set $probeDefinition "initialDelaySeconds" (include "2f.uchart.lib.utils.defaultKeepNonNullValue" (dict "value" $probeSpec.initialDelaySeconds "default" 0) | int) -}}
+          {{- $_ := set $probeDefinition "failureThreshold" (include "2f.uchart.lib.utils.defaultKeepNonNullValue" (dict "value" $probeSpec.failureThreshold "default" 3) | int) -}}
+          {{- $_ := set $probeDefinition "timeoutSeconds" (include "2f.uchart.lib.utils.defaultKeepNonNullValue" (dict "value" $probeSpec.timeoutSeconds "default" 1) | int) -}}
+          {{- $_ := set $probeDefinition "periodSeconds" (include "2f.uchart.lib.utils.defaultKeepNonNullValue" (dict "value" $probeSpec.periodSeconds "default" 10) | int) -}}
 
           {{- $probeHeader := "" -}}
           {{- if or ( eq $probeType "HTTPS" ) ( eq $probeType "HTTP" ) -}}

@@ -1,0 +1,169 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: container image tag
+templates:
+  - entrypoint.yaml
+tests:
+  - it: string tag should pass
+    values:
+      - ../_values/workloads_main_default_container.yaml
+    set:
+      workloads.main.containers.main.image:
+        registry: ghcr.io
+        repository: mendhak/http-https-echo
+        tag: latest
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].image
+          value: ghcr.io/mendhak/http-https-echo:latest
+
+  - it: integer tag should pass
+    values:
+      - ../_values/workloads_main_default_container.yaml
+    set:
+      workloads.main.containers.main.image:
+        registry: ghcr.io
+        repository: mendhak/http-https-echo
+        tag: 1.23
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].image
+          value: ghcr.io/mendhak/http-https-echo:1.23
+
+  - it: template tag should pass
+    values:
+      - ../_values/workloads_main_default_container.yaml
+    set:
+      workloads.main.containers.main.image:
+        registry: ghcr.io
+        repository: mendhak/http-https-echo
+        tag: "{{.Chart.Version}}"
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].image
+          value: ghcr.io/mendhak/http-https-echo:2.0.0
+
+  - it: tag from defaultContainerOptions should pass
+    set:
+      global:
+        customer: test
+        environment: dev
+        complianceLevel: il2
+      workloads.main:
+        defaultContainerOptions:
+          image:
+            registry: ghcr.io
+            repository: mendhak/http-https-echo
+            tag: 32
+        containers:
+          main: {} # needed to have at least a container enabled
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].image
+          value: ghcr.io/mendhak/http-https-echo:32
+
+  - it: tag from defaultContainerOptions with container override should pass
+    set:
+      global:
+        customer: test
+        environment: dev
+        complianceLevel: il2
+      workloads.main.defaultContainerOptions.image:
+        registry: ghcr.io
+        repository: mendhak/http-https-echo
+        tag: 32
+      workloads.main.containers.main.image:
+        registry: ghcr.io
+        repository: mendhak/http-https-echo-override
+        tag: 33
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].image
+          value: ghcr.io/mendhak/http-https-echo-override:33
+
+  - it: registry from defaultContainerOptions should pass when stategy is merge
+    set:
+      global:
+        customer: test
+        environment: dev
+        complianceLevel: il2
+      workloads.main:
+        defaultContainerOptionsStrategy: merge
+        defaultContainerOptions:
+          image:
+            registry: r.gamewarden.io
+        containers:
+          main:
+            image:
+              repository: mendhak/http-https-echo
+              tag: 32
+
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].image
+          value: r.gamewarden.io/mendhak/http-https-echo:32
+
+  - it: registry from defaultContainerOptions with container override should pass
+    set:
+      global:
+        customer: test
+        environment: dev
+        complianceLevel: il2
+      workloads.main.defaultContainerOptions.image:
+        registry: ghcr.io
+      workloads.main.containers.main.image:
+        registry: r.gamewarden.io
+        repository: mendhak/http-https-echo-override
+        tag: 33
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].image
+          value: r.gamewarden.io/mendhak/http-https-echo-override:33
+
+  - it: registry from global should pass
+    set:
+      global:
+        customer: test
+        environment: dev
+        complianceLevel: il2
+        imageRegistry: r.gamewarden.io
+      workloads.main.containers.main.image:
+        repository: mendhak/http-https-echo-override
+        tag: 33
+    asserts:
+      - documentIndex: &DeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].image
+          value: r.gamewarden.io/mendhak/http-https-echo-override:33
+

@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
-suite: controller metadata deployment
+suite: workload metadata deployment
 templates:
   - entrypoint.yaml
 values:
