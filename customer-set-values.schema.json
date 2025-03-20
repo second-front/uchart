@@ -652,17 +652,6 @@
             },
             "type": "array"
           },
-          "image": {
-            "properties": {
-              "name": {
-                "description": "The name of the image. Defaults to microservice name.",
-                "type": "string"
-              }
-            },
-            "required": ["name"],
-            "additionalProperties": false,
-            "type": "object"
-          },
           "initContainer": {
             "description": "See documentation: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/",
             "type": "array",
