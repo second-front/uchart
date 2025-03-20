@@ -1,0 +1,125 @@
+{
+  "instance": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "annotations": {
+        "$ref": "metadata.json#/annotations"
+      },
+      "labels": {
+        "$ref": "metadata.json#/labels"
+      },
+      "nameOverride": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string"
+      },
+      "clusterIP": {
+        "type": "string"
+      },
+      "externalName": {
+        "type": "string"
+      },
+      "loadBalancerIP": {
+        "type": "string"
+      },
+      "loadBalancerClass": {
+        "type": "string"
+      },
+      "internalTrafficPolicy": {
+        "type": "string",
+        "enum": [
+          "Cluster",
+          "Local"
+        ]
+      },
+      "externalTrafficPolicy": {
+        "type": "string",
+        "enum": [
+          "Cluster",
+          "Local"
+        ]
+      },
+      "sessionAffinity": {
+        "type": "string",
+        "enum": [
+          "None",
+          "ClientIP"
+        ]
+      },
+      "externalIPs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "ports": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/servicePort"
+        }
+      },
+      "primary": {
+        "type": "boolean",
+        "default": false
+      },
+      "workload": {
+        "type": "string"
+      },
+      "extraSelectorLabels": {}
+    },
+    "required": [
+      "workload"
+    ]
+  },
+  "servicePort": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "primary": {
+        "type": "boolean",
+        "default": false
+      },
+      "port": {
+        "type": [
+          "string",
+          "integer"
+        ]
+      },
+      "protocol": {
+        "type": "string",
+        "enum": [
+          "TCP",
+          "UDP"
+        ]
+      },
+      "targetPort": {
+        "type": [
+          "string",
+          "integer"
+        ]
+      },
+      "nodePort": {
+        "type": [
+          "string",
+          "integer"
+        ]
+      },
+      "appProtocol": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "port"
+    ]
+  }
+}

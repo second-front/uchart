@@ -1,0 +1,63 @@
+{
+  "options": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "affinity": {
+        "type": "object",
+        "$ref": "k8s-api.json#/core.v1.Affinity"
+      },
+      "annotations": {
+        "$ref": "metadata.json#/annotations"
+      },
+      "automountServiceAccountToken": {
+        "type": "boolean",
+        "default": true
+      },
+      "imagePullSecrets": {
+        "type": "array",
+        "items": {
+          "$ref": "k8s-api.json#/core.v1.LocalObjectReference"
+        }
+      },
+      "labels": {
+        "$ref": "metadata.json#/annotations"
+      },
+      "nodeSelector": {
+        "type": "object",
+        "additionalProperties": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "priorityClassName": {
+        "type": "string"
+      },
+      "restartPolicy": {
+        "type": "string"
+      },
+      "runtimeClassName": {
+        "type": "string"
+      },
+      "schedulerName": {
+        "type": "string"
+      },
+      "securityContext": {
+        "$ref": "k8s-api.json#/core.v1.PodSecurityContext"
+      },
+      "tolerations": {
+        "type": "array",
+        "items": {
+          "$ref": "k8s-api.json#/core.v1.Toleration"
+        }
+      },
+      "topologySpreadConstraints": {
+        "type": "array",
+        "items": {
+          "$ref": "k8s-api.json#/core.v1.TopologySpreadConstraint"
+        }
+      }
+    }
+  }
+}
