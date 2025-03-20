@@ -220,14 +220,11 @@
                 "description": "See documentation: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/",
                 "type": "array",
                 "items": {
+                  "additionalProperties": false,
                   "type": "object",
-                  "required": ["name", "image"],
+                  "required": ["name" ],
                   "properties": {
                     "name": {
-                      "type": "string",
-                      "pattern": "^(?!image$).*$"
-                    },
-                    "image": {
                       "type": "string"
                     }
                   }
