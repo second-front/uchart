@@ -10,7 +10,7 @@ Returns the value for initContainers
   {{- $containers := list -}}
 
   {{- /* Fetch configured containers for this workload */ -}}
-  {{- $enabledContainers := include "2f.uchart.lib.utils.enabledObjects" (dict "root" $root "objects" $workloadObject.initContainers) | fromYaml }}
+  {{- $enabledContainers := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $workloadObject.initContainers) | fromYaml }}
   {{- $renderedContainers := dict -}}
 
   {{- range $key, $containerValues := $enabledContainers -}}

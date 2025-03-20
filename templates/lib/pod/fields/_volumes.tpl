@@ -2,7 +2,7 @@
 Returns the value for volumes
 */ -}}
 {{- define "2f.uchart.lib.pod.field.volumes" -}}
-  {{- $rootContext := .ctx.rootContext -}}
+  {{- $root := .ctx.root -}}
   {{- $workloadObject := .ctx.workloadObject -}}
 
   {{- /* Default to empty list */ -}}
@@ -10,7 +10,7 @@ Returns the value for volumes
   {{- $volumes := list -}}
 
   {{- /* Loop over persistence values */ -}}
-  {{- range $id, $persistenceValues := $rootContext.Values.persistence -}}
+  {{- range $id, $persistenceValues := $root.Values.persistence -}}
     {{- /* Enable persistence item by default, but allow override */ -}}
     {{- $persistenceEnabled := true -}}
     {{- if hasKey $persistenceValues "enabled" -}}
@@ -40,7 +40,7 @@ Returns the value for volumes
 
     {{- /* PVC persistence type */ -}}
     {{- if eq (default "persistentVolumeClaim" $persistenceValues.type) "persistentVolumeClaim" -}}
-      {{- $pvcName := (include "2f.uchart.lib.chart.names.fullname" $rootContext) -}}
+      {{- $pvcName := (include "2f.uchart.lib.chart.names.fullname" $root) -}}
       {{- if $persistenceValues.existingClaim -}}
         {{- /* Always prefer an existingClaim if that is set */ -}}
         {{- $pvcName = $persistenceValues.existingClaim -}}
@@ -48,11 +48,11 @@ Returns the value for volumes
         {{- /* Otherwise refer to the PVC name */ -}}
         {{- if $persistenceValues.nameOverride -}}
           {{- if not (eq $persistenceValues.nameOverride "-") -}}
-            {{- $pvcName = (printf "%s-%s" (include "2f.uchart.lib.chart.names.fullname" $rootContext) $persistenceValues.nameOverride) -}}
+            {{- $pvcName = (printf "%s-%s" (include "2f.uchart.lib.chart.names.fullname" $root) $persistenceValues.nameOverride) -}}
           {{- end -}}
         {{- else -}}
           {{- if not (eq $pvcName $id) -}}
-            {{- $pvcName = (printf "%s-%s" (include "2f.uchart.lib.chart.names.fullname" $rootContext) $id) -}}
+            {{- $pvcName = (printf "%s-%s" (include "2f.uchart.lib.chart.names.fullname" $root) $id) -}}
           {{- end -}}
         {{- end -}}
       {{- end -}}
@@ -60,11 +60,12 @@ Returns the value for volumes
 
     {{- /* configMap persistence type */ -}}
     {{- else if eq $persistenceValues.type "configMap" -}}
+      {{- $resources := $root.Values.configMaps -}}
       {{- $objectName := "" -}}
       {{- if $persistenceValues.name -}}
-        {{- $objectName = tpl $persistenceValues.name $rootContext -}}
+        {{- $objectName = tpl $persistenceValues.name $root -}}
       {{- else if $persistenceValues.id -}}
-        {{- $object := (include "2f.uchart.lib.configMap.getByid" (dict "rootContext" $rootContext "id" $persistenceValues.id) | fromYaml ) -}}
+        {{- $object := (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" $persistenceValues.id) | fromYaml ) -}}
         {{- if not $object -}}
           {{fail (printf "No configmap found with this id. (persistence item '%s', id '%s')" $id $persistenceValues.id)}}
         {{- end -}}
@@ -81,11 +82,12 @@ Returns the value for volumes
 
     {{- /* Secret persistence type */ -}}
     {{- else if eq $persistenceValues.type "secret" -}}
+      {{- $resources := $root.Values.secrets -}}
       {{- $objectName := "" -}}
       {{- if $persistenceValues.name -}}
-        {{- $objectName = tpl $persistenceValues.name $rootContext -}}
+        {{- $objectName = tpl $persistenceValues.name $root -}}
       {{- else if $persistenceValues.id -}}
-        {{- $object := (include "2f.uchart.lib.secret.getByid" (dict "rootContext" $rootContext "id" $persistenceValues.id) | fromYaml ) -}}
+        {{- $object := (include "2f.uchart.lib.utisl.getById" (dict "root" $root "resources" $resources "id" $persistenceValues.id) | fromYaml ) -}}
         {{- if not $object -}}
           {{fail (printf "No secret found with this id. (persistence item '%s', id '%s')" $id $persistenceValues.id)}}
         {{- end -}}

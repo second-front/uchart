@@ -7,9 +7,7 @@
   {{- /* Determine and inject the name */ -}}
   {{- $objectName := (include "2f.uchart.lib.chart.names.fullname" $root) -}}
 
-  {{- if $objectValues.forceRename -}}
-    {{- $objectName = tpl $objectValues.forceRename $root -}}
-  {{- else if $objectValues.nameOverride -}}
+  {{- if $objectValues.nameOverride -}}
     {{- $override := tpl $objectValues.nameOverride $root -}}
     {{- if not (eq $objectName $override) -}}
       {{- $objectName = printf "%s-%s" $objectName $override -}}

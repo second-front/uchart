@@ -20,7 +20,7 @@ Convert workload values to an object
       {{- $objectName = printf "%s-%s" $objectName $override -}}
     {{- end -}}
   {{- else -}}
-    {{- $enabledWorkloads := (include "2f.uchart.lib.utils.enabledObjects" (dict "root" $root "objects" $root.Values.workloads) | fromYaml ) }}
+    {{- $enabledWorkloads := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $root.Values.workloads) | fromYaml ) }}
     {{- if gt (len $enabledWorkloads) 1 -}}
       {{- if not (eq $objectName $id) -}}
         {{- $objectName = printf "%s-%s" $objectName $id -}}

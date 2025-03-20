@@ -3,7 +3,7 @@
   {{- $root := $ -}}
 
   {{- /* Generate named workload objects as required */ -}}
-  {{- $enabledWorkloads := (include "2f.uchart.lib.utils.enabledObjects" (dict "root" $root "objects" $root.Values.workloads) | fromYaml ) -}}
+  {{- $enabledWorkloads := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $root.Values.workloads) | fromYaml ) -}}
   {{- range $key, $workload := $enabledWorkloads -}}
     {{- $workloadValues := (mustDeepCopy $workload) -}}
 
