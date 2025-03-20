@@ -133,10 +133,9 @@ spec:
 {{- end }}
   selector:
     app: {{ $containerName }}
-    {{- if not ($v.service).disableIstioInjection }}
-    {{- include "universal-app-chart.istioLabels" . | nindent 4 }}
-    {{- end }}
-    {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 4 }} {{- end }}
+    # app.kubernetes.io/instance: {{ $.Release.Name }}
+    authentication: istio-auth
+    # app.kubernetes.io/name: {{ printf "%s-%s" $.Release.Name $.Chart.Name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 {{- end }}
