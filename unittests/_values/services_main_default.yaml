@@ -1,0 +1,8 @@
+---
+# yaml-language-server: $schema=../../values.schema.json
+services:
+  main:
+    workload: main
+    ports:
+      http:
+        port: 8081

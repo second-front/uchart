@@ -98,6 +98,8 @@
       "protocol": {
         "type": "string",
         "enum": [
+          "HTTP",
+          "HTTPS",
           "TCP",
           "UDP"
         ]

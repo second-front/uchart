@@ -1,0 +1,94 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: service values
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: ports and services are enabled by default
+    set:
+      services:
+        second:
+          type: ClusterIP
+          workload: main
+          ports:
+            first:
+              port: 80
+    documentSelector: &ServiceSelector
+      path: kind
+      value: Service
+    asserts:
+      - containsDocument:
+          kind: Service
+          apiVersion: v1
+          name: RELEASE-NAME
+
+  - it: service not present when disabled
+    values:
+      - ../_values/services_main_default.yaml
+    set:
+      services:
+        main:
+          enabled: false
+    asserts:
+      - not: true
+        containsDocument:
+          kind: Service
+          apiVersion: v1
+          name: RELEASE-NAME
+
+  - it: externalTrafficPolicy can be configured for NodePort service
+    values:
+      - ../_values/services_main_default.yaml
+    set:
+      services:
+        main:
+          type: NodePort
+          externalTrafficPolicy: Local
+    documentSelector: *ServiceSelector
+    asserts:
+      - equal:
+          path: spec.externalTrafficPolicy
+          value: Local
+
+  - it: internalTrafficPolicy can be configured
+    values:
+      - ../_values/services_main_default.yaml
+    set:
+      services:
+        main:
+          internalTrafficPolicy: Local
+    documentSelector: *ServiceSelector
+    asserts:
+      - equal:
+          path: spec.internalTrafficPolicy
+          value: Local
+
+  - it: externalTrafficPolicy can be configured for LoadBalancer service
+    values:
+      - ../_values/services_main_default.yaml
+    set:
+      services:
+        main:
+          type: LoadBalancer
+          externalTrafficPolicy: Local
+    documentSelector: *ServiceSelector
+    asserts:
+      - equal:
+          path: spec.externalTrafficPolicy
+          value: Local
+
+  - it: externalName can be configured for ExternalName service
+    values:
+      - ../_values/services_main_default.yaml
+    set:
+      services:
+        main:
+          type: ExternalName
+          externalName: my.database.example.com
+    documentSelector: *ServiceSelector
+    asserts:
+      - equal:
+          path: spec.externalName
+          value: my.database.example.com
