@@ -133,9 +133,7 @@ spec:
 {{- end }}
   selector:
     app: {{ $containerName }}
-    # app.kubernetes.io/instance: {{ $.Release.Name }}
     authentication: istio-auth
-    # app.kubernetes.io/name: {{ printf "%s-%s" $.Release.Name $.Chart.Name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 {{- end }}
