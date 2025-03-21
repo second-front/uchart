@@ -9,7 +9,7 @@ Validate Service values
     {{- fail (printf "workload field is required for Service. (service: %s)" $serviceObject.id) -}}
   {{- end -}}
 
-  {{- $serviceWorkload := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $root.Values.workloads "id" $serviceObject.workload) -}}
+  {{- $serviceWorkload := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $root.Values.workloads "id" $serviceObject.workload "kind" "workload") -}}
   {{- if empty $serviceWorkload -}}
     {{- fail (printf "No enabled workload found with this id. (service: '%s', workload: '%s')" $serviceObject.id $serviceObject.workload) -}}
   {{- end -}}

@@ -378,11 +378,17 @@ workloads: {}
 #       # enable autoScaling
 #       enabled: false
 #       # minimum amount of replicas
-#       min: 1
+#       minReplicas: 1
 #       # maximum amount of replicas
-#       max: 3
+#       maxReplicas: 3
+#       # set target memory utilization threshold
+#       targetMemoryUtilizationPercentage:
+#       # set target cpu utilization threshold
+#       targetCpuUtilizationPercentage:
+#       # set custom metrics
+#       metrics 
 #
-#     # -- Number of desired pods. When using a HorizontalPodAutoscaler, set this to `null`.
+#     # -- Number of desired pods. Unused when autoscaling is enabled.
 #     replicas: 1
 #
 #     # -- Set the workload upgrade strategy

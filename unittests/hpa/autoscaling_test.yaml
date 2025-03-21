@@ -1,0 +1,87 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: autoscaling
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: should generate hpa with default min/max
+    set:
+      workloads.main.autoscaling.enabled: true
+    documentSelector:
+      path: $[?(@.kind == "HorizontalPodAutoscaler")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - isKind:
+          of: HorizontalPodAutoscaler
+      - equal:
+          path: spec.minReplicas
+          value: 1
+      - equal:
+          path: spec.maxReplicas
+          value: 6
+  - it: creates metric for target memory utilization if specified
+    set:
+      workloads.main.autoscaling.enabled: true
+      workloads.main.autoscaling.targetMemoryUtilizationPercentage: 40
+    documentSelector:
+      path: $[?(@.kind == "HorizontalPodAutoscaler")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - isKind:
+          of: HorizontalPodAutoscaler
+      - equal:
+          path: spec.metrics[0]
+          value: 
+            type: Resource
+            resource:
+              name: memory
+              target:
+                type: Utilization
+                averageUtilization: 40
+  - it: creates metric for target cpu utilization if specified
+    set:
+      workloads.main.autoscaling.enabled: true
+      workloads.main.autoscaling.targetCpuUtilizationPercentage: 40
+    documentSelector:
+      path: $[?(@.kind == "HorizontalPodAutoscaler")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - isKind:
+          of: HorizontalPodAutoscaler
+      - equal:
+          path: spec.metrics[0]
+          value: 
+            type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 40
+  - it: creates custom metrics if specified
+    set:
+      workloads.main.autoscaling.enabled: true
+      workloads.main.autoscaling.metrics.test:
+        type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 40
+    documentSelector:
+      path: $[?(@.kind == "HorizontalPodAutoscaler")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - isKind:
+          of: HorizontalPodAutoscaler
+      - equal:
+          path: spec.metrics[0]
+          value: 
+            type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 40
+

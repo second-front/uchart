@@ -3,6 +3,7 @@
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $objectValues := .values -}}
+  {{- $resources := .resources -}}
 
   {{- /* Determine and inject the name */ -}}
   {{- $objectName := (include "2f.uchart.lib.chart.names.fullname" $root) -}}
@@ -13,8 +14,11 @@
       {{- $objectName = printf "%s-%s" $objectName $override -}}
     {{- end -}}
   {{- else -}}
-    {{- if not (eq $objectName $id) -}}
-      {{- $objectName = printf "%s-%s" $objectName $id -}}
+    {{- $enabledObjects := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $resources) | fromYaml ) }}
+    {{- if and (not $objectValues.primary) (gt (len $enabledObjects) 1) -}}
+      {{- if not (eq $objectName $id) -}}
+        {{- $objectName = printf "%s-%s" $objectName $id -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 

@@ -116,7 +116,39 @@ tests:
           path: spec.template.spec.containers[0].envFrom[0]
           value:
             configMapRef:
-              name: RELEASE-NAME-config
+              name: RELEASE-NAME
+            prefix: test
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[1]
+          value:
+            configMapRef:
+              name: RELEASE-NAME
+
+  - it: envFrom configmap id reference with multiple configMaps should pass
+    set:
+      workloads.main.containers.main.envFrom:
+        - configMap: second
+          prefix: test
+        - configMapRef:
+            id: config
+      configMaps:
+        config:
+          data:
+            test: test
+        second:
+          data:
+            test: test
+    asserts:
+      - documentIndex: &DeploymentDoc 2
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[0]
+          value:
+            configMapRef:
+              name: RELEASE-NAME-second
             prefix: test
       - documentIndex: *DeploymentDoc
         equal:
@@ -139,6 +171,40 @@ tests:
             test: test
     asserts:
       - documentIndex: &DeploymentDoc 1
+        isKind:
+          of: Deployment
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[0]
+          value:
+            secretRef:
+              name: RELEASE-NAME
+            prefix: test
+      - documentIndex: *DeploymentDoc
+        equal:
+          path: spec.template.spec.containers[0].envFrom[1]
+          value:
+            secretRef:
+              name: RELEASE-NAME
+            prefix: test
+
+  - it: envFrom Secret id reference with multiple secrets should pass
+    set:
+      workloads.main.containers.main.envFrom:
+        - secret: secret
+          prefix: test
+        - secretRef:
+            id: secret
+          prefix: test
+      secrets:
+        secret:
+          stringData:
+            test: test
+        second:
+          stringData:
+            test: test
+    asserts:
+      - documentIndex: &DeploymentDoc 2
         isKind:
           of: Deployment
       - documentIndex: *DeploymentDoc

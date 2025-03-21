@@ -13,12 +13,12 @@
       {{- $item := dict -}}
 
       {{- if hasKey . "configMap" -}}
-        {{- $configMap := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $configMapResources "id" .configMap) | fromYaml -}}
+        {{- $configMap := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $configMapResources "id" .configMap "kind" "configMap") | fromYaml -}}
         {{- $configMapName := default (tpl .configMap $root) $configMap.name -}}
         {{- $_ := set $item "configMapRef" (dict "name" $configMapName) -}}
       {{- else if hasKey . "configMapRef" -}}
         {{- if not (empty (dig "id" nil .configMapRef)) -}}
-          {{- $configMap := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $configMapResources "id" .configMapRef.id) | fromYaml -}}
+          {{- $configMap := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $configMapResources "id" .configMapRef.id "kind" "configMap") | fromYaml -}}
           {{- if empty $configMap -}}
             {{- fail (printf "No configMap configured with id '%s'" .configMapRef.id) -}}
           {{- end -}}
@@ -29,12 +29,12 @@
         {{- end -}}
 
       {{- else if hasKey . "secret" -}}
-        {{- $secret := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $secretResources "id" .secret) | fromYaml -}}
+        {{- $secret := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $secretResources "id" .secret "kind" "secret") | fromYaml -}}
         {{- $secretName := default (tpl .secret $root) $secret.name -}}
         {{- $_ := set $item "secretRef" (dict "name" $secretName) -}}
       {{- else if hasKey . "secretRef" -}}
         {{- if not (empty (dig "id" nil .secretRef)) -}}
-          {{- $secret := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $secretResources "id" .secretRef.id) | fromYaml -}}
+          {{- $secret := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $secretResources "id" .secretRef.id "kind" "secret") | fromYaml -}}
           {{- if empty $secret -}}
             {{- fail (printf "No secret configured with id '%s'" .secretRef.id) -}}
           {{- end -}}

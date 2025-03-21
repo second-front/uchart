@@ -1,0 +1,374 @@
+{
+  "autoscaling": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": "false"
+      },
+      "minReplicas": {
+        "type": "integer",
+        "default": "1"
+      },
+      "maxReplicas": {
+        "type": "integer",
+        "default": "6"
+      },
+      "targetMemoryUtilizationPercentage": {
+        "type": "integer"
+      },
+      "targetCpuUtilizationPercentage": {
+        "type": "integer"
+      },
+      "metrics": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/metrics"
+        }
+      }
+    }
+  },
+  "metrics": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "type": {
+        "type": "string",
+        "enum": [
+          "Resource",
+          "ContainerResource",
+          "Object",
+          "Pod",
+          "External"
+        ]
+      },
+      "resource": {
+        "$ref": "#/resource"
+      },
+      "containerResource": {
+        "$ref": "#/containerResource"
+      },
+      "pod": {
+        "$ref": "#/pod"
+      },
+      "object": {
+        "$ref": "#/object"
+      },
+      "external": {
+        "$ref": "#/external"
+      }
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "const": "ContainerResource"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "containerResource"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "resource"
+                ]
+              },
+              {
+                "required": [
+                  "pod"
+                ]
+              },
+              {
+                "required": [
+                  "object"
+                ]
+              },
+              {
+                "required": [
+                  "external"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "const": "Resource"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "resource"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "containerResource"
+                ]
+              },
+              {
+                "required": [
+                  "pod"
+                ]
+              },
+              {
+                "required": [
+                  "object"
+                ]
+              },
+              {
+                "required": [
+                  "external"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "const": "Pod"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "pod"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "containerResource"
+                ]
+              },
+              {
+                "required": [
+                  "resource"
+                ]
+              },
+              {
+                "required": [
+                  "object"
+                ]
+              },
+              {
+                "required": [
+                  "external"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "const": "Object"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "object"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "containerResource"
+                ]
+              },
+              {
+                "required": [
+                  "resource"
+                ]
+              },
+              {
+                "required": [
+                  "pod"
+                ]
+              },
+              {
+                "required": [
+                  "external"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "const": "External"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "external"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "resource"
+                ]
+              },
+              {
+                "required": [
+                  "pod"
+                ]
+              },
+              {
+                "required": [
+                  "object"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "resource": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "target": {
+        "$ref": "#/metricTarget"
+      }
+    },
+    "required": [
+      "name",
+      "target"
+    ]
+  },
+  "containerResource": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "containerName": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "target": {
+        "$ref": "#/metricTarget"
+      }
+    },
+    "required": [
+      "containerName",
+      "name",
+      "target"
+    ]
+  },
+  "pod": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "metric": {
+        "$ref": "#/metricIdentifier"
+      },
+      "target": {
+        "$ref": "#/metricTarget"
+      }
+    },
+    "required": [
+      "metric",
+      "target"
+    ]
+  },
+  "object": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "metric": {
+        "$ref": "#/metricIdentifier"
+      },
+      "describedObject": {
+        "$ref": "k8s-api.json#/core.v1.CrossVersionObjectReference"
+      },
+      "target": {
+        "$ref": "#/metricTarget"
+      }
+    },
+    "required": [
+      "metric",
+      "describedObject",
+      "target"
+    ]
+  },
+  "external": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "metric": {
+        "$ref": "#/metricIdentifier"
+      },
+      "target": {
+        "$ref": "#/metricTarget"
+      }
+    },
+    "required": [
+      "metric",
+      "target"
+    ]
+  },
+  "metricIdentifier": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "selector": {
+        "$ref": "k8s-api.json#/meta.v1.LabelSelector"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  },
+  "metricTarget": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "type": {
+        "type": "string"
+      },
+      "averageUtilization": {
+        "type": "integer"
+      },
+      "averageValue": {
+        "type": "integer"
+      },
+      "value": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "type"
+    ]
+  }
+}

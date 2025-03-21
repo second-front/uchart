@@ -38,5 +38,16 @@
       {{- include "2f.uchart.lib.job.validate" (dict "root" $root "object" $jobObject) -}}
       {{- include "2f.uchart.blueprints.job" (dict "root" $root "object" $jobObject) | nindent 0 -}}
     {{- end -}}
+
+    {{- $hpaCompatibleWorkloadTypes := list "deployment" "statefulset" -}}
+    {{- if has $workloadValues.type $hpaCompatibleWorkloadTypes -}}
+      {{- if dig "autoscaling" "enabled" false $workloadObject -}}
+        {{- /* Create object from the raw HPA values */ -}}
+        {{- $hpaObject := (include "2f.uchart.lib.hpa.valuesToObject" (dict "root" $root "id" $key "values" $workloadObject.autoscaling)) | fromYaml -}}
+
+        {{- include "2f.uchart.lib.hpa.validate" (dict "root" $root "object" $hpaObject) -}}
+        {{- include "2f.uchart.blueprints.hpa" (dict "root" $root "object" $hpaObject "workloadType" $workloadValues.type) | nindent 0 -}}
+      {{- end -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}

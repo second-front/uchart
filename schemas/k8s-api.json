@@ -25,7 +25,33 @@
         "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "name"
+    ]
+  },
+
+  "core.v1.CrossVersionObjectReference": {
+    "type": "object",
+    "description": "CrossVersionObjectReference contains enough information to let you identify the reffered resource.",
+    "properties": {
+      "apiVersion": {
+        "description": "apiVersion is the API version of the referent",
+        "type": "string"
+      },
+      "kind": {
+        "description": "kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+        "type": "string"
+      },
+      "name": {
+        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
+        "type": "string"
+      }
+    },
+    "required": [
+      "kind",
+      "name"
+    ]
   },
   "core.v1.NodeSelectorRequirement": {
     "type": "object",

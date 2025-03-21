@@ -1,16 +1,13 @@
 {{- /* Return a configMap Object by its Id. */ -}}
-{{- define "2f.uchart.lib.utils.getById" -}}
+{{- define "2f.uchart.lib.workload.getById" -}}
   {{- $root := .root -}}
   {{- $resources := .resources -}}
   {{- $id := .id -}}
-  {{- $kind := .kind -}}
 
   {{- $enabledResources := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $resources) | fromYaml -}}
   {{- $resourceValues := get $enabledResources $id -}}
 
   {{- if not (empty $resourceValues) -}}
-    {{- $function := printf "2f.uchart.lib.%s.valuesToObject" $kind -}}
-    
-    {{- include $function (dict "root" $root "resources" $resources "id" $id "values" $resourceValues) -}}
+    {{- include "2f.uchart.lib.workload.valuesToObject" (dict "root" $root "resources" $resources "id" $id "values" $resourceValues) -}}
   {{- end -}}
 {{- end -}}

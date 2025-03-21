@@ -5,7 +5,7 @@
   {{- $resources := $root.Values.serviceAccounts -}}
 
   {{- $serviceAccountName := "default" -}}
-  {{- $defaultServiceAccount := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" "default") | fromYaml -}}
+  {{- $defaultServiceAccount := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" "default" "kind" "serviceAccount") | fromYaml -}}
 
   {{- if $root.Values.enforceServiceAccountCreation -}}
     {{- if (get $defaultServiceAccount "create") -}}
@@ -17,11 +17,10 @@
 
   {{- with $workloadObject.serviceAccount -}}
     {{- if hasKey . "id" -}}
-      {{- $serviceAccountName = get (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" .id) | fromYaml) "name" -}}
+      {{- $serviceAccountName = get (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" .id "kind" "serviceAccount") | fromYaml) "name" -}}
     {{- else if hasKey . "name" -}}
       {{- $serviceAccountName = .name -}}
     {{- end -}}
   {{- end -}}
   {{- $serviceAccountName -}}
-
 {{- end -}}

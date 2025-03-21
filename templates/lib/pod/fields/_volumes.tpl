@@ -65,7 +65,7 @@ Returns the value for volumes
       {{- if $persistenceValues.name -}}
         {{- $objectName = tpl $persistenceValues.name $root -}}
       {{- else if $persistenceValues.id -}}
-        {{- $object := (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" $persistenceValues.id) | fromYaml ) -}}
+        {{- $object := (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" $persistenceValues.id "kind" "configMap") | fromYaml ) -}}
         {{- if not $object -}}
           {{fail (printf "No configmap found with this id. (persistence item '%s', id '%s')" $id $persistenceValues.id)}}
         {{- end -}}
@@ -87,7 +87,7 @@ Returns the value for volumes
       {{- if $persistenceValues.name -}}
         {{- $objectName = tpl $persistenceValues.name $root -}}
       {{- else if $persistenceValues.id -}}
-        {{- $object := (include "2f.uchart.lib.utisl.getById" (dict "root" $root "resources" $resources "id" $persistenceValues.id) | fromYaml ) -}}
+        {{- $object := (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" $persistenceValues.id "kind" "secret") | fromYaml ) -}}
         {{- if not $object -}}
           {{fail (printf "No secret found with this id. (persistence item '%s', id '%s')" $id $persistenceValues.id)}}
         {{- end -}}

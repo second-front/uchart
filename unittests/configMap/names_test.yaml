@@ -70,7 +70,7 @@ tests:
       - documentIndex: *ConfigmapDocument
         equal:
           path: metadata.name
-          value: RELEASE-NAME-config
+          value: RELEASE-NAME
 
   - it: with nameOverride should pass
     set:
@@ -107,3 +107,31 @@ tests:
         equal:
           path: metadata.name
           value: RELEASE-NAME
+
+  - it: multiple names should pass
+    set:
+      configMaps:
+        config:
+          data:
+            test: test
+        second:
+          data:
+            test: test
+    asserts:
+      - hasDocuments:
+          count: 3
+      - documentIndex: &ConfigmapDocument 0
+        isKind:
+          of: ConfigMap
+      - documentIndex: *ConfigmapDocument
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME-config
+      - documentIndex: &ConfigmapDocument 1
+        isKind:
+          of: ConfigMap
+      - documentIndex: *ConfigmapDocument
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME-second
+

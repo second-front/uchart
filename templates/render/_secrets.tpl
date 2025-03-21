@@ -1,14 +1,16 @@
 {{- /* Renders the Secret objects required by the chart. */ -}}
 {{- define "2f.uchart.render.secrets" -}}
   {{- $root := $ -}}
+  {{- $resources := $root.Values.secrets -}}
 
   {{- /* Generate named Secrets as required */ -}}
-  {{- $enabledSecrets := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $root.Values.secrets) | fromYaml ) -}}
+  {{- $enabledSecrets := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $resources) | fromYaml ) -}}
   {{- range $key, $secret := $enabledSecrets -}}
     {{- $secretValues := (mustDeepCopy $secret) -}}
 
     {{- /* Create object from the raw Secret values */ -}}
-    {{- $secretObject := (include "2f.uchart.lib.utils.valuesToObject" (dict "root" $root "id" $key "values" $secretValues)) | fromYaml -}}
+    {{- $args := (dict "root" $root "id" $key "values" $secretValues "resources" $resources) -}}
+    {{- $secretObject := (include "2f.uchart.lib.utils.valuesToObject" $args) | fromYaml -}}
 
     {{- /* Perform validations on the Secret before rendering */ -}}
     {{- include "2f.uchart.lib.secret.validate" (dict "root" $root "object" $secretObject) -}}

@@ -33,7 +33,13 @@ metadata:
 spec:
   revisionHistoryLimit: 3
   {{- if not $autoScalingEnabled }}
-  replicas: {{ $deploymentObject.replicas | default 1 }}
+    {{- if hasKey $deploymentObject "replicas" }}
+      {{- if not (eq $deploymentObject.replicas nil) }}
+  replicas: {{ $deploymentObject.replicas }}
+      {{- end }}
+    {{- else }}
+  replicas: 1
+    {{- end }}
   {{- end }}
   strategy:
     type: {{ $deploymentObject.strategy }}
