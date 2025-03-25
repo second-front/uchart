@@ -1,0 +1,136 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: controller defaultContainerOptions
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default should pass
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        notExists:
+          path: spec.template.spec.containers[0].resources
+
+  - it: defaultContainerOption with implicit strategy should pass
+    set:
+      workloads.main.defaultContainerOptions:
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 150m
+      workloads.main.containers.main.resources:
+        requests:
+          memory: 2Gi
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].resources
+          value:
+            requests:
+              memory: 2Gi
+
+  - it: defaultContainerOption with overwrite strategy should pass
+    set:
+      workloads.main.defaultContainerOptionsStrategy: overwrite
+      workloads.main.defaultContainerOptions:
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 150m
+      workloads.main.containers.main.resources:
+        requests:
+          memory: 2Gi
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].resources
+          value:
+            requests:
+              memory: 2Gi
+
+  - it: defaultContainerOption with merge strategy should pass
+    set:
+      workloads.main.defaultContainerOptionsStrategy: merge
+      workloads.main.defaultContainerOptions:
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 150m
+      workloads.main.containers.main.resources:
+        requests:
+          memory: 2Gi
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].resources
+          value:
+            requests:
+              memory: 2Gi
+              cpu: 150m
+
+  - it: Default applyDefaultContainerOptionsToInitContainers (true) should pass
+    set:
+      workloads.main.defaultContainerOptions:
+        resources:
+          requests:
+            memory: 1Gi
+      workloads.main.initContainers:
+        test:
+          image:
+            repository: ghcr.io/mendhak/http-https-echo
+            tag: 31
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].resources
+          value:
+            requests:
+              memory: 1Gi
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.initContainers[0].resources
+          value:
+            requests:
+              memory: 1Gi
+
+  - it: applyDefaultContainerOptionsToInitContainers false should pass
+    set:
+      workloads.main.applyDefaultContainerOptionsToInitContainers: false
+      workloads.main.defaultContainerOptions:
+        resources:
+          requests:
+            memory: 1Gi
+      workloads.main.initContainers:
+        test:
+          image:
+            repository: ghcr.io/mendhak/http-https-echo
+            tag: 31
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.containers[0].resources
+          value:
+            requests:
+              memory: 1Gi
+      - documentIndex: 0
+        notExists:
+          path: spec.template.spec.initContainers[0].resources
