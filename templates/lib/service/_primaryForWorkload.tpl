@@ -8,7 +8,7 @@
   {{- $result := dict -}}
 
   {{- /* Loop over all enabled services */ -}}
-  {{- $enabledServices := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $serviceResources) | fromYaml ) }}
+  {{- $enabledServices := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $serviceResources) | fromYaml -}}
   {{- if $enabledServices -}}
     {{- /* We are only interested in services for the specified workload */ -}}
     {{- $enabledServicesForWorkload := dict -}}
@@ -33,6 +33,6 @@
       {{- end -}}
     {{- end -}}
 
-    {{- include "2f.uchart.lib.service.valuesToObject" (dict "root" $root "id" $id "values" $result) -}}
+    {{- include "2f.uchart.lib.utils.valuesToObject" (dict "root" $root "id" $id "values" $result "resources" $serviceResources "kind" "service") -}}
   {{- end -}}
 {{- end -}}

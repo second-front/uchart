@@ -2,6 +2,7 @@
 {{- define "2f.uchart.render.configMaps" -}}
   {{- $root := $ -}}
   {{- $resources := $root.Values.configMaps -}}
+  {{- $kind := "configMap" -}}
 
   {{- /* Generate named configMaps as required */ -}}
   {{- $enabledConfigMaps := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $resources) | fromYaml ) -}}
@@ -9,7 +10,7 @@
     {{- $configMapValues := (mustDeepCopy $configMap) -}}
 
     {{- /* Create object from the raw configMap values */ -}}
-    {{- $args := (dict "root" $root "id" $key "values" $configMapValues "resources" $resources) -}}
+    {{- $args := (dict "root" $root "id" $key "values" $configMapValues "resources" $resources "kind" $kind) -}}
     {{- $configMapObject := (include "2f.uchart.lib.utils.valuesToObject" $args) | fromYaml -}}
 
     {{- /* Perform validations on the configMap before rendering */ -}}

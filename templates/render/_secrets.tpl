@@ -2,6 +2,7 @@
 {{- define "2f.uchart.render.secrets" -}}
   {{- $root := $ -}}
   {{- $resources := $root.Values.secrets -}}
+  {{- $kind := "secret" -}}
 
   {{- /* Generate named Secrets as required */ -}}
   {{- $enabledSecrets := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $resources) | fromYaml ) -}}
@@ -9,7 +10,7 @@
     {{- $secretValues := (mustDeepCopy $secret) -}}
 
     {{- /* Create object from the raw Secret values */ -}}
-    {{- $args := (dict "root" $root "id" $key "values" $secretValues "resources" $resources) -}}
+    {{- $args := (dict "root" $root "id" $key "values" $secretValues "resources" $resources "kind" $kind) -}}
     {{- $secretObject := (include "2f.uchart.lib.utils.valuesToObject" $args) | fromYaml -}}
 
     {{- /* Perform validations on the Secret before rendering */ -}}

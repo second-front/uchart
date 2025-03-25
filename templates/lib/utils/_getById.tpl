@@ -5,12 +5,18 @@
   {{- $id := .id -}}
   {{- $kind := .kind -}}
 
-  {{- $enabledResources := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $resources) | fromYaml -}}
+  {{- 
+    $enabledResources := include "2f.uchart.lib.utils.enabledResources" (
+      dict "root" $root "resources" $resources
+    ) | fromYaml
+  -}}
   {{- $resourceValues := get $enabledResources $id -}}
 
   {{- if not (empty $resourceValues) -}}
-    {{- $function := printf "2f.uchart.lib.%s.valuesToObject" $kind -}}
-    
-    {{- include $function (dict "root" $root "resources" $resources "id" $id "values" $resourceValues) -}}
+    {{-
+      include "2f.uchart.lib.utils.valuesToObject" (
+        dict "root" $root "resources" $resources "id" $id "values" $resourceValues "kind" $kind
+      )
+    -}}
   {{- end -}}
 {{- end -}}

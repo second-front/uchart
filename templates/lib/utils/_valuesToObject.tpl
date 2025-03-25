@@ -2,28 +2,48 @@
 {{- define "2f.uchart.lib.utils.valuesToObject" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
-  {{- $objectValues := .values -}}
+  {{- $resourceValues := .values -}}
   {{- $resources := .resources -}}
+  {{- $kind := .kind -}}
 
   {{- /* Determine and inject the name */ -}}
-  {{- $objectName := (include "2f.uchart.lib.chart.names.fullname" $root) -}}
+  {{- $resourceName := (include "2f.uchart.lib.chart.names.fullname" $root) -}}
 
-  {{- if $objectValues.nameOverride -}}
-    {{- $override := tpl $objectValues.nameOverride $root -}}
-    {{- if not (eq $objectName $override) -}}
-      {{- $objectName = printf "%s-%s" $objectName $override -}}
+  {{- if hasKey $resourceValues "name" -}}
+    {{- $resourceName = $resourceValues.name -}}
+  {{- else if $resourceValues.nameOverride -}}
+    {{- $override := tpl $resourceValues.nameOverride $root -}}
+    {{- if not (eq $resourceName $override) -}}
+      {{- $resourceName = printf "%s-%s" $resourceName $override -}}
     {{- end -}}
   {{- else -}}
-    {{- $enabledObjects := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $resources) | fromYaml ) }}
-    {{- if and (not $objectValues.primary) (gt (len $enabledObjects) 1) -}}
-      {{- if not (eq $objectName $id) -}}
-        {{- $objectName = printf "%s-%s" $objectName $id -}}
+    {{- if and (ne $id "default") (ne $kind "serviceAccount") -}}
+      {{- 
+        $enabledResources := include "2f.uchart.lib.utils.enabledResources" (
+          dict "root" $root "resources" $resources
+        ) | fromYaml 
+      -}}
+
+      {{- if and (not $resourceValues.primary) (gt (len $enabledResources) 1) -}}
+        {{- if not (eq $resourceName $id) -}}
+          {{- $resourceName = printf "%s-%s" $resourceName $id -}}
+        {{- end -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}
 
-  {{- $_ := set $objectValues "name" $objectName -}}
-  {{- $_ := set $objectValues "id" $id -}}
+  {{- $_ := set $resourceValues "name" $resourceName -}}
+  {{- $_ := set $resourceValues "id" $id -}}
+  
+  {{- $kindFunctionList := list "workload" "hpa" -}}
+  {{- if has $kind $kindFunctionList -}}
+    {{- 
+      $resourceValues = include (printf "2f.uchart.lib.%s.valuesToObject" $kind) (
+        dict "root" $root "id" $id "values" $resourceValues
+      ) | fromYaml 
+    -}}
+  {{- end -}}
+
   {{- /* Return the object */ -}}
-  {{- $objectValues | toYaml -}}
+  {{- $resourceValues | toYaml -}}
 {{- end -}}
