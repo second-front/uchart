@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: job configuration
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default job configuration should pass
+    set:
+      workloads:
+        main:
+          type: job
+    asserts:
+      - documentIndex: &workloadDoc 0
+        isKind:
+          of: Job
+      - documentIndex: *workloadDoc
+        equal:
+          path: spec.suspend
+          value: false
+      - documentIndex: *workloadDoc
+        notExists:
+          path: spec.ttlSecondsAfterFinished
+      - documentIndex: *workloadDoc
+        equal:
+          path: spec.template.spec.restartPolicy
+          value: Never
+
+  - it: custom job configuration should pass
+    set:
+      workloads:
+        main:
+          type: job
+          pod:
+            restartPolicy: OnFailure
+          job:
+            suspend: &JobSuspended true
+            ttlSecondsAfterFinished: &ttlSecondsAfterFinished 3600
+            backoffLimit: 3
+            parallelism: &JobParallelism 3
+    asserts:
+      - documentIndex: &workloadDoc 0
+        isKind:
+          of: Job
+      - documentIndex: *workloadDoc
+        equal:
+          path: spec.suspend
+          value: *JobSuspended
+      - documentIndex: *workloadDoc
+        equal:
+          path: spec.ttlSecondsAfterFinished
+          value: *ttlSecondsAfterFinished
+      - documentIndex: *workloadDoc
+        equal:
+          path: spec.template.spec.restartPolicy
+          value: OnFailure
+      - documentIndex: *workloadDoc
+        equal:
+          path: spec.backoffLimit
+          value: 3
+      - documentIndex: *workloadDoc
+        equal:
+          path: spec.parallelism
+          value: *JobParallelism
