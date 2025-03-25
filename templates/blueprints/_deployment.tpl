@@ -43,8 +43,8 @@ spec:
   {{- end }}
   strategy:
     type: {{ $deploymentObject.strategy }}
-    {{- with $deploymentObject.rollingUpdate }}
-      {{- if and (eq $deploymentObject.strategy "RollingUpdate") (or .maxSurge .maxUnavailable) }}
+    {{- if eq $deploymentObject.strategy "RollingUpdate" }}
+      {{- with $deploymentObject.rollingUpdate }}
     rollingUpdate:
         {{- with .maxUnavailable }}
       maxUnavailable: {{ . }}
