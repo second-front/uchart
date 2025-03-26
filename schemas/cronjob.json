@@ -1,0 +1,99 @@
+{
+  "rules": {
+    "if": {
+      "properties": {
+        "type": { "const": "cronjob" }
+      },
+      "required": [ "type" ]
+    },
+    "then": {
+      "properties": {
+        "cronjob": {
+          "$ref": "#/cronjob.options",
+          "description": "CronJob-specific settings. These apply only when the instance type is set to 'cronjob'."
+        }
+      },
+      "allOf": [
+        { "required": [ "cronjob" ] },
+        {
+          "not": {
+            "anyOf": [
+              { "required": [ "autoscaling" ] },
+              { "required": [ "strategy" ] },
+              { "required": [ "rollingUpdate" ] }
+            ]
+          }
+        }
+      ]
+    },
+    "else": {
+      "allOf": [
+        {
+          "not": {
+            "required": [ "cronjob" ]
+          }
+        }
+      ]
+    }
+  },
+  "cronjob.options": {
+    "type": "object",
+    "description": "CronJob configuration for scheduled jobs. Use this section only when the instance type is set to 'cronjob'.",
+    "additionalProperties": false,
+    "properties": {
+      "backoffLimit": {
+        "type": "integer",
+        "description": "Specifies the number of retries for a failed CronJob before it is marked as failed.",
+        "default": 6
+      },
+      "concurrencyPolicy": {
+        "type": "string",
+        "description": "Determines how concurrent executions of the CronJob are handled (e.g., 'Forbid' to prevent overlap).",
+        "default": "Forbid"
+      },
+      "failedJobsHistory": {
+        "type": "integer",
+        "description": "Specifies the number of failed job history records to retain for troubleshooting.",
+        "default": 1
+      },
+      "parallelism": {
+        "type": "integer",
+        "description": "Specifies the maximum number of concurrent jobs allowed."
+      },
+      "schedule": {
+        "type": "string",
+        "description": "A cron-formatted string that defines the execution schedule for the job."
+      },
+      "startingDeadlineSeconds": {
+        "type": "integer",
+        "description": "The deadline in seconds for starting the job if the scheduled time is missed.",
+        "default": 30
+      },
+      "successfulJobsHistory": {
+        "type": "integer",
+        "description": "Specifies the number of successful job history records to retain.",
+        "default": 1
+      },
+      "suspend": {
+        "type": "boolean",
+        "description": "If set to true, suspends subsequent executions of the CronJob.",
+        "default": false
+      },
+      "timeZone": {
+        "type": "string",
+        "description": "Specifies the time zone in which the schedule is interpreted."
+      },
+      "activeDeadlineSeconds": {
+        "type": "integer",
+        "description": "The maximum time in seconds a job can run before it is terminated."
+      },
+      "ttlSecondsAfterFinished": {
+        "type": "integer",
+        "description": "Specifies the time-to-live (TTL) in seconds for a job after it has finished before it is cleaned up."
+      }
+    },
+    "required": [
+      "schedule"
+    ]
+  }
+}

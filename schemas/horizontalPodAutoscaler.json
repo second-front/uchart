@@ -1,6 +1,7 @@
 {
   "autoscaling": {
     "type": "object",
+    "description": "Defines the horizontal pod autoscaling configuration. When provided, these settings enable dynamic scaling of the workload based on observed metrics.",
     "additionalProperties": false,
     "properties": {
       "enabled": {

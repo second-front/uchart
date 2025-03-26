@@ -37,7 +37,7 @@
     },
     "workloads": {
       "additionalProperties": {
-        "$ref": "schemas/workloads.json#/instance"
+        "$ref": "schemas/workload.json#/instance"
       }
     },
     "serviceAccounts": {

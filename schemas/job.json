@@ -1,0 +1,77 @@
+{
+  "rules": {
+    "if": {
+      "properties": {
+        "type": {
+          "const": "job"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "then": {
+      "properties": {
+        "job": {
+          "$ref": "#/options",
+          "description": "Job-specific settings. These apply only when the instance type is set to 'job'."
+        }
+      },
+      "allOf": [
+        {
+          "not": {
+            "anyOf": [
+              { "required": [ "autoscaling" ] },
+              { "required": [ "strategy" ] },
+              { "required": [ "rollingUpdate" ] }
+            ]
+          }
+        }
+      ]
+    },
+    "else": {
+      "allOf": [
+        {
+          "not": {
+            "required": [ "job" ]
+          }
+        }
+      ]
+    }
+  },
+  "options": {
+    "type": "object",
+    "description": "Job configuration for one-time or ad-hoc tasks. Use this section only when the instance type is set to 'job'.",
+    "additionalProperties": false,
+    "properties": {
+      "backoffLimit": {
+        "type": "integer",
+        "description": "Specifies the number of retries for a failed job before it is considered failed.",
+        "default": 6
+      },
+      "completions": {
+        "description": "Specifies the desired number of successfully completed pods for the job. This can be a fixed number or a more complex configuration."
+      },
+      "completionMode": {
+        "description": "Defines how pod completions are tracked. For example, the 'NonIndexed' mode tracks overall completions."
+      },
+      "parallelism": {
+        "type": "integer",
+        "description": "Specifies the maximum number of pods that can run concurrently for this job."
+      },
+      "suspend": {
+        "type": "boolean",
+        "description": "If true, prevents new pods from being scheduled for the job.",
+        "default": false
+      },
+      "activeDeadlineSeconds": {
+        "type": "integer",
+        "description": "Specifies the maximum duration in seconds that the job is allowed to run before termination."
+      },
+      "ttlSecondsAfterFinished": {
+        "type": "integer",
+        "description": "Specifies the time-to-live (TTL) in seconds for the job after completion before it is automatically cleaned up."
+      }
+    }
+  }
+}

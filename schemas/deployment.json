@@ -1,0 +1,73 @@
+{
+  "rules": {
+    "if": {
+      "properties": {
+        "type": {
+          "const": "deployment"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "strategy": {
+          "$ref": "#/strategy"
+        },
+        "rollingUpdate": {
+          "$ref": "#/rollingUpdate"
+        },
+        "autoscaling": {
+          "$ref": "horizontalPodAutoscaler.json#/autoscaling"
+        }
+      },
+      "if": {
+        "not": {
+          "properties": {
+            "strategy": {
+              "const": "RollingUpdate"
+            }
+          },
+          "required": [
+            "strategy"
+          ]
+        }
+      },
+      "then": {
+        "not": {
+          "required": [
+            "rollingUpdate"
+          ]
+        }
+      }
+    }
+  },
+  "strategy": {
+    "type": "string",
+    "enum": [
+      "RollingUpdate",
+      "Recreate"
+    ],
+    "description": "Defines the update strategy for deployments. 'RollingUpdate' allows incremental updates while 'Recreate' terminates all pods before starting new ones. Only applicable when type is 'deployment'.",
+    "default": "RollingUpdate"
+  },
+  "rollingUpdate": {
+    "type": "object",
+    "description": "Specifies the parameters for a rolling update when using the 'RollingUpdate' strategy. Only applicable when type is 'deployment'.",
+    "additionalProperties": false,
+    "properties": {
+      "maxSurge": {
+        "type": [
+          "integer",
+          "string"
+        ],
+        "description": "Specifies the maximum number (or percentage) of additional pods that can be created during the update."
+      },
+      "maxUnavailable": {
+        "type": [
+          "integer",
+          "string"
+        ],
+        "description": "Specifies the maximum number (or percentage) of pods that can be unavailable during the update."
+      }
+    }
+  }
+}

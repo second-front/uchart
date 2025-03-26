@@ -1,0 +1,173 @@
+{
+  "rules": {
+    "if": {
+      "properties": {
+        "type": { "const": "statefulset" }
+      },
+      "required": [ "type" ]
+    },
+    "then": {
+      "properties": {
+        "statefulset": {
+          "$ref": "#/options"
+        },
+        "strategy": {
+          "$ref": "#/strategy"
+        },
+        "rollingUpdate": {
+          "$ref": "#/rollingUpdate"
+        },
+        "autoscaling": {
+          "$ref": "horizontalPodAutoscaler.json#/autoscaling"
+        }
+      },
+      "if": {
+        "not": {
+          "properties": {
+            "strategy": {
+              "const": "RollingUpdate"
+            }
+          },
+          "required": [
+            "strategy"
+          ]
+        }
+      },
+      "then": {
+        "not": {
+          "required": [
+            "rollingUpdate"
+          ]
+        }
+      }
+    },
+    "else": {
+      "not": {
+        "required": [ "statefulset" ]
+      }
+    }
+  },
+  "options": {
+    "type": "object",
+    "description": "StatefulSet-specific configuration options. Only applicable when the instance type is 'statefulset'.",
+    "additionalProperties": false,
+    "properties": {
+      "podManagementPolicy": {
+        "type": "string",
+        "description": "Specifies the policy for managing pod creation and termination in the StatefulSet (e.g., 'OrderedReady')."
+      },
+      "persistentVolumeClaimRetentionPolicy": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "whenDeleted": {
+            "type": "string",
+            "description": "Specifies whether PVCs should be deleted or retained when the StatefulSet is deleted.",
+            "enum": [
+              "Delete",
+              "Retain"
+            ],
+            "default": "Retain"
+          },
+          "whenScaled": {
+            "type": "string",
+            "description": "Specifies whether PVCs should be deleted or retained when the StatefulSet is scaled down.",
+            "enum": [
+              "Delete",
+              "Retain"
+            ],
+            "default": "Retain"
+          }
+        }
+      },
+      "volumeClaimTemplates": {
+        "type": "object",
+        "description": "A map of volume claim templates used to provision persistent storage for stateful applications.",
+        "additionalProperties": {
+          "$ref": "#/volumeClaimTemplate"
+        }
+      }
+    }
+  },
+  "volumeClaimTemplate": {
+    "type": "object",
+    "description": "Template for a PersistentVolumeClaim used by a StatefulSet. Defines the storage parameters for a volume.",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "description": "Indicates whether this volume claim template is active. Set to false to disable provisioning for this template.",
+        "default": true
+      },
+      "accessMode": {
+        "type": "string",
+        "description": "Specifies the access mode for the volume (e.g., 'ReadWriteOnce', 'ReadOnlyMany')."
+      },
+      "advancedMounts": {
+        "type": "object",
+        "description": "Advanced mount options to customize mount paths for the volume.",
+        "additionalProperties": {
+          "$ref": "persistence.json#/mountPathCollection"
+        }
+      },
+      "annotations": {
+        "$ref": "metadata.json#/annotations",
+        "description": "Metadata annotations applied to the volume claim."
+      },
+      "dataSource": {
+        "$ref": "persistence.json#/dataSourceReference",
+        "description": "Reference to an external data source for the volume claim."
+      },
+      "dataSourceRef": {
+        "$ref": "persistence.json#/dataSourceReference",
+        "description": "Alternative reference to an external data source for the volume claim."
+      },
+      "globalMounts": {
+        "$ref": "persistence.json#/globalMounts",
+        "description": "Global mount settings applicable to this volume claim."
+      },
+      "labels": {
+        "$ref": "metadata.json#/labels",
+        "description": "Metadata labels associated with the volume claim."
+      },
+      "size": {
+        "type": "string",
+        "description": "Specifies the storage size requested (e.g., '10Gi')."
+      },
+      "storageClass": {
+        "type": "string",
+        "description": "Specifies the storage class to be used for provisioning the volume."
+      }
+    },
+    "required": [
+      "size"
+    ]
+  },
+  "strategy": {
+    "type": "string",
+    "enum": [
+      "RollingUpdate",
+      "OnDelete"
+    ],
+    "description": "Defines the update strategy for statefulsets. 'RollingUpdate' allows incremental updates while 'OnDelete' triggers legacy behavior. Only applicable when type is 'statefulset'.",
+    "default": "RollingUpdate"
+  },
+  "rollingUpdate": {
+    "type": "object",
+    "description": "Specifies the parameters for a rolling update when using the 'RollingUpdate' strategy. Only applicable when type is 'deployment'.",
+    "additionalProperties": false,
+    "properties": {
+      "partition": {
+        "type": "integer",
+        "description": "Indicates the ordinal at which the StatefulSet should be partitioned for updates."
+      },
+      "maxUnavailable": {
+        "type": [
+          "integer",
+          "string"
+        ],
+        "description": "Specifies the maximum number (or percentage) of pods that can be unavailable during the update."
+      }
+    }
+  }
+}

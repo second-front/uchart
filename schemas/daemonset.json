@@ -1,0 +1,30 @@
+{
+    "rules": {
+        "if": {
+          "properties": {
+            "type": { "const": "daemonset" }
+          },
+          "required": [ "type" ]
+        },
+        "then": {
+          "allOf": [
+            {
+              "not": {
+                "anyOf": [
+                  { "required": [ "autoscaling" ] },
+                  { "required": [ "strategy" ] },
+                  { "required": [ "rollingUpdate" ] }
+                ]
+              }
+            }
+          ]
+        },
+        "else": {
+          "not": {
+            "anyOf": [
+              { "required": [ "daemonset" ] }
+            ]
+          }
+        }
+    }
+}

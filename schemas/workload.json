@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "instance": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "description": "Determines whether the workload is active. Set to false to disable this resource.",
+        "default": true
+      },
+      "type": {
+        "type": "string",
+        "description": "Specifies the Kubernetes resource type to be used for the workload. Options include deployment, statefulset, daemonset, cronjob, or job.",
+        "enum": [
+          "deployment",
+          "daemonset",
+          "statefulset",
+          "cronjob",
+          "job"
+        ],
+        "default": "deployment"
+      },
+      "annotations": {
+        "$ref": "metadata.json#/annotations",
+        "description": "Metadata annotations to attach to the resource. These can be used by Kubernetes or other tools for custom processing."
+      },
+      "labels": {
+        "$ref": "metadata.json#/labels",
+        "description": "Metadata labels for the resource. Labels are used to organize and select resources."
+      },
+      "nameOverride": {
+        "type": "string",
+        "description": "Overrides the default name for the deployed resource. If more than one resource exists, name will be prepended with release-name"
+      },
+      "pod": {
+        "$ref": "pod.json#/options",
+        "description": "Configuration options for the pod specification, such as affinity rules, tolerations, or other pod-level settings."
+      },
+      "replicas": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Defines the desired number of replicas for the deployment. A null value can be used to let Kubernetes decide the replica count. (i.e. autoscaling)",
+        "default": 1
+      },
+      "revisionHistoryLimit": {
+        "type": "integer",
+        "description": "Specifies the number of old ReplicaSets or revisions to retain for rollback purposes."
+      },
+
+      "applyDefaultContainerOptionsToInitContainers": {
+        "type": "boolean",
+        "description": "Specifies whether the default container options should also be applied to init containers.",
+        "default": true
+      },
+      "defaultContainerOptionsStrategy": {
+        "type": "string",
+        "description": "Determines how default container options are applied. 'overwrite' replaces existing settings while 'merge' combines them with container-specific configurations.",
+        "default": "overwrite",
+        "enum": [
+          "overwrite",
+          "merge"
+        ]
+      },
+      "defaultContainerOptions": {
+        "type": "object",
+        "description": "Default container configuration options applied to all containers in workload unless overridden individually. Includes options such as command, arguments, environment variables, image settings, resource limits, and security context.",
+        "additionalProperties": false,
+        "properties": {
+          "args": {
+            "$ref": "containers.json#/args",
+            "description": "Default command-line arguments for the container."
+          },
+          "command": {
+            "$ref": "containers.json#/command",
+            "description": "Default command to run in the container."
+          },
+          "env": {
+            "$ref": "containers.json#/env",
+            "description": "Default environment variables for the container."
+          },
+          "envFrom": {
+            "$ref": "containers.json#/envFrom",
+            "description": "Specifies sources to populate environment variables from."
+          },
+          "image": {
+            "$ref": "containers.json#/image",
+            "description": "Container image settings including repository, tag, and pull policy."
+          },
+          "resources": {
+            "$ref": "k8s-api.json#/core.v1.ResourceRequirements",
+            "description": "Specifies resource requests and limits for the container."
+          },
+          "securityContext": {
+            "$ref": "k8s-api.json#/core.v1.ContainerSecurityContext",
+            "description": "Defines security options for the container, such as user privileges and capabilities."
+          }
+        }
+      },
+      "initContainers": {
+        "type": "object",
+        "description": "Defines init containers that run prior to the main containers. Each init container is specified under a unique id.",
+        "additionalProperties": {
+          "$ref": "containers.json#/container"
+        }
+      },
+      "containers": {
+        "type": "object",
+        "description": "Defines containers for workload. Each container is specified under a unique id.",
+        "additionalProperties": {
+          "$ref": "containers.json#/container"
+        }
+      },
+      "serviceAccount": {
+        "type": "object",
+        "description": "Specifies the ServiceAccount used by the workload. This may include a custom name or id.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the ServiceAccount to use."
+          },
+          "id": {
+            "type": "string",
+            "description": "ID of the ServiceAccount to use referenced from serviceAccounts map."
+          }
+        }
+      },
+      "autoscaling": true,
+      "strategy": true,
+      "rollingUpdate": true,
+      "cronjob": true,
+      "job": true,
+      "statefulset": true
+    },
+    "allOf": [
+      {
+        "$ref": "deployment.json#/rules"
+      },
+      {
+        "$ref": "statefulset.json#/rules"
+      },
+      {
+        "$ref": "cronjob.json#/rules"
+      },
+      {
+        "$ref": "job.json#/rules"
+      }
+    ]
+  }
+}

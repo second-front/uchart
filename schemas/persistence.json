@@ -42,7 +42,7 @@
         "type": "string"
       },
       "annotations": {
-        "$ref": "definitions.json#/annotations"
+        "$ref": "metadata.json#/annotations"
       },
       "dataSource": {
         "$ref": "#/dataSourceReference"
@@ -51,7 +51,7 @@
         "$ref": "#/dataSourceReference"
       },
       "labels": {
-        "$ref": "definitions.json#/labels"
+        "$ref": "metadata.json#/labels"
       },
       "nameOverride": {
         "type": "string"
