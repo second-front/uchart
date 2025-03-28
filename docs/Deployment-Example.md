@@ -2,7 +2,7 @@
 ```
     - customer: second-front
       destination: in-cluster
-      mainChartRevision: fix-network-policies
+      mainChartRevision: 1.0.38
       mainChart: registry.gamewarden.io/charts  # this format is the OCI chart repo without protocol prefix
       mainChartName: uchart
       name: example-app-dev
