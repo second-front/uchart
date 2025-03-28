@@ -37,7 +37,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.38
+      targetRevision: fix-network-policies
       chart: uchart
       helm:
         values: |
@@ -49,6 +49,8 @@ spec:
           {{- toYaml  .Values.defaults | nindent 12 }}
           ciliumNetworkPolicies:
           {{- toYaml  .Values.ciliumNetworkPolicies | nindent 12 }}
+          ciliumNetworkPolicies:
+          {{- toYaml  .Values.networkPolicies | nindent 12 }}
           argocd:
           {{- toYaml  .Values.argocd | nindent 12 }}
           config:
