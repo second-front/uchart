@@ -1,5 +1,7 @@
-{{- $networkPoliciesEnabled := .Values.networkPolicies.enabled }}
-{{- if and $networkPoliciesEnabled .Values.networkPolicies.appPolicy.enabled .Values.microservices }}
+{{- if .Values.networkPolicies.enabled }}
+{{- if .Values.microservices }}
+{{- if ne .Release.Namespace "argocd" }}
+{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -144,4 +146,7 @@ spec:
   policyTypes:
   - Ingress
   - Egress
+{{- end }}
+{{- end }}
+{{- end }}
 {{- end }}
