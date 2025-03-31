@@ -116,14 +116,14 @@ tests:
           path: spec.template.spec.containers[0].envFrom[0]
           value:
             configMapRef:
-              name: RELEASE-NAME
+              name: RELEASE-NAME-config
             prefix: test
       - documentIndex: *DeploymentDoc
         equal:
           path: spec.template.spec.containers[0].envFrom[1]
           value:
             configMapRef:
-              name: RELEASE-NAME
+              name: RELEASE-NAME-config
 
   - it: envFrom configmap id reference with multiple configMaps should pass
     set:
@@ -178,20 +178,20 @@ tests:
           path: spec.template.spec.containers[0].envFrom[0]
           value:
             secretRef:
-              name: RELEASE-NAME
+              name: RELEASE-NAME-secret
             prefix: test
       - documentIndex: *DeploymentDoc
         equal:
           path: spec.template.spec.containers[0].envFrom[1]
           value:
             secretRef:
-              name: RELEASE-NAME
+              name: RELEASE-NAME-secret
             prefix: test
 
   - it: envFrom Secret id reference with multiple secrets should pass
     set:
       workloads.main.containers.main.envFrom:
-        - secret: secret
+        - secret: second
           prefix: test
         - secretRef:
             id: secret
@@ -212,7 +212,7 @@ tests:
           path: spec.template.spec.containers[0].envFrom[0]
           value:
             secretRef:
-              name: RELEASE-NAME-secret
+              name: RELEASE-NAME-second
             prefix: test
       - documentIndex: *DeploymentDoc
         equal:

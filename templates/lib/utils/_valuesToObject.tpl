@@ -5,6 +5,7 @@
   {{- $resourceValues := .values -}}
   {{- $resources := .resources -}}
   {{- $kind := .kind -}}
+  {{- $dynamicNameKinds := list "workload" "service" "hpa" -}}
 
   {{- /* Determine and inject the name */ -}}
   {{- $resourceName := (include "2f.uchart.lib.chart.names.fullname" $root) -}}
@@ -16,18 +17,17 @@
     {{- if not (eq $resourceName $override) -}}
       {{- $resourceName = printf "%s-%s" $resourceName $override -}}
     {{- end -}}
+  {{- else if has $kind $dynamicNameKinds -}}
+    {{- $enabledResources := include "2f.uchart.lib.utils.enabledResources" ( dict "root" $root "resources" $resources) | fromYaml -}}
+    {{- if and (not $resourceValues.primary) (gt (len $enabledResources) 1) -}}
+      {{- if not (eq $resourceName $id) -}}
+        {{- $resourceName = printf "%s-%s" $resourceName $id -}}
+      {{- end -}}
+    {{- end -}}
   {{- else -}}
     {{- if and (ne $id "default") (ne $kind "serviceAccount") -}}
-      {{- 
-        $enabledResources := include "2f.uchart.lib.utils.enabledResources" (
-          dict "root" $root "resources" $resources
-        ) | fromYaml 
-      -}}
-
-      {{- if and (not $resourceValues.primary) (gt (len $enabledResources) 1) -}}
-        {{- if not (eq $resourceName $id) -}}
-          {{- $resourceName = printf "%s-%s" $resourceName $id -}}
-        {{- end -}}
+      {{- if not (eq $resourceName $id) -}}
+        {{- $resourceName = printf "%s-%s" $resourceName $id -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}
@@ -35,7 +35,7 @@
   {{- $_ := set $resourceValues "name" $resourceName -}}
   {{- $_ := set $resourceValues "id" $id -}}
   
-  {{- $kindFunctionList := list "workload" "hpa" -}}
+  {{- $kindFunctionList := list "workload" "hpa" "volume" -}}
   {{- if has $kind $kindFunctionList -}}
     {{- 
       $resourceValues = include (printf "2f.uchart.lib.%s.valuesToObject" $kind) (
