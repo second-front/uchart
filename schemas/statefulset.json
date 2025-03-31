@@ -107,7 +107,7 @@
         "type": "object",
         "description": "Advanced mount options to customize mount paths for the volume.",
         "additionalProperties": {
-          "$ref": "persistence.json#/mountPathCollection"
+          "$ref": "volume.json#/mountPathCollection"
         }
       },
       "annotations": {
@@ -115,15 +115,15 @@
         "description": "Metadata annotations applied to the volume claim."
       },
       "dataSource": {
-        "$ref": "persistence.json#/dataSourceReference",
+        "$ref": "volume.json#/dataSourceReference",
         "description": "Reference to an external data source for the volume claim."
       },
       "dataSourceRef": {
-        "$ref": "persistence.json#/dataSourceReference",
+        "$ref": "volume.json#/dataSourceReference",
         "description": "Alternative reference to an external data source for the volume claim."
       },
       "globalMounts": {
-        "$ref": "persistence.json#/globalMounts",
+        "$ref": "volume.json#/globalMounts",
         "description": "Global mount settings applicable to this volume claim."
       },
       "labels": {

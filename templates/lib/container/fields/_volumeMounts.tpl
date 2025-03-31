@@ -6,51 +6,37 @@
   {{- $containerObject := $ctx.containerObject -}}
 
   {{- /* Default to empty dict */ -}}
-  {{- $persistenceItemsToProcess := dict -}}
+  {{- $volumesToProcess := dict -}}
   {{- $enabledVolumeMounts := list -}}
 
-  {{- /* Collect regular persistence items */ -}}
-  {{- range $id, $persistenceValues := $root.Values.persistence -}}
-    {{- /* Enable persistence item by default, but allow override */ -}}
-    {{- $persistenceEnabled := true -}}
-    {{- if hasKey $persistenceValues "enabled" -}}
-      {{- $persistenceEnabled = $persistenceValues.enabled -}}
-    {{- end -}}
-
-    {{- if $persistenceEnabled -}}
-      {{- $_ := set $persistenceItemsToProcess $id $persistenceValues -}}
-    {{- end -}}
+  {{- $enabledVolumes := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $root.Values.volumes) | fromYaml ) -}}
+  {{- range $key, $volume := $enabledVolumes -}}
+    {{- $volumeValues := (mustDeepCopy $volume) -}}
+      {{- $_ := set $volumesToProcess $key $volumeValues -}}
   {{- end -}}
 
   {{- /* Collect volumeClaimTemplates */ -}}
   {{- if not (empty (dig "statefulset" "volumeClaimTemplates" nil $workloadObject)) -}}
-    {{- range $persistenceValues := $workloadObject.statefulset.volumeClaimTemplates -}}
-      {{- /* Enable persistence item by default, but allow override */ -}}
-      {{- $persistenceEnabled := true -}}
-      {{- if hasKey $persistenceValues "enabled" -}}
-        {{- $persistenceEnabled = $persistenceValues.enabled -}}
+    {{- $enabledVolumeTemplates := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $workloadObject.statefulset.volumeClaimTemplates) | fromYaml ) -}}
+    {{- range $key, $volume := $enabledVolumeTemplates -}}
+      {{- $volumeValues := (mustDeepCopy $volume) -}}
+
+      {{- /* add implict workload ID to advanced mounts */ -}}
+      {{- if not (empty (dig "advancedMounts" nil $volumeValues)) -}}
+        {{- $volumeValues := set $volumeValues "advancedMounts" (dict $workloadObject.id $volumeValues.advancedMounts) -}}
       {{- end -}}
 
-      {{- if $persistenceEnabled -}}
-        {{- $mountValues := dict -}}
-        {{- if not (empty (dig "globalMounts" nil $persistenceValues)) -}}
-          {{- $_ := set $mountValues "globalMounts" $persistenceValues.globalMounts -}}
-        {{- end -}}
-        {{- if not (empty (dig "advancedMounts" nil $persistenceValues)) -}}
-          {{- $_ := set $mountValues "advancedMounts" (dict $workloadObject.id $persistenceValues.advancedMounts) -}}
-        {{- end -}}
-        {{- $_ := set $persistenceItemsToProcess $persistenceValues.name $mountValues -}}
-      {{- end -}}
+      {{- $_ := set $volumesToProcess $key $volumeValues -}}
     {{- end -}}
   {{- end -}}
 
-  {{- range $id, $persistenceValues := $persistenceItemsToProcess -}}
+  {{- range $id, $volumeValues := $volumesToProcess -}}
     {{- /* Set some default values */ -}}
 
-    {{- /* Set the default mountPath to /<name_of_the_peristence_item> */ -}}
+    {{- /* Set the default mountPath to /<id_of_the_volume> */ -}}
     {{- $mountPath := (printf "/%v" $id) -}}
-    {{- if eq "hostPath" (default "pvc" $persistenceValues.type) -}}
-      {{- $mountPath = $persistenceValues.hostPath -}}
+    {{- if eq "hostPath" (default "pvc" $volumeValues.type) -}}
+      {{- $mountPath = $volumeValues.hostPath -}}
     {{- end -}}
 
     {{- /* Process configured mounts */ -}}

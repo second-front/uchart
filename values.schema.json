@@ -57,6 +57,11 @@
       "additionalProperties": {
         "$ref": "schemas/service.json#/instance"
       }
+    },
+    "volumes": {
+      "additionalProperties": {
+        "$ref": "schemas/volume.json#/instance"
+      }
     }
   }
 }

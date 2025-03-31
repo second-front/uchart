@@ -8,7 +8,7 @@ values:
 tests:
   - it: advancedMounts invalid workload reference should fail
     set:
-      persistence:
+      volumes:
         data:
           type: configMap
           name: myConfigMap
@@ -21,4 +21,4 @@ tests:
                   subPath: config.yaml
     asserts:
       - failedTemplate:
-          errorMessage: "No enabled workload found with this id. (persistence item: 'data', workload: 'test')"
+          errorMessage: "No enabled workload found with this id. (volume: 'data', workload: 'test')"

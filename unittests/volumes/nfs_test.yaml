@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: volumes nfs
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: nfs volumes type should pass
+    set:
+      volumes:
+        nfs:
+          enabled: true
+          type: nfs
+          server: 10.10.0.8
+          path: /nas/library
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.volumes[0]
+          value:
+            name: nfs
+            nfs:
+              path: /nas/library
+              server: 10.10.0.8

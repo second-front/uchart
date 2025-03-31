@@ -1,5 +1,5 @@
 {
-  "item": {
+  "instance": {
     "oneOf": [
       {
         "$ref": "#/persistentVolumeClaimItem"
@@ -345,7 +345,7 @@
         "type": "boolean",
         "default": true
       },
-      "volumeSpec": {
+      "spec": {
         "type": "object"
       },
       "globalMounts": {
@@ -356,7 +356,7 @@
       }
     },
     "required": [
-      "volumeSpec"
+      "spec"
     ]
   },
   "dataSourceReference": {

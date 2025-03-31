@@ -1,0 +1,126 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: pvc metadata
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+set:
+  volumes.config:
+    accessMode: ReadWriteOnce
+    size: 1Gi
+
+tests:
+  - it: default should pass
+    asserts:
+      - documentIndex: &PersistentVolumeClaimDocument 0
+        isKind:
+          of: PersistentVolumeClaim
+      - documentIndex: *PersistentVolumeClaimDocument
+        notExists:
+          path: metadata.annotations
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.gamewarden.io/complianceLevel: il2
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+
+  - it: retain enabled should pass
+    set:
+      volumes.config:
+        retain: true
+    asserts:
+      - documentIndex: &PersistentVolumeClaimDocument 0
+        isKind:
+          of: PersistentVolumeClaim
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: metadata.annotations
+          value:
+            helm.sh/resource-policy: keep
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.gamewarden.io/complianceLevel: il2
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+
+  - it: custom metadata should pass
+    set:
+      volumes.config:
+        labels:
+          test_label: test
+        annotations:
+          test_annotation: test
+    asserts:
+      - documentIndex: &PersistentVolumeClaimDocument 0
+        isKind:
+          of: PersistentVolumeClaim
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: metadata.annotations
+          value:
+            test_annotation: test
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.gamewarden.io/complianceLevel: il2
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+            test_label: test
+
+  - it: custom metadata with global metadata should pass
+    set:
+      global:
+        labels:
+          global_label: test
+        annotations:
+          global_annotation: test
+      volumes.config:
+        labels:
+          test_label: test
+        annotations:
+          test_annotation: test
+    asserts:
+      - documentIndex: &PersistentVolumeClaimDocument 0
+        isKind:
+          of: PersistentVolumeClaim
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: metadata.annotations
+          value:
+            test_annotation: test
+            global_annotation: test
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.gamewarden.io/complianceLevel: il2
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+            global_label: test
+            test_label: test

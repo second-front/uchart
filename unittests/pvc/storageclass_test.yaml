@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: pvc storageclass
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+set:
+  volumes.config:
+    accessMode: ReadWriteOnce
+    size: 1Gi
+
+tests:
+  - it: default should pass
+    asserts:
+      - documentIndex: &PersistentVolumeClaimDocument 0
+        isKind:
+          of: PersistentVolumeClaim
+      - documentIndex: *PersistentVolumeClaimDocument
+        notExists:
+          path: spec.storageClassName
+
+  - it: custom should pass
+    set:
+      volumes.config:
+        storageClass: custom
+    asserts:
+      - documentIndex: &PersistentVolumeClaimDocument 0
+        isKind:
+          of: PersistentVolumeClaim
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: spec.storageClassName
+          value: custom
+
+  - it: absent storage class should pass
+    set:
+      volumes.config: {}
+    asserts:
+      - documentIndex: &PersistentVolumeClaimDocument 0
+        isKind:
+          of: PersistentVolumeClaim
+      - documentIndex: *PersistentVolumeClaimDocument
+        notExists:
+          path: spec.storageClassName
+
+  - it: empty should pass
+    set:
+      volumes.config:
+        storageClass: "-"
+    asserts:
+      - documentIndex: &PersistentVolumeClaimDocument 0
+        isKind:
+          of: PersistentVolumeClaim
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: spec.storageClassName
+          value: ""

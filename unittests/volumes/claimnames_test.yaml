@@ -1,0 +1,98 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: volumes claimnames
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default should pass
+    set:
+      volumes:
+        config:
+          accessMode: ReadWriteOnce
+          size: 1Gi
+    asserts:
+      - documentIndex: 1
+        isKind:
+          of: Deployment
+      - documentIndex: 1
+        equal:
+          path: spec.template.spec.volumes[0]
+          value:
+            name: config
+            persistentVolumeClaim:
+              claimName: RELEASE-NAME-config
+
+  - it: with existingClaim should pass
+    set:
+      volumes:
+        existingClaim:
+          existingClaim: myClaim
+    asserts:
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 0
+        equal:
+          path: spec.template.spec.volumes[0]
+          value:
+            name: existingClaim
+            persistentVolumeClaim:
+              claimName: myClaim
+
+  - it: custom suffix should pass
+    set:
+      volumes:
+        claimWithNameOverride:
+          nameOverride: suffix
+          accessMode: ReadWriteMany
+          size: 1G
+    asserts:
+      - documentIndex: 1
+        isKind:
+          of: Deployment
+      - documentIndex: 1
+        equal:
+          path: spec.template.spec.volumes[0]
+          value:
+            name: claimWithNameOverride
+            persistentVolumeClaim:
+              claimName: RELEASE-NAME-suffix
+
+  - it: same name as release name should pass
+    set:
+      volumes:
+        RELEASE-NAME:
+          accessMode: ReadWriteMany
+          size: 1G
+    asserts:
+      - documentIndex: 1
+        isKind:
+          of: Deployment
+      - documentIndex: 1
+        equal:
+          path: spec.template.spec.volumes[0]
+          value:
+            name: RELEASE-NAME
+            persistentVolumeClaim:
+              claimName: RELEASE-NAME
+
+  - it: name override as release name should pass
+    set:
+      volumes:
+        claimWithNameOverride:
+          nameOverride: RELEASE-NAME
+          accessMode: ReadWriteMany
+          size: 1G
+    asserts:
+      - documentIndex: 1
+        isKind:
+          of: Deployment
+      - documentIndex: 1
+        equal:
+          path: spec.template.spec.volumes[0]
+          value:
+            name: claimWithNameOverride
+            persistentVolumeClaim:
+              claimName: RELEASE-NAME
