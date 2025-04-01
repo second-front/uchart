@@ -124,7 +124,7 @@ tests:
           containers:
             main:
               image:
-                repository: ghcr.io/mendhak/http-https-echo
+                name: ghcr.io/mendhak/http-https-echo
                 tag: 31
                 pullPolicy: IfNotPresent
               probes:

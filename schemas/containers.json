@@ -225,7 +225,7 @@
       "registry": {
         "type": "string"
       },
-      "repository": {
+      "name": {
         "type": "string"
       },
       "tag": {

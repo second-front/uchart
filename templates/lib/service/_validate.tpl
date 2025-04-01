@@ -1,6 +1,4 @@
-{{/*
-Validate Service values
-*/}}
+{{- /* Validate Service values */ -}}
 {{- define "2f.uchart.lib.service.validate" -}}
   {{- $root := .root -}}
   {{- $serviceObject := .object -}}

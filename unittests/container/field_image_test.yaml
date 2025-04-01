@@ -10,7 +10,7 @@ tests:
     set:
       workloads.main.containers.main.image:
         registry: ghcr.io
-        repository: mendhak/http-https-echo
+        name: mendhak/http-https-echo
         tag: latest
     asserts:
       - documentIndex: 0
@@ -27,7 +27,7 @@ tests:
     set:
       workloads.main.containers.main.image:
         registry: ghcr.io
-        repository: mendhak/http-https-echo
+        name: mendhak/http-https-echo
         tag: 1.23
     asserts:
       - documentIndex: 0
@@ -44,7 +44,7 @@ tests:
     set:
       workloads.main.containers.main.image:
         registry: ghcr.io
-        repository: mendhak/http-https-echo
+        name: mendhak/http-https-echo
         tag: "{{.Chart.Version}}"
     asserts:
       - documentIndex: 0
@@ -65,7 +65,7 @@ tests:
         defaultContainerOptions:
           image:
             registry: ghcr.io
-            repository: mendhak/http-https-echo
+            name: mendhak/http-https-echo
             tag: 32
         containers:
           main: {} # needed to have at least a container enabled
@@ -86,11 +86,11 @@ tests:
         complianceLevel: il2
       workloads.main.defaultContainerOptions.image:
         registry: ghcr.io
-        repository: mendhak/http-https-echo
+        name: mendhak/http-https-echo
         tag: 32
       workloads.main.containers.main.image:
         registry: ghcr.io
-        repository: mendhak/http-https-echo-override
+        name: mendhak/http-https-echo-override
         tag: 33
     asserts:
       - documentIndex: &DeploymentDoc 0
@@ -115,7 +115,7 @@ tests:
         containers:
           main:
             image:
-              repository: mendhak/http-https-echo
+              name: mendhak/http-https-echo
               tag: 32
 
     asserts:
@@ -137,7 +137,7 @@ tests:
         registry: ghcr.io
       workloads.main.containers.main.image:
         registry: r.gamewarden.io
-        repository: mendhak/http-https-echo-override
+        name: mendhak/http-https-echo-override
         tag: 33
     asserts:
       - documentIndex: &DeploymentDoc 0
@@ -156,7 +156,7 @@ tests:
         complianceLevel: il2
         imageRegistry: r.gamewarden.io
       workloads.main.containers.main.image:
-        repository: mendhak/http-https-echo-override
+        name: mendhak/http-https-echo-override
         tag: 33
     asserts:
       - documentIndex: &DeploymentDoc 0

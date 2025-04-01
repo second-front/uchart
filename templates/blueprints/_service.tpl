@@ -37,7 +37,7 @@ spec:
   type: ClusterIP
   {{- if $serviceObject.clusterIP }}
   clusterIP: {{ $serviceObject.clusterIP }}
-  {{end}}
+  {{- end }}
   {{- else if eq $svcType "LoadBalancer" }}
   type: {{ $svcType }}
   {{- if $serviceObject.loadBalancerIP }}
@@ -45,7 +45,7 @@ spec:
   {{- end }}
   {{- if $serviceObject.loadBalancerClass }}
   loadBalancerClass: {{ $serviceObject.loadBalancerClass }}
-  {{- end -}}
+  {{- end }}
   {{- else if eq $svcType "ExternalName" }}
   type: {{ $svcType }}
   {{- if $serviceObject.externalName }}
@@ -87,7 +87,7 @@ spec:
       {{- if (not (empty $port.appProtocol)) }}
       appProtocol: {{ $port.appProtocol }}
       {{- end }}
-    {{- end -}}
+    {{- end }}
   {{- with (merge
     ($serviceObject.extraSelectorLabels | default dict)
     (dict "app.kubernetes.io/component" $serviceObject.workload)

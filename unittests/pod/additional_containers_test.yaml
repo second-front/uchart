@@ -13,7 +13,7 @@ tests:
           nameOverride: template-test
           dependsOn: main
           image:
-            repository: test
+            name: test
             tag: test
     asserts:
       - documentIndex: 0
@@ -30,7 +30,7 @@ tests:
         additional1:
           dependsOn: main
           image:
-            repository: test
+            name: test
             tag: test
     asserts:
       - documentIndex: 0
@@ -48,7 +48,7 @@ tests:
           nameOverride: "{{ .Release.Name }}-container"
           dependsOn: main
           image:
-            repository: test
+            name: test
             tag: test
     asserts:
       - documentIndex: 0
@@ -68,7 +68,7 @@ tests:
         additional1:
           dependsOn: main
           image:
-            repository: test
+            name: test
             tag: test
           env:
             int: 1

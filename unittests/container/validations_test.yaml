@@ -6,19 +6,6 @@ templates:
 values:
   - ../_values/workloads_main_default_container.yaml
 tests:
-  - it: image repository is required
-    set:
-      workloads:
-        main:
-          containers:
-            test:
-              image:
-                repository: ""
-                tag: "test"
-    asserts:
-      - failedTemplate:
-          errorMessage: "No image repository specified for container. (workload main, container test)"
-
   - it: image tag is required
     set:
       workloads:
@@ -26,7 +13,7 @@ tests:
           containers:
             test:
               image:
-                repository: test
+                name: test
                 tag: ""
     asserts:
       - failedTemplate:

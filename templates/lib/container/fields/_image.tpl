@@ -5,10 +5,10 @@
   {{- $containerObject := $ctx.containerObject -}}
 
   {{ $imageRegistry := include "2f.uchart.lib.container.registry" (dict "ctx" $ctx) | trim }}
-  {{- $imageRepo := $containerObject.image.repository -}}
+  {{- $imageName := $containerObject.image.name | default $containerObject.id -}}
   {{- $imageTag := $containerObject.image.tag -}}
 
-  {{- if and $imageRepo $imageTag -}}
-    {{- printf "%s/%s:%s" $imageRegistry $imageRepo $imageTag -}}
+  {{- if and $imageName $imageTag -}}
+    {{- printf "%s/%s:%s" $imageRegistry $imageName $imageTag -}}
   {{- end -}}
 {{- end -}}

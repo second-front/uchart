@@ -5,6 +5,7 @@ global:
   complianceLevel: il2
   environment: dev
   imageRegistry: r.gamewarden.io
+  domain: test.dev
 
 workloads:
   main:
@@ -12,5 +13,5 @@ workloads:
       main:
         image:
           registry: ghcr.io
-          repository: mendhak/http-https-echo
+          name: mendhak/http-https-echo
           tag: 31

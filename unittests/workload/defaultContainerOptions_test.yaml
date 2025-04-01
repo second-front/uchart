@@ -90,7 +90,7 @@ tests:
       workloads.main.initContainers:
         test:
           image:
-            repository: ghcr.io/mendhak/http-https-echo
+            name: ghcr.io/mendhak/http-https-echo
             tag: 31
     asserts:
       - documentIndex: 0
@@ -119,7 +119,7 @@ tests:
       workloads.main.initContainers:
         test:
           image:
-            repository: ghcr.io/mendhak/http-https-echo
+            name: ghcr.io/mendhak/http-https-echo
             tag: 31
     asserts:
       - documentIndex: 0

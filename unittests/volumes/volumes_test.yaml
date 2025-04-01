@@ -40,13 +40,13 @@ tests:
           containers:
             second-container:
               image:
-                repository: ghcr.io/mendhak/http-https-echo
+                name: ghcr.io/mendhak/http-https-echo
                 tag: 31
         second:
           containers:
             first-container:
               image:
-                repository: ghcr.io/mendhak/http-https-echo
+                name: ghcr.io/mendhak/http-https-echo
                 tag: 31
 
       volumes:

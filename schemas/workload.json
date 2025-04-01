@@ -87,7 +87,7 @@
           },
           "image": {
             "$ref": "containers.json#/image",
-            "description": "Container image settings including repository, tag, and pull policy."
+            "description": "Container image settings including name, tag, and pull policy."
           },
           "resources": {
             "$ref": "k8s-api.json#/core.v1.ResourceRequirements",

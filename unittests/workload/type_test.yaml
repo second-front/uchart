@@ -23,7 +23,7 @@ tests:
           containers:
             main:
               image:
-                repository: mendhak/http-https-echo
+                name: mendhak/http-https-echo
                 tag: 31
     asserts:
       - hasDocuments:
@@ -61,7 +61,7 @@ tests:
           containers:
             main:
               image:
-                repository: mendhak/http-https-echo
+                name: mendhak/http-https-echo
                 tag: 31
     asserts:
       - hasDocuments:

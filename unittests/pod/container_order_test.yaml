@@ -11,15 +11,15 @@ tests:
       workloads.main.containers:
         main:
           image:
-            repository: test
+            name: test
             tag: test
         additional1:
           image:
-            repository: test
+            name: test
             tag: test
         additional2:
           image:
-            repository: test
+            name: test
             tag: test
     asserts:
       - documentIndex: &DeploymentDocument 0
@@ -48,17 +48,17 @@ tests:
         additional1:
           dependsOn: additional3
           image:
-            repository: test
+            name: test
             tag: test
         additional2:
           dependsOn: additional3
           image:
-            repository: test
+            name: test
             tag: test
         additional3:
           dependsOn: main
           image:
-            repository: test
+            name: test
             tag: test
     asserts:
       - documentIndex: &DeploymentDocument 0

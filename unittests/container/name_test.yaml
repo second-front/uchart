@@ -12,7 +12,7 @@ tests:
         main:
           nameOverride: template-test
           image:
-            repository: mendhak/http-https-echo
+            name: mendhak/http-https-echo
     asserts:
       - documentIndex: 0
         isKind:
@@ -27,7 +27,7 @@ tests:
       workloads.main.containers:
         main:
           image:
-            repository: mendhak/http-https-echo
+            name: mendhak/http-https-echo
     asserts:
       - documentIndex: 0
         isKind:
@@ -43,7 +43,7 @@ tests:
         main:
           nameOverride: "{{ .Release.Name }}-container"
           image:
-            repository: mendhak/http-https-echo
+            name: mendhak/http-https-echo
     asserts:
       - documentIndex: 0
         isKind:

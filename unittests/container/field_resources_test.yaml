@@ -27,7 +27,7 @@ tests:
             test:
               image:
                 registry: ghcr.io
-                repository: mendhak/http-https-echo
+                name: mendhak/http-https-echo
                 tag: 31
     asserts:
       - documentIndex: 0
@@ -63,7 +63,7 @@ tests:
             test:
               image:
                 registry: ghcr.io
-                repository: mendhak/http-https-echo
+                name: mendhak/http-https-echo
                 tag: 31
     asserts:
       - documentIndex: 0
@@ -94,7 +94,7 @@ tests:
             test:
               image:
                 registry: ghcr.io
-                repository: mendhak/http-https-echo
+                name: mendhak/http-https-echo
                 tag: 31
               resources:
                 requests:
@@ -129,7 +129,7 @@ tests:
             test:
               image:
                 registry: ghcr.io
-                repository: mendhak/http-https-echo
+                name: mendhak/http-https-echo
                 tag: 31
     asserts:
       - documentIndex: 0
