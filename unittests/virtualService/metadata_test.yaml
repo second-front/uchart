@@ -1,0 +1,91 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: virtualService metadata
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default metadata
+    set:
+      virtualServices:
+        main:
+          hostname: test
+    documentSelector: &VirtualSeviceSelector
+      path: $[?(@.kind == "VirtualService")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - notExists:
+          path: metadata.annotations
+      - equal:
+          path: metadata.labels
+          value:
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/environment: dev
+            app.gamewarden.io/customer: test
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+
+  - it: custom metadata
+    set:
+      virtualServices:
+        main:
+          annotations:
+            test_annotation: test
+          labels:
+            test_label: test
+    documentSelector: *VirtualSeviceSelector
+    asserts:
+      - equal:
+          path: metadata.annotations
+          value:
+            test_annotation: test
+      - equal:
+          path: metadata.labels
+          value:
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/environment: dev
+            app.gamewarden.io/customer: test
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+            test_label: test
+
+  - it: custom metadata with global metadata
+    set:
+      global:
+        labels:
+          global_label: test
+        annotations:
+          global_annotation: test
+      virtualServices:
+        main:
+          annotations:
+            test_annotation: test
+          labels:
+            test_label: test
+    documentSelector: *VirtualSeviceSelector
+    asserts:
+      - equal:
+          path: metadata.annotations
+          value:
+            global_annotation: test
+            test_annotation: test
+      - equal:
+          path: metadata.labels
+          value:
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/environment: dev
+            app.gamewarden.io/customer: test
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            argocd.argoproj.io/instance: RELEASE-NAME
+            global_label: test
+            helm.sh/chart: uchart-2.0.0
+            test_label: test

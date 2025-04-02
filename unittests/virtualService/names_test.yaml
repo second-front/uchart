@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: virtualService names
+templates:
+  - entrypoint.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default name
+    set:
+      virtualServices.main.hostname: test.dev
+    documentSelector:
+      path: $[?(@.kind == "VirtualService")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME
+
+  - it: custom name suffix
+    set:
+      virtualServices.main.nameOverride: http
+    documentSelector:
+      path: $[?(@.kind == "VirtualService")].metadata.name
+      value: RELEASE-NAME-http
+    asserts:
+      - exists:
+          path: metadata.name
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-http
+
+  - it: custom name suffix with template
+    set:
+      virtualServices.main.nameOverride: "{{ .Chart.Name }}"
+    documentSelector:
+      path: $[?(@.kind == "VirtualService")].metadata.name
+      value: RELEASE-NAME-uchart
+    asserts:
+      - exists:
+          path: metadata.name
+
+  - it: multiple virtualServices
+    set:
+      virtualServices:
+        main:
+          gateway: istio-system/public
+        second:
+          gateway: istio-system/public
+    asserts:
+      - documentSelector:
+          path: $[?(@.kind == "VirtualService")].metadata.name
+          value: RELEASE-NAME-main
+        exists:
+          path: metadata.name
+      - documentSelector:
+          path: $[?(@.kind == "VirtualService")].metadata.name
+          value: RELEASE-NAME-second
+        exists:
+          path: metadata.name

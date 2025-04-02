@@ -1,0 +1,112 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: virtualService service reference
+templates:
+  - uchart.yaml
+values:
+  - ../_values/virtualService_main_default.yaml
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default should pass
+    set:
+      services:
+        main:
+          workload: main
+          ports:
+            http:
+              port: &httpPort 8081
+    documentSelector: &VirtualServiceSelector
+      path: $[?(@.kind == "VirtualService")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - equal:
+          path: spec.http[0].route[0].destination
+          value:
+            host: RELEASE-NAME.NAMESPACE.svc.cluster.local
+            port:
+              number: *httpPort
+
+  - it: custom host should pass
+    set:
+      virtualServices.main:
+        http:
+          - match:
+              prefix: /
+            route:
+              host: "pathService"
+              port: 1234
+    documentSelector: *VirtualServiceSelector
+    asserts:
+      - equal:
+          path: spec.http[0].route[0].destination
+          value:
+            host: pathService
+            port:
+              number: 1234
+
+  - it: custom host with template should pass
+    set:
+      virtualServices.main:
+        http:
+          - match:
+              prefix: /
+            route:
+              host: "{{ .Release.Name }}"
+              port: 1234
+    documentSelector: *VirtualServiceSelector
+    asserts:
+      - equal:
+          path: spec.http[0].route[0].destination
+          value:
+            host: RELEASE-NAME
+            port:
+              number: 1234
+
+  - it: multiple http rules with port name references should pass
+    set:
+      services:
+        main:
+          workload: main
+          ports:
+            http:
+              port: &httpPort 8081
+            http2:
+              enabled: true
+              port: &http2Port 1880
+      virtualServices:
+        main:
+          http:
+            - match:
+                - uri:
+                    prefix: /dev
+              route:
+                id: main
+                port: http
+            - match:
+                - uri:
+                    prefix: /test
+              route:
+                id: main
+                port: http2
+    documentSelector: *VirtualServiceSelector
+    asserts:
+      # First VirtualService http rule
+      - equal:
+          path: spec.http[0].match[0].uri.prefix
+          value: /dev
+      - equal:
+          path: spec.http[0].route[0].destination.host
+          value: RELEASE-NAME.NAMESPACE.svc.cluster.local
+      - equal:
+          path: spec.http[0].route[0].destination.port.number
+          value: *httpPort
+      # Second VirtualService http rule
+      - equal:
+          path: spec.http[1].match[0].uri.prefix
+          value: /test
+      - equal:
+          path: spec.http[1].route[0].destination.host
+          value: RELEASE-NAME.NAMESPACE.svc.cluster.local
+      - equal:
+          path: spec.http[1].route[0].destination.port.number
+          value: *http2Port

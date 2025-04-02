@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=../../values.schema.json
+virtualServices:
+  main:
+    hostname: "chart-example.local"
+    http:
+      - match:
+          - uri:
+              prefix: /
+        route:
+          id: main

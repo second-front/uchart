@@ -5,7 +5,7 @@
   {{- $resourceValues := .values -}}
   {{- $resources := .resources -}}
   {{- $kind := .kind -}}
-  {{- $dynamicNameKinds := list "workload" "service" "hpa" -}}
+  {{- $dynamicNameKinds := list "workload" "service" "hpa" "virtualService" -}}
 
   {{- /* Determine and inject the name */ -}}
   {{- $resourceName := (include "2f.uchart.lib.chart.names.fullname" $root) -}}

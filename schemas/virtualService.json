@@ -1,0 +1,77 @@
+{
+  "instance": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "annotations": {
+        "$ref": "metadata.json#/annotations"
+      },
+      "labels": {
+        "$ref": "metadata.json#/labels"
+      },
+      "nameOverride": {
+        "type": "string"
+      },
+      "gateway": {
+        "type": "string"
+      },
+      "hostname": {
+        "type": "string"
+      },
+      "http": {
+        "type": "array",
+        "items": {
+          "$ref": "#/http"
+        }
+      }
+    }
+  },
+
+  "http": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "match": {},
+      "rewrite": {},
+      "route": {
+        "type": "object",
+        "oneOf": [
+          {"$ref": "#/routeByHost"},
+          {"$ref": "#/routeByServiceReference"}
+        ]
+      }
+    }
+  },
+
+ "routeByHost": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "host": {
+        "type": "string"
+      },
+      "port": {
+        "type": ["integer"]
+      }
+    },
+    "required": ["host", "port"]
+  },
+
+  "routeByServiceReference": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "port": {
+        "type": ["string", "integer"]
+      }
+    },
+    "required": ["id"]
+  } 
+}

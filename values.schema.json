@@ -58,6 +58,11 @@
         "$ref": "schemas/service.json#/instance"
       }
     },
+    "virtualServices": {
+      "additionalProperties": {
+        "$ref": "schemas/virtualService.json#/instance"
+      }
+    },
     "volumes": {
       "additionalProperties": {
         "$ref": "schemas/volume.json#/instance"
