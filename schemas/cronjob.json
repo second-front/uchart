@@ -62,7 +62,8 @@
       },
       "schedule": {
         "type": "string",
-        "description": "A cron-formatted string that defines the execution schedule for the job."
+        "description": "A cron-formatted string that defines the execution schedule for the job.",
+        "default": "*/5 * * * *"
       },
       "startingDeadlineSeconds": {
         "type": "integer",
