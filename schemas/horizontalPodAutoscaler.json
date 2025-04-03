@@ -5,8 +5,7 @@
     "additionalProperties": false,
     "properties": {
       "enabled": {
-        "type": "boolean",
-        "default": "false"
+        "type": "boolean"
       },
       "minReplicas": {
         "type": "integer",

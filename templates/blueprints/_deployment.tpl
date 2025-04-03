@@ -59,9 +59,6 @@ spec:
     matchLabels:
       app.kubernetes.io/component: {{ $deploymentObject.id }}
       {{- include "2f.uchart.lib.metadata.selectorLabels" $root | nindent 6 }}
-      {{- with $deploymentObject.selectorLabels }}
-        {{- toYaml . | nindent 6 }}
-      {{- end }}
   template:
     metadata:
       {{- with (include "2f.uchart.lib.pod.metadata.annotations" (dict "root" $root "workloadObject" $deploymentObject )) }}

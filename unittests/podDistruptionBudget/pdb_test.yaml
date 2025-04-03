@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: pod disruption budget
+templates:
+  - uchart.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: should generate pdb with minAvailable specified as number
+    set:
+      workloads.main.pdb:
+        enabled: true
+        minAvailable: 1
+
+    documentSelector:
+      path: $[?(@.kind == "PodDisruptionBudget")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - equal:
+          path: spec.selector.matchLabels
+          value:
+            app.kubernetes.io/component: main
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/instance: RELEASE-NAME
+  - it: should generate pdb with minAvailable specified as percentage
+    set:
+      workloads.main.pdb:
+        enabled: true
+        minAvailable: 10%
+
+    documentSelector:
+      path: $[?(@.kind == "PodDisruptionBudget")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 10%
+      - equal:
+          path: spec.selector.matchLabels
+          value:
+            app.kubernetes.io/component: main
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/instance: RELEASE-NAME
+  - it: should generate pdb with maxUnavailable specified as number
+    set:
+      workloads.main.pdb:
+        enabled: true
+        maxUnavailable: 1
+
+    documentSelector:
+      path: $[?(@.kind == "PodDisruptionBudget")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - equal:
+          path: spec.selector.matchLabels
+          value:
+            app.kubernetes.io/component: main
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/instance: RELEASE-NAME
+  - it: should generate pdb with maxUnavailable specified as percentage
+    set:
+      workloads.main.pdb:
+        enabled: true
+        maxUnavailable: 10%
+
+    documentSelector:
+      path: $[?(@.kind == "PodDisruptionBudget")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 10%
+      - equal:
+          path: spec.selector.matchLabels
+          value:
+            app.kubernetes.io/component: main
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/instance: RELEASE-NAME
+  - it: should generate pdb with unhealthPodEvictionPolicy
+    set:
+      workloads.main.pdb:
+        enabled: true
+        unhealthyPodEvictionPolicy: AlwaysAllow
+        maxUnavailable: 10%
+
+    documentSelector:
+      path: $[?(@.kind == "PodDisruptionBudget")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - equal:
+          path: spec.unhealthyPodEvictionPolicy
+          value: AlwaysAllow
+      - equal:
+          path: spec.selector.matchLabels
+          value:
+            app.kubernetes.io/component: main
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/instance: RELEASE-NAME

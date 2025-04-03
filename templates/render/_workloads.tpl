@@ -23,14 +23,22 @@
       {{- include (printf "2f.uchart.blueprints.%s" $workloadObject.type) (dict "root" $root "object" $resourceObject) | nindent 0 -}}
     {{- end -}}
 
-    {{- $hpaCompatibleWorkloadTypes := list "deployment" "statefulset" -}}
-    {{- if has $workloadValues.type $hpaCompatibleWorkloadTypes -}}
+    {{- $scalableWorkloadTypes := list "deployment" "statefulset" -}}
+    {{- if has $workloadValues.type $scalableWorkloadTypes -}}
       {{- if dig "autoscaling" "enabled" false $workloadObject -}}
         {{- /* Create object from the raw HPA values */ -}}
         {{- $hpaObject := (include "2f.uchart.lib.utils.initialize" (dict "root" $root "id" $key "values" $workloadObject.autoscaling "kind" "horizontalPodAutoscaler")) | fromYaml -}}
 
         {{- include "2f.uchart.lib.horizontalPodAutoscaler.validate" (dict "root" $root "object" $hpaObject) -}}
         {{- include "2f.uchart.blueprints.horizontalPodAutoscaler" (dict "root" $root "object" $hpaObject) | nindent 0 -}}
+      {{- end -}}
+
+      {{- if dig "pdb" "enabled" false $workloadObject -}}
+        {{- /* Create object from the raw pdb values */ -}}
+        {{- $pdbObject := (include "2f.uchart.lib.utils.initialize" (dict "root" $root "id" $key "values" $workloadObject.pdb "kind" "podDisruptionBudget")) | fromYaml -}}
+
+        {{- include "2f.uchart.lib.podDisruptionBudget.validate" (dict "root" $root "object" $pdbObject) -}}
+        {{- include "2f.uchart.blueprints.podDisruptionBudget" (dict "root" $root "object" $pdbObject) | nindent 0 -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}

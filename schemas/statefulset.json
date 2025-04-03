@@ -19,6 +19,9 @@
         },
         "autoscaling": {
           "$ref": "horizontalPodAutoscaler.json#/autoscaling"
+        },
+        "pdb": {
+          "$ref": "podDisruptionBudget.json#/pdb"
         }
       },
       "if": {
