@@ -1,5 +1,5 @@
-{{- /* Convert hpa values to an object */ -}}
-{{- define "2f.uchart.lib.hpa.initialize" -}}
+{{- /* Convert horizontalPodAutoscaler values to an object */ -}}
+{{- define "2f.uchart.lib.horizontalPodAutoscaler.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $hpaValues := .values -}}
@@ -9,6 +9,6 @@
   {{- $_ := set $hpaValues "workloadName" ($workloadValues.name | toString) -}}
   {{- $_ := set $hpaValues "workloadType" $workloadValues.type -}}
 
-  {{- /* Return the workload object */ -}}
+  {{- /* Return the horizontalPodAutoscaler object */ -}}
   {{- $hpaValues | toYaml -}}
 {{- end -}}

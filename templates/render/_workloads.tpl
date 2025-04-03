@@ -27,10 +27,10 @@
     {{- if has $workloadValues.type $hpaCompatibleWorkloadTypes -}}
       {{- if dig "autoscaling" "enabled" false $workloadObject -}}
         {{- /* Create object from the raw HPA values */ -}}
-        {{- $hpaObject := (include "2f.uchart.lib.utils.initialize" (dict "root" $root "id" $key "values" $workloadObject.autoscaling "kind" "hpa")) | fromYaml -}}
+        {{- $hpaObject := (include "2f.uchart.lib.utils.initialize" (dict "root" $root "id" $key "values" $workloadObject.autoscaling "kind" "horizontalPodAutoscaler")) | fromYaml -}}
 
-        {{- include "2f.uchart.lib.hpa.validate" (dict "root" $root "object" $hpaObject) -}}
-        {{- include "2f.uchart.blueprints.hpa" (dict "root" $root "object" $hpaObject "workloadType" $workloadValues.type) | nindent 0 -}}
+        {{- include "2f.uchart.lib.horizontalPodAutoscaler.validate" (dict "root" $root "object" $hpaObject) -}}
+        {{- include "2f.uchart.blueprints.horizontalPodAutoscaler" (dict "root" $root "object" $hpaObject) | nindent 0 -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}

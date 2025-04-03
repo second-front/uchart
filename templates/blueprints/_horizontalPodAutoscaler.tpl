@@ -1,5 +1,5 @@
-{{- /* Blueprint for HPA objects. */ -}}
-{{- define "2f.uchart.blueprints.hpa" -}}
+{{- /* Blueprint for HorizontalPodAutoscaler objects. */ -}}
+{{- define "2f.uchart.blueprints.horizontalPodAutoscaler" -}}
   {{- $root := .root -}}
   {{- $hpaObject := .object -}}
 

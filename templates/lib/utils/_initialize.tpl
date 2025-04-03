@@ -5,7 +5,7 @@
   {{- $resourceValues := .values -}}
   {{- $resources := .resources -}}
   {{- $kind := .kind -}}
-  {{- $dynamicNameKinds := list "workload" "service" "hpa" "virtualService" -}}
+  {{- $dynamicNameKinds := list "workload" "service" "horizontalPodAutoscaler" "virtualService" -}}
 
   {{- /* Determine and inject the name */ -}}
   {{- $resourceName := (include "2f.uchart.lib.chart.names.fullname" $root) -}}
@@ -35,7 +35,7 @@
   {{- $_ := set $resourceValues "name" $resourceName -}}
   {{- $_ := set $resourceValues "id" $id -}}
   
-  {{- $kindFunctionList := list "workload" "hpa" "volume" -}}
+  {{- $kindFunctionList := list "workload" "horizontalPodAutoscaler" "volume" -}}
   {{- if has $kind $kindFunctionList -}}
     {{- 
       $resourceValues = include (printf "2f.uchart.lib.%s.initialize" $kind) (
