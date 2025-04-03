@@ -1,4 +1,4 @@
-{{- /* Convert Deployment values to an object */ -}}
+{{- /* Initialize Deployment values */ -}}
 {{- define "2f.uchart.lib.deployment.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}

@@ -1,4 +1,4 @@
-{{- /* Convert horizontalPodAutoscaler values to an object */ -}}
+{{- /* Initialize horizontalPodAutoscaler values */ -}}
 {{- define "2f.uchart.lib.horizontalPodAutoscaler.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}

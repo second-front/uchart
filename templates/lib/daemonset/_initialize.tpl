@@ -1,4 +1,4 @@
-{{- /* Convert DaemonSet values to an object */ -}}
+{{- /* Initialize DaemonSet values */ -}}
 {{- define "2f.uchart.lib.daemonset.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}

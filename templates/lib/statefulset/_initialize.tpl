@@ -1,4 +1,4 @@
-{{- /* Convert StatefulSet values to an object */ -}}
+{{- /* Initialize StatefulSet values */ -}}
 {{- define "2f.uchart.lib.statefulset.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}

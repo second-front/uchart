@@ -1,4 +1,4 @@
-{{- /* Convert job values to an object */ -}}
+{{- /* Initialize job values */ -}}
 {{- define "2f.uchart.lib.job.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}

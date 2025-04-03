@@ -1,4 +1,4 @@
-{{- /* Convert volume values to an object */ -}}
+{{- /* Initialize volume values */ -}}
 {{- define "2f.uchart.lib.volume.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}

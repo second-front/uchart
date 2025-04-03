@@ -1,4 +1,4 @@
-{{- /* Convert workload values to an object */ -}}
+{{- /* Initialize workload values */ -}}
 {{- define "2f.uchart.lib.workload.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}

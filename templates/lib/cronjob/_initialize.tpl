@@ -1,4 +1,4 @@
-{{- /* Convert Cronjob values to an object */ -}}
+{{- /* Initialize Cronjob values */ -}}
 {{- define "2f.uchart.lib.cronjob.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
