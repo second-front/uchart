@@ -10,6 +10,10 @@
       "annotations": {
         "$ref": "metadata.json#/annotations"
       },
+      "enableServiceLinks": {
+        "type": "boolean",
+        "default": false
+      },
       "automountServiceAccountToken": {
         "type": "boolean",
         "default": true

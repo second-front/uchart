@@ -5,6 +5,7 @@
   {{- $ctx := dict "root" $root "workloadObject" $workloadObject -}}
 
 serviceAccountName: {{ include "2f.uchart.lib.pod.field.serviceAccountName" (dict "ctx" $ctx) | trim }}
+enableServiceLinks: {{ include "2f.uchart.lib.pod.getOption" (dict "ctx" $ctx "option" "enableServiceLinks" "default" false) }}
 automountServiceAccountToken: {{ include "2f.uchart.lib.pod.getOption" (dict "ctx" $ctx "option" "automountServiceAccountToken" "default" true) }}
   {{- with (include "2f.uchart.lib.pod.getOption" (dict "ctx" $ctx "option" "priorityClassName")) }}
 priorityClassName: {{ . | trim }}

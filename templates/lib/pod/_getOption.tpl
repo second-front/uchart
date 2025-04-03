@@ -3,7 +3,7 @@
   {{- $root := .ctx.root -}}
   {{- $workloadObject := .ctx.workloadObject -}}
   {{- $option := .option -}}
-  {{- $default := default "" .default -}}
+  {{- $default := .default -}}
 
   {{- $value := $default -}}
 
