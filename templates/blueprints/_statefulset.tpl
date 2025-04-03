@@ -3,33 +3,33 @@
   {{- $root := .root -}}
   {{- $statefulsetObject := .object -}}
 
+  {{- $annotations := merge
+    ($statefulsetObject.annotations | default dict)
+    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
+  -}}
   {{- $labels := merge
     (dict "app.kubernetes.io/component" $statefulsetObject.id)
     ($statefulsetObject.labels | default dict)
     (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
-  -}}
-  {{- $annotations := merge
-    ($statefulsetObject.annotations | default dict)
-    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
   -}}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ $statefulsetObject.name }}
-  {{- with $labels }}
-  labels:
-    {{- range $key, $value := . }}
-    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
-    {{- end }}
-  {{- end }}
+  namespace: {{ $root.Release.Namespace }}
   {{- with $annotations }}
   annotations:
     {{- range $key, $value := . }}
     {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}
   {{- end }}
-  namespace: {{ $root.Release.Namespace }}
+  {{- with $labels }}
+  labels:
+    {{- range $key, $value := . }}
+    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
+    {{- end }}
+  {{- end }}
 spec:
   revisionHistoryLimit: {{ include "2f.uchart.lib.utils.defaultKeepNonNullValue" (dict "value" $statefulsetObject.revisionHistoryLimit "default" 3) }}
   replicas: {{ $statefulsetObject.replicas }}

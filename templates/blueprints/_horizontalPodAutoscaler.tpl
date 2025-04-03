@@ -3,28 +3,29 @@
   {{- $root := .root -}}
   {{- $hpaObject := .object -}}
 
+  {{- $annotations := merge
+    ($hpaObject.annotations | default dict)
+    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
+  -}}
   {{- $labels := merge
     (dict "app.kubernetes.io/component" $hpaObject.id)
     ($hpaObject.labels | default dict)
     (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
-  -}}
-  {{- $annotations := merge
-    ($hpaObject.annotations | default dict)
-    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
   -}}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ $hpaObject.name }}
-  {{- with $labels }}
-  labels:
+  namespace: {{ $root.Release.Namespace }}
+  {{- with $annotations }}
+  annotations:
     {{- range $key, $value := . }}
       {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}
   {{- end }}
-  {{- with $annotations }}
-  annotations:
+  {{- with $labels }}
+  labels:
     {{- range $key, $value := . }}
       {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}

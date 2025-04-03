@@ -3,14 +3,14 @@
   {{- $root := .root -}}
   {{- $jobObject := .object -}}
 
+  {{- $annotations := merge
+    ($jobObject.annotations | default dict)
+    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
+  -}}
   {{- $labels := merge
     (dict "app.kubernetes.io/component" $jobObject.id)
     ($jobObject.labels | default dict)
     (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
-  -}}
-  {{- $annotations := merge
-    ($jobObject.annotations | default dict)
-    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
   -}}
 
   {{- $jobSettings := dig "job" dict $jobObject -}}
@@ -19,19 +19,19 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ $jobObject.name }}
-  {{- with $labels }}
-  labels:
-    {{- range $key, $value := . }}
-    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
-    {{- end }}
-  {{- end }}
+  namespace: {{ $root.Release.Namespace }}
   {{- with $annotations }}
   annotations:
     {{- range $key, $value := . }}
     {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}
   {{- end }}
-  namespace: {{ $root.Release.Namespace }}
+  {{- with $labels }}
+  labels:
+    {{- range $key, $value := . }}
+    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
+    {{- end }}
+  {{- end }}
 spec:
   suspend: {{ default false $jobSettings.suspend }}
   {{- with $jobSettings.activeDeadlineSeconds }}

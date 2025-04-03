@@ -3,13 +3,13 @@
   {{- $root := .root -}}
   {{- $secretObject := .object -}}
 
-  {{- $labels := merge
-    ($secretObject.labels | default dict)
-    (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
-  -}}
   {{- $annotations := merge
     ($secretObject.annotations | default dict)
     (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
+  -}}
+  {{- $labels := merge
+    ($secretObject.labels | default dict)
+    (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
   -}}
 
   {{- $stringData := "" -}}
@@ -24,19 +24,19 @@ type: {{ . }}
 {{- end }}
 metadata:
   name: {{ $secretObject.name }}
-  {{- with $labels }}
-  labels:
-    {{- range $key, $value := . }}
-    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
-    {{- end }}
-  {{- end }}
+  namespace: {{ $root.Release.Namespace }}
   {{- with $annotations }}
   annotations:
     {{- range $key, $value := . }}
     {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}
   {{- end }}
-  namespace: {{ $root.Release.Namespace }}
+  {{- with $labels }}
+  labels:
+    {{- range $key, $value := . }}
+    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
+    {{- end }}
+  {{- end }}
 {{- with $stringData }}
 stringData: {{- tpl $stringData $root | nindent 2 }}
 {{- end }}

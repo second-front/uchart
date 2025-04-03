@@ -3,33 +3,33 @@
   {{- $root := .root -}}
   {{- $daemonsetObject := .object -}}
 
+  {{- $annotations := merge
+    ($daemonsetObject.annotations | default dict)
+    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
+  -}}
   {{- $labels := merge
     (dict "app.kubernetes.io/component" $daemonsetObject.id)
     ($daemonsetObject.labels | default dict)
     (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
-  -}}
-  {{- $annotations := merge
-    ($daemonsetObject.annotations | default dict)
-    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
   -}}
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ $daemonsetObject.name }}
-  {{- with $labels }}
-  labels:
-    {{- range $key, $value := . }}
-    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
-    {{- end }}
-  {{- end }}
+  namespace: {{ $root.Release.Namespace }}
   {{- with $annotations }}
   annotations:
     {{- range $key, $value := . }}
     {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}
   {{- end }}
-  namespace: {{ $root.Release.Namespace }}
+  {{- with $labels }}
+  labels:
+    {{- range $key, $value := . }}
+    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
+    {{- end }}
+  {{- end }}
 spec:
   revisionHistoryLimit: {{ include "2f.uchart.lib.utils.defaultKeepNonNullValue" (dict "value" $daemonsetObject.revisionHistoryLimit "default" 3) }}
   selector:

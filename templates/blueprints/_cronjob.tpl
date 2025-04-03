@@ -8,14 +8,14 @@
     {{- $timeZone = dig "cronjob" "timeZone" "" $cronjobObject -}}
   {{- end -}}
 
+  {{- $annotations := merge
+    ($cronjobObject.annotations | default dict)
+    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
+  -}}
   {{- $labels := merge
     (dict "app.kubernetes.io/component" $cronjobObject.id)
     ($cronjobObject.labels | default dict)
     (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
-  -}}
-  {{- $annotations := merge
-    ($cronjobObject.annotations | default dict)
-    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
   -}}
 
   {{- $cronJobSettings := dig "cronjob" dict $cronjobObject -}}
@@ -24,19 +24,19 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ $cronjobObject.name }}
-  {{- with $labels }}
-  labels:
-    {{- range $key, $value := . }}
-    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
-    {{- end }}
-  {{- end }}
+  namespace: {{ $root.Release.Namespace }}
   {{- with $annotations }}
   annotations:
     {{- range $key, $value := . }}
     {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}
   {{- end }}
-  namespace: {{ $root.Release.Namespace }}
+  {{- with $labels }}
+  labels:
+    {{- range $key, $value := . }}
+    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
+    {{- end }}
+  {{- end }}
 spec:
   suspend: {{ default false $cronJobSettings.suspend }}
   concurrencyPolicy: {{ default "Forbid" $cronJobSettings.concurrencyPolicy }}

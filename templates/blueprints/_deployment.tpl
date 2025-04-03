@@ -4,28 +4,29 @@
   {{- $deploymentObject := .object -}}
   {{- $autoScalingEnabled := dig "autoscaling" "enabled" false $deploymentObject }}
 
+  {{- $annotations := merge
+    ($deploymentObject.annotations | default dict)
+    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
+  -}}
   {{- $labels := merge
     (dict "app.kubernetes.io/component" $deploymentObject.id)
     ($deploymentObject.labels | default dict)
     (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
-  -}}
-  {{- $annotations := merge
-    ($deploymentObject.annotations | default dict)
-    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
   -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ $deploymentObject.name }}
-  {{- with $labels }}
-  labels:
+  namespace: {{ $root.Release.Namespace }}
+  {{- with $annotations }}
+  annotations:
     {{- range $key, $value := . }}
       {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}
   {{- end }}
-  {{- with $annotations }}
-  annotations:
+  {{- with $labels }}
+  labels:
     {{- range $key, $value := . }}
       {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}

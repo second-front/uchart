@@ -3,13 +3,13 @@
   {{- $root := .root -}}
   {{- $pvcObject := .object -}}
 
-  {{- $labels := merge
-    ($pvcObject.labels | default dict)
-    (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
-  -}}
   {{- $annotations := merge
     ($pvcObject.annotations | default dict)
     (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
+  -}}
+  {{- $labels := merge
+    ($pvcObject.labels | default dict)
+    (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
   -}}
   {{- if $pvcObject.retain }}
     {{- $annotations = merge
@@ -23,19 +23,19 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ $pvcObject.name }}
-  {{- with $labels }}
-  labels:
-    {{- range $key, $value := . }}
-    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
-    {{- end }}
-  {{- end }}
+  namespace: {{ $root.Release.Namespace }}
   {{- with $annotations }}
   annotations:
     {{- range $key, $value := . }}
     {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}
   {{- end }}
-  namespace: {{ $root.Release.Namespace }}
+  {{- with $labels }}
+  labels:
+    {{- range $key, $value := . }}
+    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
+    {{- end }}
+  {{- end }}
 spec:
   accessModes:
     - {{ required (printf "accessMode is required for PVC %v" $pvcObject.name) $pvcObject.accessMode | quote }}

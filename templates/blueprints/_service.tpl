@@ -5,14 +5,14 @@
 
   {{- $svcType := default "ClusterIP" $serviceObject.type -}}
   {{- $enabledPorts := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $serviceObject.ports) | fromYaml -}}
+  {{- $annotations := merge
+    ($serviceObject.annotations | default dict)
+    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
+  -}}
   {{- $labels := merge
     (dict "app.kubernetes.io/service" $serviceObject.name)
     ($serviceObject.labels | default dict)
     (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
-  -}}
-  {{- $annotations := merge
-    ($serviceObject.annotations | default dict)
-    (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
   -}}
 ---
 apiVersion: v1
@@ -20,14 +20,14 @@ kind: Service
 metadata:
   name: {{ $serviceObject.name }}
   namespace: {{ $root.Release.Namespace }}
-  {{- with $labels }}
-  labels:
+  {{- with $annotations }}
+  annotations:
     {{- range $key, $value := . }}
     {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}
   {{- end }}
-  {{- with $annotations }}
-  annotations:
+  {{- with $labels }}
+  labels:
     {{- range $key, $value := . }}
     {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
     {{- end }}
