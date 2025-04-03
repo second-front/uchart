@@ -18,6 +18,15 @@
             "null"
           ]
         },
+        "customer": {
+          "type": "string"
+        },
+        "complianceLevel": {
+          "type": "string"
+        },
+        "environment": {
+          "type": "string"
+        },
         "imageRegistry": {
           "type": [
             "string",
@@ -30,7 +39,12 @@
         "annotations": {
           "$ref": "schemas/metadata.json#/annotations"
         }
-      }
+      },
+      "required": [
+        "customer",
+        "complianceLevel",
+        "environment"
+      ]
     },
     "defaultPodOptions": {
       "$ref": "schemas/pod.json#/options"
