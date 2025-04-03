@@ -1,5 +1,5 @@
 {{- /* Convert DaemonSet values to an object */ -}}
-{{- define "2f.uchart.lib.daemonset.valuesToObject" -}}
+{{- define "2f.uchart.lib.daemonset.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $objectValues := .values -}}

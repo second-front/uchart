@@ -1,5 +1,5 @@
 {{- /* Convert workload values to an object */ -}}
-{{- define "2f.uchart.lib.workload.valuesToObject" -}}
+{{- define "2f.uchart.lib.workload.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $workloadValues := .values -}}

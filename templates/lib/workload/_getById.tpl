@@ -8,6 +8,6 @@
   {{- $resourceValues := get $enabledResources $id -}}
 
   {{- if not (empty $resourceValues) -}}
-    {{- include "2f.uchart.lib.workload.valuesToObject" (dict "root" $root "resources" $resources "id" $id "values" $resourceValues) -}}
+    {{- include "2f.uchart.lib.workload.initialize" (dict "root" $root "resources" $resources "id" $id "values" $resourceValues) -}}
   {{- end -}}
 {{- end -}}

@@ -1,5 +1,5 @@
 {{- /* Convert Deployment values to an object */ -}}
-{{- define "2f.uchart.lib.deployment.valuesToObject" -}}
+{{- define "2f.uchart.lib.deployment.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $objectValues := .values -}}

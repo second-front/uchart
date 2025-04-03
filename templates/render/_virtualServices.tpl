@@ -11,7 +11,7 @@
 
     {{- /* Create object from the raw virtualService values */ -}}
     {{- $args := (dict "root" $root "id" $key "values" $virtualServiceValues "resources" $resources "kind" $kind) -}}
-    {{- $virtualServiceObject := (include "2f.uchart.lib.utils.valuesToObject" $args) | fromYaml -}}
+    {{- $virtualServiceObject := (include "2f.uchart.lib.utils.initialize" $args) | fromYaml -}}
 
     {{- /* Perform validations on the virtualService before rendering */ -}}
     {{- include "2f.uchart.lib.virtualService.validate" (dict "root" $root "object" $virtualServiceObject) -}}

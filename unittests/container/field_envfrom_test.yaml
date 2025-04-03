@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
 suite: container envFrom values
 templates:
-  - entrypoint.yaml
+  - uchart.yaml
 values:
   - ../_values/workloads_main_default_container.yaml
 tests:

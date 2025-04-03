@@ -10,7 +10,7 @@
     {{- $workloadValues := (mustDeepCopy $workload) -}}
 
     {{- /* Create object from the raw workload values */ -}}
-    {{- $workloadObject := (include "2f.uchart.lib.utils.valuesToObject" (dict "root" $root "id" $key "resources" $resources "values" $workloadValues "kind" $kind)) | fromYaml -}}
+    {{- $workloadObject := (include "2f.uchart.lib.utils.initialize" (dict "root" $root "id" $key "resources" $resources "values" $workloadValues "kind" $kind)) | fromYaml -}}
 
     {{- /* Perform validations on the workload before rendering */ -}}
     {{- include "2f.uchart.lib.workload.validate" (dict "root" $root "object" $workloadObject) -}}
@@ -18,7 +18,7 @@
     {{- $workloadTypes := list "deployment" "cronjob" "daemonset" "statefulset" "job" -}}
     {{- if has $workloadObject.type $workloadTypes -}}
       {{- $args := (dict "root" $root "id" $key "values" $workloadObject) -}}
-      {{- $resourceObject := include (printf "2f.uchart.lib.%s.valuesToObject" $workloadObject.type) $args | fromYaml -}}
+      {{- $resourceObject := include (printf "2f.uchart.lib.%s.initialize" $workloadObject.type) $args | fromYaml -}}
       {{- include (printf "2f.uchart.lib.%s.validate" $workloadObject.type) (dict "root" $root "object" $resourceObject) -}}
       {{- include (printf "2f.uchart.blueprints.%s" $workloadObject.type) (dict "root" $root "object" $resourceObject) | nindent 0 -}}
     {{- end -}}
@@ -27,7 +27,7 @@
     {{- if has $workloadValues.type $hpaCompatibleWorkloadTypes -}}
       {{- if dig "autoscaling" "enabled" false $workloadObject -}}
         {{- /* Create object from the raw HPA values */ -}}
-        {{- $hpaObject := (include "2f.uchart.lib.utils.valuesToObject" (dict "root" $root "id" $key "values" $workloadObject.autoscaling "kind" "hpa")) | fromYaml -}}
+        {{- $hpaObject := (include "2f.uchart.lib.utils.initialize" (dict "root" $root "id" $key "values" $workloadObject.autoscaling "kind" "hpa")) | fromYaml -}}
 
         {{- include "2f.uchart.lib.hpa.validate" (dict "root" $root "object" $hpaObject) -}}
         {{- include "2f.uchart.blueprints.hpa" (dict "root" $root "object" $hpaObject "workloadType" $workloadValues.type) | nindent 0 -}}

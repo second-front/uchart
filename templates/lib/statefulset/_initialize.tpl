@@ -1,5 +1,5 @@
 {{- /* Convert StatefulSet values to an object */ -}}
-{{- define "2f.uchart.lib.statefulset.valuesToObject" -}}
+{{- define "2f.uchart.lib.statefulset.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $objectValues := .values -}}

@@ -1,5 +1,5 @@
 {{- /* Convert volume values to an object */ -}}
-{{- define "2f.uchart.lib.volume.valuesToObject" -}}
+{{- define "2f.uchart.lib.volume.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $volumeValues := .values -}}

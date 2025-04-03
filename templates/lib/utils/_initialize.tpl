@@ -1,5 +1,5 @@
 {{- /* Convert values to an object */ -}}
-{{- define "2f.uchart.lib.utils.valuesToObject" -}}
+{{- define "2f.uchart.lib.utils.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $resourceValues := .values -}}
@@ -38,7 +38,7 @@
   {{- $kindFunctionList := list "workload" "hpa" "volume" -}}
   {{- if has $kind $kindFunctionList -}}
     {{- 
-      $resourceValues = include (printf "2f.uchart.lib.%s.valuesToObject" $kind) (
+      $resourceValues = include (printf "2f.uchart.lib.%s.initialize" $kind) (
         dict "root" $root "id" $id "values" $resourceValues
       ) | fromYaml 
     -}}

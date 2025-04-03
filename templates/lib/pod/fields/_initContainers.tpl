@@ -15,7 +15,7 @@ Returns the value for initContainers
 
   {{- range $key, $containerValues := $enabledContainers -}}
     {{- /* Create object from the container values */ -}}
-    {{- $containerObject := (include "2f.uchart.lib.container.valuesToObject" (dict "root" $root "workloadObject" $workloadObject "containerType" "init" "id" $key "values" $containerValues)) | fromYaml -}}
+    {{- $containerObject := (include "2f.uchart.lib.container.initialize" (dict "root" $root "workloadObject" $workloadObject "containerType" "init" "id" $key "values" $containerValues)) | fromYaml -}}
 
     {{- /* Perform validations on the Container before rendering */ -}}
     {{- include "2f.uchart.lib.container.validate" (dict "root" $root "workloadObject" $workloadObject "containerObject" $containerObject) -}}

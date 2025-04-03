@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
 suite: container image tag
 templates:
-  - entrypoint.yaml
+  - uchart.yaml
 tests:
   - it: string tag should pass
     values:

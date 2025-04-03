@@ -1,5 +1,5 @@
 {{- /* Convert hpa values to an object */ -}}
-{{- define "2f.uchart.lib.hpa.valuesToObject" -}}
+{{- define "2f.uchart.lib.hpa.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $hpaValues := .values -}}

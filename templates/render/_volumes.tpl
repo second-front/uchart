@@ -10,7 +10,7 @@
     {{- $volumeValues := (mustDeepCopy $volume) -}}
 
     {{- /* Create object from the raw volume values */ -}}
-    {{- $volumeObject := (include "2f.uchart.lib.utils.valuesToObject" (dict "root" $root "id" $key "resources" $resources "values" $volumeValues "kind" $kind)) | fromYaml -}}
+    {{- $volumeObject := (include "2f.uchart.lib.utils.initialize" (dict "root" $root "id" $key "resources" $resources "values" $volumeValues "kind" $kind)) | fromYaml -}}
 
     {{- /* Perform validations on the volume before rendering */ -}}
     {{- include "2f.uchart.lib.volume.validate" (dict "root" $root "object" $volumeObject) -}}

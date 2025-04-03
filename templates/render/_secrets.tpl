@@ -11,7 +11,7 @@
 
     {{- /* Create object from the raw Secret values */ -}}
     {{- $args := (dict "root" $root "id" $key "values" $secretValues "resources" $resources "kind" $kind) -}}
-    {{- $secretObject := (include "2f.uchart.lib.utils.valuesToObject" $args) | fromYaml -}}
+    {{- $secretObject := (include "2f.uchart.lib.utils.initialize" $args) | fromYaml -}}
 
     {{- /* Perform validations on the Secret before rendering */ -}}
     {{- include "2f.uchart.lib.secret.validate" (dict "root" $root "object" $secretObject) -}}

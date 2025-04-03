@@ -33,6 +33,6 @@
       {{- end -}}
     {{- end -}}
 
-    {{- include "2f.uchart.lib.utils.valuesToObject" (dict "root" $root "id" $id "values" $result "resources" $serviceResources "kind" "service") -}}
+    {{- include "2f.uchart.lib.utils.initialize" (dict "root" $root "id" $id "values" $result "resources" $serviceResources "kind" "service") -}}
   {{- end -}}
 {{- end -}}

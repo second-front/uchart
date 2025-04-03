@@ -14,7 +14,7 @@
 
   {{- if not (empty $resourceValues) -}}
     {{-
-      include "2f.uchart.lib.utils.valuesToObject" (
+      include "2f.uchart.lib.utils.initialize" (
         dict "root" $root "resources" $resources "id" $id "values" $resourceValues "kind" $kind
       )
     -}}

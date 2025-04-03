@@ -1,5 +1,5 @@
 {{- /* Convert container values to an object */ -}}
-{{- define "2f.uchart.lib.container.valuesToObject" -}}
+{{- define "2f.uchart.lib.container.initialize" -}}
   {{- $root := .root -}}
   {{- $workloadObject := mustDeepCopy .workloadObject -}}
   {{- $containerType := .containerType -}}

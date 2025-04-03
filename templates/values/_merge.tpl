@@ -1,5 +1,5 @@
-{{- /* Merge the local chart values and the common chart defaults */ -}}
-{{- define "2f.uchart.values.init" -}}
+{{- /* Merge the local chart values and the chart defaults */ -}}
+{{- define "2f.uchart.values.merge" -}}
   {{- if .Values.uchart -}}
     {{- $defaultValues := deepCopy .Values.uchart -}}
     {{- $userValues := deepCopy (omit .Values "uchart") -}}

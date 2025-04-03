@@ -1,5 +1,5 @@
-{{- /* Convert Cronjob values to an object */ -}}
-{{- define "2f.uchart.lib.cronjob.valuesToObject" -}}
+{{- /* Convert job values to an object */ -}}
+{{- define "2f.uchart.lib.job.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $objectValues := .values -}}
@@ -11,6 +11,6 @@
   {{- $restartPolicy := default "Never" $objectValues.pod.restartPolicy -}}
   {{- $_ := set $objectValues.pod "restartPolicy" $restartPolicy -}}
 
-  {{- /* Return the CronJob object */ -}}
+  {{- /* Return the Job object */ -}}
   {{- $objectValues | toYaml -}}
 {{- end -}}
