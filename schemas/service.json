@@ -5,34 +5,33 @@
     "properties": {
       "enabled": {
         "type": "boolean",
-        "default": true
+        "description": "Enables or disables the service (is enabled by default)."
       },
       "annotations": {
-        "$ref": "metadata.json#/annotations"
+        "$ref": "metadata.json#/annotations",
+        "description": "Provide additional Annotations to the service."
       },
       "labels": {
-        "$ref": "metadata.json#/labels"
+        "$ref": "metadata.json#/labels",
+        "description": "Provide additional Labels to the service."
       },
       "nameOverride": {
-        "type": "string"
+        "type": "string",
+        "description": "Override the name suffix that is used for this service"
       },
       "type": {
-        "type": "string"
-      },
-      "clusterIP": {
-        "type": "string"
-      },
-      "externalName": {
-        "type": "string"
-      },
-      "loadBalancerIP": {
-        "type": "string"
-      },
-      "loadBalancerClass": {
-        "type": "string"
+        "type": "string",
+        "description": "determines how the Service is exposed. Defaults to ClusterIP.",
+        "enum": [
+          "ClusterIP",
+          "ExternalName",
+          "LoadBalancer",
+          "NodePort"
+        ]
       },
       "internalTrafficPolicy": {
         "type": "string",
+        "description": "Defines how internal traffic is routed. `Cluster` distributes traffic across all endpoints, whereas `Local` restricts traffic to endpoints on the same node.",
         "enum": [
           "Cluster",
           "Local"
@@ -40,6 +39,7 @@
       },
       "externalTrafficPolicy": {
         "type": "string",
+        "description": "Specifies the routing policy for external traffic. `Local` preserves the client source IP while `Cluster` distributes the traffic evenly.",
         "enum": [
           "Cluster",
           "Local"
@@ -47,34 +47,88 @@
       },
       "sessionAffinity": {
         "type": "string",
+        "description": "Configures session affinity, ensuring that requests from a client are directed to the same pod. `ClientIP` enables affinity based on the client's IP address.",
         "enum": [
           "None",
           "ClientIP"
         ]
       },
-      "externalIPs": {
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
-      },
       "ports": {
         "type": "object",
+        "description": "Defines the ports to be exposed by the service. Each port configuration is provided as a named key mapping to a servicePort object.",
         "additionalProperties": {
           "$ref": "#/servicePort"
         }
       },
       "primary": {
         "type": "boolean",
+        "description": "Indicates whether this service is the primary one among multiple services. used to help generate probes",
         "default": false
       },
       "workload": {
-        "type": "string"
+        "type": "string",
+        "description": "Specifies the workload id that this service is associated with. This field is required."
       },
-      "extraSelectorLabels": {}
+      "extraSelectorLabels": {
+        "type": "object",
+        "description": "Provides additional selector labels to fine-tune the service’s target pods.",
+        "additionalProperties": { "type": "string" }
+      },
+      "externalName": true,
+      "loadBalancerIP": true,
+      "loadBalancerClass": true,
+      "clusterIP": true
     },
     "required": [
       "workload"
+    ],
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "const": "ExternalName"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "externalName": {
+              "type": "string",
+              "description": "external reference that discovery mechanisms will return as an alias for this service (e.g. a DNS CNAME record). No proxying will be involved.  Must be a lowercase RFC-1123 hostname (https://tools.ietf.org/html/rfc1123)."
+            }
+          }
+        },
+        "else": {
+          "properties": {
+            "clusterIP": {
+              "type": "string",
+              "description": "IP address of the service and is usually assigned randomly. Valid values are `None`, empty string, or a valid unused, in-range IP address. Setting this to `None` makes a `headless service` (no virtual IP), Only applies to types ClusterIP, NodePort, and LoadBalancer."
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "const": "LoadBalancer"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "loadBalancerIP": {
+              "type": "string",
+              "description": "Provides a specific IP address for the load balancer."
+            },
+            "loadBalancerClass": {
+              "type": "string",
+              "description": "Specifies the class of the load balancer to be used. This can be useful when multiple load balancer implementations are available."
+            }
+          }
+        }
+      }
     ]
   },
   "servicePort": {
@@ -83,20 +137,21 @@
     "properties": {
       "enabled": {
         "type": "boolean",
+        "description": "Enables or disables the port (is enabled by default).",
         "default": true
       },
       "primary": {
         "type": "boolean",
+        "description": "Marks this port as the primary port if multiple ports are configured.",
         "default": false
       },
       "port": {
-        "type": [
-          "string",
-          "integer"
-        ]
+        "type": "integer",
+        "description": "Specifies the port number on which the service is exposed. This field is required."
       },
       "protocol": {
         "type": "string",
+        "description": "Defines the protocol used by the port. This setting helps configure the service according to the expected traffic type.",
         "enum": [
           "HTTP",
           "HTTPS",
@@ -108,16 +163,16 @@
         "type": [
           "string",
           "integer"
-        ]
+        ],
+        "description": "Indicates the port on the target pods to which traffic should be forwarded. This can be a numeric value or a named port."
       },
       "nodePort": {
-        "type": [
-          "string",
-          "integer"
-        ]
+        "type": "integer",
+        "description": "Specifies the port to be used on each node for external access when the service type is 'NodePort'."
       },
       "appProtocol": {
-        "type": "string"
+        "type": "string",
+        "description": "Specifies the application protocol for the port. This is used by Kubernetes to handle port-specific settings."
       }
     },
     "required": [

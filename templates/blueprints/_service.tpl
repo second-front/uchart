@@ -63,10 +63,6 @@ spec:
   {{- if $serviceObject.sessionAffinity }}
   sessionAffinity: {{ $serviceObject.sessionAffinity }}
   {{- end }}
-  {{- with $serviceObject.externalIPs }}
-  externalIPs:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
   ports:
   {{- range $name, $port := $enabledPorts }}
     - port: {{ $port.port }}

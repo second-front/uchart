@@ -84,39 +84,6 @@ tests:
               port: 8080
             timeoutSeconds: 1
 
-  - it: probes with string Service port
-    set:
-      services.main.ports.http.port: "80"
-    documentSelector: *DeploymentSelector
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].livenessProbe
-          value:
-            failureThreshold: 3
-            initialDelaySeconds: 0
-            periodSeconds: 10
-            tcpSocket:
-              port: 80
-            timeoutSeconds: 1
-      - equal:
-          path: spec.template.spec.containers[0].readinessProbe
-          value:
-            failureThreshold: 3
-            initialDelaySeconds: 0
-            periodSeconds: 10
-            tcpSocket:
-              port: 80
-            timeoutSeconds: 1
-      - equal:
-          path: spec.template.spec.containers[0].startupProbe
-          value:
-            failureThreshold: 3
-            initialDelaySeconds: 0
-            periodSeconds: 10
-            tcpSocket:
-              port: 80
-            timeoutSeconds: 1
-
   - it: multiple services are handled correctly
     set:
       workloads:

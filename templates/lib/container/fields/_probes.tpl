@@ -64,15 +64,11 @@
           {{- end -}}
 
           {{- if $probeValues.port -}}
-            {{- if kindIs "float64" $probeValues.port -}}
-              {{- $_ := set (index $probeDefinition $probeHeader) "port" $probeValues.port -}}
-            {{- else if kindIs "string" $probeValues.port -}}
-              {{- $_ := set (index $probeDefinition $probeHeader) "port" (tpl ( $probeValues.port | toString ) $root) -}}
-            {{- end -}}
+            {{- $_ := set (index $probeDefinition $probeHeader) "port" $probeValues.port -}}
           {{- else if $primaryServiceDefaultPort.targetPort -}}
             {{- $_ := set (index $probeDefinition $probeHeader) "port" $primaryServiceDefaultPort.targetPort -}}
           {{- else -}}
-            {{- $_ := set (index $probeDefinition $probeHeader) "port" ($primaryServiceDefaultPort.port | toString | atoi ) -}}
+            {{- $_ := set (index $probeDefinition $probeHeader) "port" ($primaryServiceDefaultPort.port) -}}
           {{- end -}}
         {{- end -}}
       {{- end -}}
