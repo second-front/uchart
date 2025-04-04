@@ -5,25 +5,30 @@
     "properties": {
       "enabled": {
         "type": "boolean",
-        "default": true
+        "description": "Enables or disables the configMap (is enabled by default)."
       },
       "annotations": {
-        "$ref": "metadata.json#/annotations"
+        "$ref": "metadata.json#/annotations",
+        "description": "Provide additional Annotations to the configMap."
       },
       "labels": {
-        "$ref": "metadata.json#/labels"
+        "$ref": "metadata.json#/labels",
+        "description": "Provide additional Labels to the configMap."
       },
       "nameOverride": {
+        "description": "Override the name suffix that is used for this configmap",
         "type": "string"
       },
       "data": {
         "type": "object",
+        "description": "configMap data content. Helm template enabled.",
         "additionalProperties": {
           "type": "string"
         }
       },
       "binaryData": {
         "type": "object",
+        "description": "configMap binary data content.",
         "additionalProperties": {
           "type": "string"
         }
