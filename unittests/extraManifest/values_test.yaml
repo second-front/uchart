@@ -1,0 +1,86 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: extraManifest values
+templates:
+  - uchart.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+set:
+  extraManifests:
+    endpoint:
+      apiVersion: v1
+      kind: Endpoint
+      spec:
+        subsets:
+          - addresses:
+            - ip: 127.0.0.1
+            ports:
+            - name: "{{ .Release.Name }}"
+              port: 443
+              protocol: TCP
+tests:
+  - it: raw resources can be configured
+    documentSelector: &EndpointSelector
+      path: $[?(@.kind == "Endpoint")].metadata.name
+      value: RELEASE-NAME-endpoint
+    asserts:
+      - equal:
+          path: spec.subsets[0].addresses[0].ip
+          value: 127.0.0.1
+
+  - it: nameOverride can be configured
+    set:
+      extraManifests.endpoint:
+        nameOverride: test
+    documentSelector:
+      path: $[?(@.kind == "Endpoint")].metadata.name
+      value: RELEASE-NAME-test
+    asserts:
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-test
+
+  - it: nameOverride with template should pass
+    set:
+      extraManifests.endpoint:
+        nameOverride: "{{ .Release.Name }}"
+    documentSelector:
+      path: $[?(@.kind == "Endpoint")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME
+
+  - it: spec can render Helm template
+    set:
+      extraManifests.endpoint:
+        spec:
+          subsets:
+            - addresses:
+              - ip: 127.0.0.1
+              ports:
+              - name: "{{ .Release.Name }}"
+                port: 443
+                protocol: TCP
+    documentSelector: *EndpointSelector
+    asserts:
+      - equal:
+          path: spec.subsets[0].ports[0].name
+          value: RELEASE-NAME
+
+  - it: non-spec fields should pass
+    set:
+      extraManifests.test:
+          apiVersion: v1
+          kind: StorageClass
+          parameters:
+            test: test
+    documentSelector:
+      path: $[?(@.kind == "StorageClass")].metadata.name
+      value: RELEASE-NAME-test
+    asserts:
+      - equal:
+          path: parameters
+          value:
+            test: test

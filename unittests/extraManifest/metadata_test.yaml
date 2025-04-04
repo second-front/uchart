@@ -1,0 +1,94 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: extraManifest metadata
+templates:
+  - uchart.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+set:
+  extraManifests:
+    config:
+      apiVersion: v1
+      kind: Endpoint
+      spec:
+        test: test
+tests:
+  - it: default metadata should be present
+    documentSelector: &EndpointSelector
+      path: $[?(@.kind == "Endpoint")].metadata.name
+      value: RELEASE-NAME-config
+    asserts:
+      - notExists:
+          path: metadata.annotations
+      - equal:
+          path: metadata.labels
+          value:
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+
+  - it: custom metadata can be configured
+    set:
+      extraManifests:
+        config:
+          annotations:
+            test_annotation: test
+          labels:
+            test_label: test
+    documentSelector: *EndpointSelector
+    asserts:
+      - equal:
+          path: metadata.annotations
+          value:
+            test_annotation: test
+      - equal:
+          path: metadata.labels
+          value:
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+            argocd.argoproj.io/instance: RELEASE-NAME
+            test_label: test
+
+  - it: global metadata can be configured with local overrides
+    set:
+      global:
+        labels:
+          global_label: test
+        annotations:
+          global_annotation: test
+      extraManifests:
+        config:
+          annotations:
+            test_annotation: test
+          labels:
+            test_label: test
+    documentSelector: *EndpointSelector
+    asserts:
+      - equal:
+          path: metadata.annotations
+          value:
+            global_annotation: test
+            test_annotation: test
+      - equal:
+          path: metadata.labels
+          value:
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            argocd.argoproj.io/instance: RELEASE-NAME
+            global_label: test
+            helm.sh/chart: uchart-2.0.0
+            test_label: test

@@ -81,6 +81,11 @@
       "additionalProperties": {
         "$ref": "schemas/volume.json#/instance"
       }
+    },
+    "extraManifests": {
+      "additionalProperties": {
+        "$ref": "schemas/extraManifest.json#/instance"
+      }
     }
   }
 }
