@@ -16,8 +16,8 @@
         "description": "Provide additional Labels to the configMap."
       },
       "nameOverride": {
-        "description": "Override the name suffix that is used for this configmap",
-        "type": "string"
+        "type": "string",
+        "description": "Override the name suffix that is used for this configmap"
       },
       "data": {
         "type": "object",
