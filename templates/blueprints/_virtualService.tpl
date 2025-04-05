@@ -4,12 +4,13 @@
   {{- $virtualServiceObject := .object -}}
 
   {{- $annotations := merge
-    ($virtualServiceObject.annotations | default dict)
+    (include "2f.uchart.lib.metadata.localMetadata" (dict "root" $root "values" $virtualServiceObject.annotations) | fromYaml)
     (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
   -}}
   {{- $labels := merge
-    ($virtualServiceObject.labels | default dict)
-    (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
+    (include "2f.uchart.lib.metadata.standardLabels" $root | fromYaml)
+    (include "2f.uchart.lib.metadata.localMetadata" (dict "root" $root "values" $virtualServiceObject.labels) | fromYaml)
+    (include "2f.uchart.lib.metadata.globalLabels" $root | fromYaml)
   -}}
 
 ---
@@ -19,16 +20,10 @@ metadata:
   name: {{ $virtualServiceObject.name }}
   namespace: {{ $root.Release.Namespace }}
   {{- with $annotations }}
-  annotations:
-    {{- range $key, $value := . }}
-    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
-    {{- end }}
+  annotations: {{ . | toYaml | nindent 4}}
   {{- end }}
   {{- with $labels }}
-  labels:
-    {{- range $key, $value := . }}
-    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
-    {{- end }}
+  labels: {{ . | toYaml | nindent 4 }}
   {{- end }}
 spec:
   hosts:

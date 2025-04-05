@@ -1,6 +1,10 @@
 {{- /* Gamewarden Labels */ -}}
 {{- define "2f.uchart.lib.metadata.customerLabels" -}}
-app.gamewarden.io/customer: {{ required ".Values.global.customer is required" .Values.global.customer }}
-app.gamewarden.io/complianceLevel: {{ required ".Values.global.complianceLevel is required" .Values.global.complianceLevel }}
-app.gamewarden.io/environment: {{ required ".Values.global.environment is required" .Values.global.environment }}
-{{- end }}
+  {{- $labels := dict 
+    "app.gamewarden.io/customer" (.Values.global.customer | required ".Values.global.customer is required")
+    "app.gamewarden.io/complianceLevel" (.Values.global.complianceLevel | required ".Values.global.complianceLevel is required")
+    "app.gamewarden.io/environment" (.Values.global.environment | required ".Values.global.environment is required")
+  -}}
+  
+  {{- $labels | toYaml -}}
+{{- end -}}

@@ -6,13 +6,14 @@
   {{- $svcType := default "ClusterIP" $serviceObject.type -}}
   {{- $enabledPorts := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $serviceObject.ports) | fromYaml -}}
   {{- $annotations := merge
-    ($serviceObject.annotations | default dict)
+    (include "2f.uchart.lib.metadata.localMetadata" (dict "root" $root "values" $serviceObject.annotations) | fromYaml)
     (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
   -}}
   {{- $labels := merge
     (dict "app.kubernetes.io/service" $serviceObject.name)
-    ($serviceObject.labels | default dict)
-    (include "2f.uchart.lib.metadata.allLabels" $root | fromYaml)
+    (include "2f.uchart.lib.metadata.standardLabels" $root | fromYaml)
+    (include "2f.uchart.lib.metadata.localMetadata" (dict "root" $root "values" $serviceObject.labels) | fromYaml)
+    (include "2f.uchart.lib.metadata.globalLabels" $root | fromYaml)
   -}}
 ---
 apiVersion: v1
@@ -21,16 +22,10 @@ metadata:
   name: {{ $serviceObject.name }}
   namespace: {{ $root.Release.Namespace }}
   {{- with $annotations }}
-  annotations:
-    {{- range $key, $value := . }}
-    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
-    {{- end }}
+  annotations: {{ . | toYaml | nindent 4}}
   {{- end }}
   {{- with $labels }}
-  labels:
-    {{- range $key, $value := . }}
-    {{- printf "%s: %s" $key (tpl $value $root | toYaml ) | nindent 4 }}
-    {{- end }}
+  labels: {{ . | toYaml | nindent 4 }}
   {{- end }}
 spec:
   {{- if (eq $svcType "ClusterIP") }}
@@ -89,6 +84,6 @@ spec:
     (dict "app.kubernetes.io/component" $serviceObject.workload)
     (include "2f.uchart.lib.metadata.selectorLabels" $root | fromYaml)
   ) }}
-  selector: {{- toYaml . | nindent 4 }}
+  selector: {{ toYaml . | nindent 4 }}
   {{- end }}
 {{- end }}

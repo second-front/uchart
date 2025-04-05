@@ -132,4 +132,7 @@ tests:
             app.gamewarden.io/customer: test
             app.gamewarden.io/environment: dev
             app.gamewarden.io/complianceLevel: il2
+            argocd.argoproj.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            helm.sh/chart: uchart-2.0.0
             test_label: test

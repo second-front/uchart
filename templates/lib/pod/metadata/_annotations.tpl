@@ -5,30 +5,13 @@
 
   {{- /* Default annotations */ -}}
   {{- $annotations := merge
-    (dict)
-  -}}
-
-  {{- /* Include global annotations */ -}}
-  {{- $annotations = merge
+    dict
+    (include "2f.uchart.lib.metadata.localMetadata" (dict "root" $root "values" (dig "pod" "annotations" dict $workloadObject)) | fromYaml)
+    (include "2f.uchart.lib.metadata.localMetadata" (dict "root" $root "values" (dig "annotations" dict $root.Values.defaultPodOptions)) | fromYaml)
     (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
-    $annotations
   -}}
 
-  {{- /* Set default pod annotations */ -}}
-  {{- $defaultOption := get (default dict $root.Values.defaultPodOptions) "annotations" -}}
-  {{- if not (empty $defaultOption) -}}
-    {{- $annotations = merge $defaultOption $annotations -}}
-  {{- end -}}
-
-  {{- /* See if a pod-specific override is set */ -}}
-  {{- if hasKey $workloadObject "pod" -}}
-    {{- $podOption := get $workloadObject.pod "annotations" -}}
-    {{- if not (empty $podOption) -}}
-      {{- $annotations = merge $podOption $annotations -}}
-    {{- end -}}
-  {{- end -}}
-
-  {{- if not (empty $annotations) -}}
-    {{- $annotations | toYaml -}}
+  {{- with $annotations -}}
+    {{- . | toYaml -}}
   {{- end -}}
 {{- end -}}

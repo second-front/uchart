@@ -1,10 +1,11 @@
 {{- /* Global Annotations */ -}}
 {{- define "2f.uchart.lib.metadata.globalAnnotations" -}}
-  {{- with .Values.global.annotations }}
-    {{- range $k, $v := . }}
-      {{- $name := $k }}
-      {{- $value := tpl $v $ }}
-{{ $name }}: {{ quote $value }}
-    {{- end }}
-  {{- end }}
+  {{- with .Values.global.annotations -}}
+    {{- $annotations := dict -}}
+    {{- range $k, $v := . -}}
+      {{- $_ := set $annotations $k (tpl $v $ | toString) -}}
+    {{- end -}}
+
+    {{- $annotations | toYaml -}}
+  {{- end -}}
 {{- end -}}

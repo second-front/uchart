@@ -1,4 +1,6 @@
-{{- /* KeyCloak Labels */ -}}
-{{- define "2f.uchart.lib.metadata.keycloakLabels" -}}
-keycloak: protect
-{{- end }}
+{{- /* Istio Auth Labels */ -}}
+{{- define "2f.uchart.lib.metadata.authLabels" -}}
+  {{- $labels := dict "protect" "keycloak" -}}
+  
+  {{- $labels | toYaml -}}
+{{- end -}}
