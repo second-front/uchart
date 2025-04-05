@@ -18,7 +18,10 @@
             "null"
           ]
         },
-        "customer": {
+        "customerName": {
+          "type": "string"
+        },
+        "applicationName": {
           "type": "string"
         },
         "complianceLevel": {
@@ -41,7 +44,8 @@
         }
       },
       "required": [
-        "customer",
+        "customerName",
+        "applicationName",
         "complianceLevel",
         "environment"
       ]

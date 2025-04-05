@@ -1,7 +1,8 @@
 # yaml-language-server: $schema=../../values.schema.json
 ---
 global:
-  customer: test
+  customerName: test
+  applicationName: RELEASE-NAME
   complianceLevel: il2
   environment: dev
   imageRegistry: r.gamewarden.io

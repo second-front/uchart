@@ -58,7 +58,8 @@ tests:
   - it: tag from defaultContainerOptions should pass
     set:
       global:
-        customer: test
+        customerName: test
+        applicationName: RELEASE-NAME
         environment: dev
         complianceLevel: il2
       workloads.main:
@@ -81,7 +82,8 @@ tests:
   - it: tag from defaultContainerOptions with container override should pass
     set:
       global:
-        customer: test
+        customerName: test
+        applicationName: RELEASE-NAME
         environment: dev
         complianceLevel: il2
       workloads.main.defaultContainerOptions.image:
@@ -104,7 +106,8 @@ tests:
   - it: registry from defaultContainerOptions should pass when stategy is merge
     set:
       global:
-        customer: test
+        customerName: test
+        applicationName: RELEASE-NAME
         environment: dev
         complianceLevel: il2
       workloads.main:
@@ -130,7 +133,8 @@ tests:
   - it: registry from defaultContainerOptions with container override should pass
     set:
       global:
-        customer: test
+        customerName: test
+        applicationName: RELEASE-NAME
         environment: dev
         complianceLevel: il2
       workloads.main.defaultContainerOptions.image:
@@ -151,7 +155,8 @@ tests:
   - it: registry from global should pass
     set:
       global:
-        customer: test
+        customerName: test
+        applicationName: RELEASE-NAME
         environment: dev
         complianceLevel: il2
         imageRegistry: r.gamewarden.io

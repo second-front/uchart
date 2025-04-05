@@ -5,7 +5,7 @@
 # Set the nameOverride based on the release name if no override has been set
 {{ if not .Values.global.nameOverride }}
 global:
-  nameOverride: "{{ .Release.Name }}"
+  nameOverride: "{{ .Values.global.applicationName | default .Release.Name }}"
 {{ end }}
 {{- end -}}
 {{- $_ := mergeOverwrite .Values (include "2f.uchart.hardcodedValues" . | fromYaml) -}}
