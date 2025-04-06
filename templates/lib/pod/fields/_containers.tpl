@@ -8,7 +8,7 @@
   {{- $containers := list -}}
 
   {{- /* Fetch configured containers for this workload */ -}}
-  {{- $enabledContainers := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $workloadObject.containers) | fromYaml }}
+  {{- $enabledContainers := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $workloadObject.containers) | fromYaml -}}
   {{- $renderedContainers := dict -}}
 
   {{- range $key, $containerValues := $enabledContainers -}}

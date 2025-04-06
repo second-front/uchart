@@ -16,7 +16,7 @@
     {{- /* Perform validations on the Secret before rendering */ -}}
     {{- include "2f.uchart.lib.secret.validate" (dict "root" $root "object" $secretObject) -}}
 
-    {{/* Include the Secret blueprint */}}
+    {{- /* Include the Secret blueprint */ -}}
     {{- include "2f.uchart.blueprints.secret" (dict "root" $root "object" $secretObject) | nindent 0 -}}
   {{- end -}}
 {{- end -}}

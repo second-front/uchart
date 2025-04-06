@@ -6,4 +6,4 @@
   -}}
   
   {{- $labels | toYaml -}}
-{{- end }}
+{{- end -}}

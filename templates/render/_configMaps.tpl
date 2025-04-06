@@ -16,7 +16,7 @@
     {{- /* Perform validations on the configMap before rendering */ -}}
     {{- include "2f.uchart.lib.configMap.validate" (dict "root" $root "object" $configMapObject "id" $key) -}}
 
-    {{/* Include the configMap blueprint */}}
+    {{- /* Include the configMap blueprint */ -}}
     {{- include "2f.uchart.blueprints.configMap" (dict "root" $root "object" $configMapObject) | nindent 0 -}}
   {{- end -}}
 {{- end -}}

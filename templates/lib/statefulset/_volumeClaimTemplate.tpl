@@ -6,13 +6,13 @@
   {{- /* Default to empty list */ -}}
   {{- $volumeClaimTemplates := list -}}
 
-  {{- range $id, $volumeClaimTemplate := (dig "statefulset" "volumeClaimTemplates" dict $statefulsetObject) }}
+  {{- range $id, $volumeClaimTemplate := (dig "statefulset" "volumeClaimTemplates" dict $statefulsetObject) -}}
     {{- $vct := include "2f.uchart.lib.statefulset.volumeclaimtemplate" (dict "root" $root "id" $id "values" $volumeClaimTemplate) -}}
     {{- $volumeClaimTemplates = append $volumeClaimTemplates ($vct | fromYaml) -}}
   {{- end -}}
 
   {{- if not (empty $volumeClaimTemplates) -}}
-    {{ $volumeClaimTemplates | toYaml }}
+    {{- $volumeClaimTemplates | toYaml -}}
   {{- end -}}
 {{- end -}}
 

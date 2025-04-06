@@ -40,7 +40,7 @@
       {{- else if .host -}}
         {{- $host = tpl .host $root | toString -}}
         {{- $port = .port | required "route by host requires explict port defined" -}}
-      {{- end }}
+      {{- end -}}
       
       {{- $_ := set $destination "host" $host -}}
       {{- $_ := set $destination "port" (dict "number" $port) -}}

@@ -4,7 +4,7 @@
   {{- $root := $ctx.root -}}
   {{- $containerObject := $ctx.containerObject -}}
 
-  {{ $imageRegistry := include "2f.uchart.lib.container.registry" (dict "ctx" $ctx) | trim }}
+  {{- $imageRegistry := include "2f.uchart.lib.container.registry" (dict "ctx" $ctx) | trim -}}
   {{- $imageName := $containerObject.image.name | default $containerObject.id -}}
   {{- $imageTag := $containerObject.image.tag -}}
 

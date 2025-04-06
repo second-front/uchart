@@ -45,7 +45,7 @@ Returns the value for volumes
       {{- else if $volumeValues.id -}}
         {{- $object := (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" $volumeValues.id "kind" "configMap") | fromYaml ) -}}
         {{- if not $object -}}
-          {{fail (printf "No configmap found with this id. (volume '%s', id '%s')" $id $volumeValues.id)}}
+          {{- fail (printf "No configmap found with this id. (volume '%s', id '%s')" $id $volumeValues.id) -}}
         {{- end -}}
         {{- $objectName = $object.name -}}
       {{- end -}}
@@ -67,7 +67,7 @@ Returns the value for volumes
       {{- else if $volumeValues.id -}}
         {{- $object := (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" $volumeValues.id "kind" "secret") | fromYaml ) -}}
         {{- if not $object -}}
-          {{fail (printf "No secret found with this id. (volume '%s', id '%s')" $id $volumeValues.id)}}
+          {{- fail (printf "No secret found with this id. (volume '%s', id '%s')" $id $volumeValues.id) -}}
         {{- end -}}
         {{- $objectName = $object.name -}}
       {{- end -}}
@@ -94,7 +94,7 @@ Returns the value for volumes
     {{- else if eq $volumeValues.type "hostPath" -}}
       {{- $_ := set $volume "hostPath" dict -}}
       {{- $_ := set $volume.hostPath "path" (required "hostPath not set" $volumeValues.hostPath) -}}
-      {{- with $volumeValues.hostPathType }}
+      {{- with $volumeValues.hostPathType -}}
         {{- $_ := set $volume.hostPath "type" . -}}
       {{- end -}}
 

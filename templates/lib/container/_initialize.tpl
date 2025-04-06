@@ -21,7 +21,7 @@
   {{- /* Merge default container options if required */ -}}
   {{- if (eq true $mergeDefaultContainerOptions) -}}
     {{- if eq "overwrite" $defaultContainerOptionsStrategy -}}
-      {{- range $key, $defaultValue := (dig "defaultContainerOptions" dict $workloadObject) }}
+      {{- range $key, $defaultValue := (dig "defaultContainerOptions" dict $workloadObject) -}}
         {{- $specificValue := dig $key nil $objectValues -}}
         {{- if not (empty $specificValue) -}}
           {{- $_ := set $objectValues $key $specificValue -}}

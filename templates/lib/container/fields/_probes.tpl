@@ -1,4 +1,4 @@
-{{/* Probes used by the container. */}}
+{{- /* Probes used by the container. */ -}}
 {{- define "2f.uchart.lib.container.field.probes" -}}
   {{- $ctx := .ctx -}}
   {{- $root := $ctx.root -}}

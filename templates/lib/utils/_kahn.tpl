@@ -1,9 +1,9 @@
-{{/*
+{{- /*
 Implementation of Kahn's algorithm based on
 https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
 
 source: https://github.com/dastrobu/helm-charts/blob/main/environment-variables/templates/_kahn.tpl
-*/}}
+*/ -}}
 {{- define "2f.uchart.lib.utils.kahn" -}}
   {{- $graph := .graph -}}
   {{- if empty $graph -}}
@@ -18,18 +18,18 @@ source: https://github.com/dastrobu/helm-charts/blob/main/environment-variables/
     {{- end -}}
 
     {{- if empty $S -}}
-      {{- fail (printf "graph is cyclic or has bad edge definitions. Remaining graph is:\n%s" ( .graph | toYaml ) ) }}
+      {{- fail (printf "graph is cyclic or has bad edge definitions. Remaining graph is:\n%s" (.graph | toYaml)) -}}
     {{- end -}}
 
     {{- $n := first $S -}}
     {{- $_ := unset $graph $n -}}
 
     {{- range $node, $edges := $graph -}}
-      {{- $_ := set $graph $node ( without $edges $n ) -}}
+      {{- $_ := set $graph $node (without $edges $n) -}}
     {{- end -}}
 
     {{- $args := dict "graph" $graph "out" list -}}
     {{- include "2f.uchart.lib.utils.kahn" $args -}}
-    {{- $_ = set . "out" ( concat ( list $n ) $args.out ) -}}
+    {{- $_ = set . "out" (concat (list $n) $args.out) -}}
   {{- end -}}
-{{- end }}
+{{- end -}}

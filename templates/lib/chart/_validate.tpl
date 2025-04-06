@@ -3,7 +3,7 @@
   {{- $root := . -}}
 
   {{- /* Validate volume values */ -}}
-  {{- range $volumeKey, $volumeValues := .Values.volumes }}
+  {{- range $volumeKey, $volumeValues := .Values.volumes -}}
     {{- /* Make sure that any advancedMounts workload references actually resolve */ -}}
     {{- range $key, $advancedMount := $volumeValues.advancedMounts -}}
         {{- $mountWorkload := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $root.Values.workloads "id" $key "kind" "workload") -}}

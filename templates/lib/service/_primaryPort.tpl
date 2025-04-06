@@ -5,7 +5,7 @@
   {{- $result := "" -}}
 
   {{- /* Loop over all enabled ports */ -}}
-  {{- $enabledPorts := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $serviceObject.ports) | fromYaml }}
+  {{- $enabledPorts := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $serviceObject.ports) | fromYaml -}}
   {{- range $name, $port := $enabledPorts -}}
     {{- /* Determine the port that has been marked as primary */ -}}
     {{- if and (hasKey $port "primary") $port.primary -}}

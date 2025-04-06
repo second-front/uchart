@@ -7,7 +7,7 @@
   {{- $service := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $root.Values.services "id" $id "kind" "service") | fromYaml -}}
 
   {{- if $service -}}
-    {{ $servicePort := dig "ports" $portName "port" nil $service -}}
+    {{- $servicePort := dig "ports" $portName "port" nil $service -}}
     {{- if $servicePort -}}
       {{- $servicePort -}}
     {{- end -}}

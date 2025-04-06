@@ -5,9 +5,9 @@
     "app.kubernetes.io/managed-by" .Release.Service
   -}}
 
-  {{- if .Chart.AppVersion }}
+  {{- if .Chart.AppVersion -}}
     {{- $_ := set $labels "app.kubernetes.io/version" (.Chart.AppVersion | toString) -}}
-  {{- end }}
+  {{- end -}}
   
   {{- $labels | toYaml -}}
 {{- end -}}

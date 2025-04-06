@@ -8,4 +8,4 @@
   {{- else -}}
     {{- $value | toYaml -}}
   {{- end -}}
-{{- end }}
+{{- end -}}

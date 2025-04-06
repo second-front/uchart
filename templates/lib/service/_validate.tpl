@@ -24,7 +24,7 @@
   {{- end -}}
 
   {{- if ne $serviceObject.type "ExternalName" -}}
-    {{- $enabledPorts := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $serviceObject.ports) | fromYaml ) }}
+    {{- $enabledPorts := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $serviceObject.ports) | fromYaml ) -}}
     {{- /* Validate at least one port is enabled */ -}}
     {{- if not $enabledPorts -}}
       {{- fail (printf "no ports are enabled for Service (service: %s)" $serviceObject.id) -}}
