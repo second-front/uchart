@@ -14,13 +14,13 @@
     {{- $resourceName = $resourceValues.name -}}
   {{- else if $resourceValues.nameOverride -}}
     {{- $override := tpl $resourceValues.nameOverride $root -}}
-    {{- if not (eq $resourceName $override) -}}
+    {{- if not (contains $override $resourceName) -}}
       {{- $resourceName = printf "%s-%s" $resourceName $override -}}
     {{- end -}}
   {{- else if has $kind $dynamicNameKinds -}}
     {{- $enabledResources := include "2f.uchart.lib.utils.enabledResources" ( dict "root" $root "resources" $resources) | fromYaml -}}
     {{- if and (not $resourceValues.primary) (gt (len $enabledResources) 1) -}}
-      {{- if not (eq $resourceName $id) -}}
+      {{- if not (contains $id $resourceName) -}}
         {{- $resourceName = printf "%s-%s" $resourceName $id -}}
       {{- end -}}
     {{- end -}}
