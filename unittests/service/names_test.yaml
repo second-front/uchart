@@ -17,11 +17,26 @@ tests:
           path: metadata.name
           value: RELEASE-NAME
 
-  - it: custom name suffix
+  - it: with nameOverride should pass
     values:
       - ../_values/services_main_default.yaml
     set:
       services.main.nameOverride: http
+    documentSelector:
+      path: $[?(@.kind == "Service")].metadata.name
+      value: http
+    asserts:
+      - exists:
+          path: metadata.name
+      - equal:
+          path: metadata.name
+          value: http
+
+  - it: with suffixOverride should pass
+    values:
+      - ../_values/services_main_default.yaml
+    set:
+      services.main.suffixOverride: http
     documentSelector:
       path: $[?(@.kind == "Service")].metadata.name
       value: RELEASE-NAME-http
@@ -32,11 +47,23 @@ tests:
           path: metadata.name
           value: RELEASE-NAME-http
 
-  - it: custom name suffix with template
+  - it: with templated nameOverride should pass
     values:
       - ../_values/services_main_default.yaml
     set:
       services.main.nameOverride: "{{ .Chart.Name }}"
+    documentSelector:
+      path: $[?(@.kind == "Service")].metadata.name
+      value: uchart
+    asserts:
+      - exists:
+          path: metadata.name
+
+  - it: with templated suffixOverride should pass
+    values:
+      - ../_values/services_main_default.yaml
+    set:
+      services.main.suffixOverride: "{{ .Chart.Name }}"
     documentSelector:
       path: $[?(@.kind == "Service")].metadata.name
       value: RELEASE-NAME-uchart

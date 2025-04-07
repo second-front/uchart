@@ -16,6 +16,9 @@
       "nameOverride": {
         "type": "string"
       },
+      "suffixOverride": {
+        "type": "string"
+      },
       "gateway": {
         "type": "string"
       },

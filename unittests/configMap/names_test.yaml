@@ -88,6 +88,24 @@ tests:
       - documentIndex: *ConfigmapDocument
         equal:
           path: metadata.name
+          value: http
+
+  - it: with suffixOverride should pass
+    set:
+      configMaps:
+        config:
+          data:
+            test: test
+          suffixOverride: http
+    asserts:
+      - hasDocuments:
+          count: 2
+      - documentIndex: &ConfigmapDocument 0
+        isKind:
+          of: ConfigMap
+      - documentIndex: *ConfigmapDocument
+        equal:
+          path: metadata.name
           value: RELEASE-NAME-http
 
   - it: with templated nameOverride should pass
@@ -96,7 +114,25 @@ tests:
         config:
           data:
             test: test
-          nameOverride: "{{ .Release.Name }}"
+          nameOverride: "{{ .Chart.Name }}"
+    asserts:
+      - hasDocuments:
+          count: 2
+      - documentIndex: &ConfigmapDocument 0
+        isKind:
+          of: ConfigMap
+      - documentIndex: *ConfigmapDocument
+        equal:
+          path: metadata.name
+          value: uchart
+
+  - it: with templated suffixOverride should pass
+    set:
+      configMaps:
+        config:
+          data:
+            test: test
+          suffixOverride: "{{ .Release.Name }}"
     asserts:
       - hasDocuments:
           count: 2

@@ -26,7 +26,7 @@ tests:
           path: metadata.name
           value: RELEASE-NAME-main
 
-  - it: custom name suffix should pass
+  - it: with nameOverride should pass
     set:
       networkPolicies:
         main:
@@ -36,6 +36,25 @@ tests:
             - Egress
           rules: {}
           nameOverride: block-ingress
+    asserts:
+      - documentIndex: &NetworkPolicyDocument 1
+        isKind:
+          of: NetworkPolicy
+      - documentIndex: *NetworkPolicyDocument
+        equal:
+          path: metadata.name
+          value: block-ingress
+
+  - it: with suffixOverride should pass
+    set:
+      networkPolicies:
+        main:
+          workload: main
+          policyTypes:
+            - Ingress
+            - Egress
+          rules: {}
+          suffixOverride: block-ingress
     asserts:
       - documentIndex: &NetworkPolicyDocument 1
         isKind:

@@ -40,20 +40,7 @@ tests:
           path: metadata.name
           value: RELEASE-NAME-config
 
-  - it: nameOverride matching release name should prevent stutter
-    set:
-      volumes.config:
-        nameOverride: "RELEASE-NAME"
-    asserts:
-      - documentIndex: &PersistentVolumeClaimDocument 0
-        isKind:
-          of: PersistentVolumeClaim
-      - documentIndex: *PersistentVolumeClaimDocument
-        equal:
-          path: metadata.name
-          value: RELEASE-NAME
-
-  - it: with custom suffix should pass
+  - it: with nameOverride should pass
     set:
       volumes.config:
         nameOverride: "custom"
@@ -64,4 +51,31 @@ tests:
       - documentIndex: *PersistentVolumeClaimDocument
         equal:
           path: metadata.name
+          value: custom
+
+  - it: with suffixOverride should pass
+    set:
+      volumes.config:
+        suffixOverride: "custom"
+    asserts:
+      - documentIndex: &PersistentVolumeClaimDocument 0
+        isKind:
+          of: PersistentVolumeClaim
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: metadata.name
           value: RELEASE-NAME-custom
+
+  - it: suffixOverride matching release name should prevent stutter
+    set:
+      volumes.config:
+        suffixOverride: "RELEASE-NAME"
+    asserts:
+      - documentIndex: &PersistentVolumeClaimDocument 0
+        isKind:
+          of: PersistentVolumeClaim
+      - documentIndex: *PersistentVolumeClaimDocument
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME
+

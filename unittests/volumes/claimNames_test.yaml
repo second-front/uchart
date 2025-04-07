@@ -41,11 +41,30 @@ tests:
             persistentVolumeClaim:
               claimName: myClaim
 
-  - it: custom suffix should pass
+  - it: with nameOverride should pass
     set:
       volumes:
         claimWithNameOverride:
-          nameOverride: suffix
+          nameOverride: newName
+          accessMode: ReadWriteMany
+          size: 1G
+    asserts:
+      - documentIndex: 1
+        isKind:
+          of: Deployment
+      - documentIndex: 1
+        equal:
+          path: spec.template.spec.volumes[0]
+          value:
+            name: claimWithNameOverride
+            persistentVolumeClaim:
+              claimName: newName
+
+  - it: with suffixOverride should pass
+    set:
+      volumes:
+        claimWithNameOverride:
+          suffixOverride: suffix
           accessMode: ReadWriteMany
           size: 1G
     asserts:
@@ -82,7 +101,7 @@ tests:
     set:
       volumes:
         claimWithNameOverride:
-          nameOverride: RELEASE-NAME
+          suffixOverride: RELEASE-NAME
           accessMode: ReadWriteMany
           size: 1G
     asserts:

@@ -34,16 +34,52 @@ tests:
         nameOverride: test
     documentSelector:
       path: $[?(@.kind == "Endpoint")].metadata.name
+      value: test
+    asserts:
+      - equal:
+          path: metadata.name
+          value: test
+
+  - it: suffixOverride can be configured
+    set:
+      extraManifests.endpoint:
+        suffixOverride: test
+    documentSelector:
+      path: $[?(@.kind == "Endpoint")].metadata.name
       value: RELEASE-NAME-test
     asserts:
       - equal:
           path: metadata.name
           value: RELEASE-NAME-test
 
-  - it: nameOverride with template should pass
+  - it: with templated nameOverride should pass
     set:
       extraManifests.endpoint:
-        nameOverride: "{{ .Release.Name }}"
+        nameOverride: "{{ .Chart.Name }}"
+    documentSelector:
+      path: $[?(@.kind == "Endpoint")].metadata.name
+      value: uchart
+    asserts:
+      - equal:
+          path: metadata.name
+          value: uchart
+
+  - it: with templated suffixOverride should pass
+    set:
+      extraManifests.endpoint:
+        suffixOverride: "{{ .Chart.Name }}"
+    documentSelector:
+      path: $[?(@.kind == "Endpoint")].metadata.name
+      value: RELEASE-NAME-uchart
+    asserts:
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-uchart
+
+  - it: suffixOverride matching release name should prevent stutter
+    set:
+      extraManifests.endpoint:
+        suffixOverride: "RELEASE-NAME"
     documentSelector:
       path: $[?(@.kind == "Endpoint")].metadata.name
       value: RELEASE-NAME
@@ -51,6 +87,7 @@ tests:
       - equal:
           path: metadata.name
           value: RELEASE-NAME
+
 
   - it: spec can render Helm template
     set:

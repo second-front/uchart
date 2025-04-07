@@ -83,6 +83,44 @@ tests:
       - documentIndex: *secondDeploymentDoc
         equal:
           path: metadata.name
+          value: testOverride
+      - documentIndex: *secondDeploymentDoc
+        equal:
+          path: metadata.labels['app.kubernetes.io/component']
+          value: second
+  
+  - it: additional workloads with suffixOverride should pass
+    set:
+      workloads:
+        main:
+          suffixOverride: "{{ .Release.Name }}"
+        second:
+          suffixOverride: testOverride
+          containers:
+            main:
+              image:
+                name: mendhak/http-https-echo
+                tag: 31
+    asserts:
+      - hasDocuments:
+          count: 2
+      - documentIndex: &firstDeploymentDoc 0
+        isKind:
+          of: Deployment
+      - documentIndex: *firstDeploymentDoc
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME
+      - documentIndex: *firstDeploymentDoc
+        equal:
+          path: metadata.labels['app.kubernetes.io/component']
+          value: main
+      - documentIndex: &secondDeploymentDoc 1
+        isKind:
+          of: Deployment
+      - documentIndex: *secondDeploymentDoc
+        equal:
+          path: metadata.name
           value: RELEASE-NAME-testOverride
       - documentIndex: *secondDeploymentDoc
         equal:

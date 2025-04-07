@@ -14,6 +14,9 @@
     {{- $resourceName = $resourceValues.name -}}
   {{- else if $resourceValues.nameOverride -}}
     {{- $override := include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" $resourceValues.nameOverride) | toString -}}
+    {{- $resourceName = $override -}}
+  {{- else if $resourceValues.suffixOverride -}}
+    {{- $override := include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" $resourceValues.suffixOverride) | toString -}}
     {{- if not (contains $override $resourceName) -}}
       {{- $resourceName = printf "%s-%s" $resourceName $override -}}
     {{- end -}}

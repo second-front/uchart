@@ -11,6 +11,9 @@
       "nameOverride": {
         "type": "string"
       },
+      "suffixOverride": {
+        "type": "string"
+      },
       "annotations": {
         "$ref": "metadata.json#/annotations"
       },

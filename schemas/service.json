@@ -17,6 +17,10 @@
       },
       "nameOverride": {
         "type": "string",
+        "description": "Override the name that is used for this service"
+      },
+      "suffixOverride": {
+        "type": "string",
         "description": "Override the name suffix that is used for this service"
       },
       "type": {

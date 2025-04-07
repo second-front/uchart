@@ -17,22 +17,41 @@ tests:
           path: metadata.name
           value: RELEASE-NAME
 
-  - it: custom name suffix
+  - it: with nameOverride should pass
     set:
       virtualServices.main.nameOverride: http
     documentSelector:
       path: $[?(@.kind == "VirtualService")].metadata.name
+      value: http
+    asserts:
+      - equal:
+          path: metadata.name
+          value: http
+
+  - it: with suffixOverride should pass
+    set:
+      virtualServices.main.suffixOverride: http
+    documentSelector:
+      path: $[?(@.kind == "VirtualService")].metadata.name
       value: RELEASE-NAME-http
     asserts:
-      - exists:
-          path: metadata.name
       - equal:
           path: metadata.name
           value: RELEASE-NAME-http
 
-  - it: custom name suffix with template
+  - it: with templated nameOverride should pass
     set:
       virtualServices.main.nameOverride: "{{ .Chart.Name }}"
+    documentSelector:
+      path: $[?(@.kind == "VirtualService")].metadata.name
+      value: uchart
+    asserts:
+      - exists:
+          path: metadata.name
+
+  - it: with templated suffixOverride should pass
+    set:
+      virtualServices.main.suffixOverride: "{{ .Chart.Name }}"
     documentSelector:
       path: $[?(@.kind == "VirtualService")].metadata.name
       value: RELEASE-NAME-uchart

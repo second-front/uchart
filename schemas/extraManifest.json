@@ -21,6 +21,9 @@
       "nameOverride": {
         "type": "string"
       },
+      "suffixOverride": {
+        "type": "string"
+      },
       "spec": {
         "type": "object"
       }

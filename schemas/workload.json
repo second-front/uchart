@@ -31,7 +31,11 @@
       },
       "nameOverride": {
         "type": "string",
-        "description": "Overrides the default name for the deployed resource. If more than one resource exists, name will be prepended with release-name"
+        "description": "Overrides the default name for the deployed resource."
+      },
+      "suffixOverride": {
+        "type": "string",
+        "description": "Overrides the default name suffix for the deployed resource."
       },
       "pod": {
         "$ref": "pod.json#/options",
