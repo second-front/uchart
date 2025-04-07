@@ -1,0 +1,150 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: NetworkPolicy values
+templates:
+  - uchart.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: main networkPolicy is disabled by default
+    asserts:
+      - hasDocuments:
+          count: 1
+      - documentIndex: 0
+        not: true
+        isKind:
+          of: NetworkPolicy
+
+  - it: main networkPolicy can be enabled
+    set:
+      networkPolicies.main:
+        workload: main
+        policyTypes:
+          - Ingress
+          - Egress
+        rules: {}
+    asserts:
+      - hasDocuments:
+          count: 2
+      - documentIndex: 0
+        isKind:
+          of: Deployment
+      - documentIndex: 1
+        isKind:
+          of: NetworkPolicy
+
+  - it: networkPolicy targets the correct workload
+    set:
+      networkPolicies:
+        main:
+          workload: main
+          policyTypes:
+            - Ingress
+            - Egress
+          rules: {}
+    asserts:
+      - documentIndex: &NetworkPolicyDocument 1
+        isKind:
+          of: NetworkPolicy
+      - documentIndex: *NetworkPolicyDocument
+        equal:
+          path: spec.podSelector
+          value:
+            matchLabels:
+              app.kubernetes.io/component: main
+              app.kubernetes.io/instance: RELEASE-NAME
+              app.kubernetes.io/name: RELEASE-NAME
+
+  - it: networkPolicy targets supports custom podSelector
+    set:
+      networkPolicies:
+        main:
+          workload: main
+          policyTypes:
+            - Ingress
+            - Egress
+          podSelector: {}
+          rules: {}
+    asserts:
+      - documentIndex: &NetworkPolicyDocument 1
+        isKind:
+          of: NetworkPolicy
+      - documentIndex: *NetworkPolicyDocument
+        equal:
+          path: spec.podSelector
+          value: {}
+
+  - it: networkPolicy rules are passed through
+    set:
+      networkPolicies:
+        main:
+          workload: main
+          policyTypes:
+            - Ingress
+            - Egress
+          rules:
+            ingress:
+              - {}
+            egress:
+              - {}
+    asserts:
+      - documentIndex: &NetworkPolicyDocument 1
+        isKind:
+          of: NetworkPolicy
+      - documentIndex: *NetworkPolicyDocument
+        equal:
+          path: spec.ingress
+          value:
+            - {}
+      - documentIndex: *NetworkPolicyDocument
+        equal:
+          path: spec.egress
+          value:
+            - {}
+
+  - it: networkPolicy ingress rules can reference workloads
+    set:
+      workloads:
+        second:
+          containers:
+            main:
+              image:
+                name: mendhak/http-https-echo
+                tag: 31
+      networkPolicies:
+        main:
+          workload: main
+          policyTypes:
+            - Ingress
+            - Egress
+          rules:
+            ingress:
+              - from:
+                  - workload: second
+            egress:
+              - to:
+                  - workload: second
+    asserts:
+      - documentIndex: &NetworkPolicyDocument 2
+        isKind:
+          of: NetworkPolicy
+      - documentIndex: *NetworkPolicyDocument
+        equal:
+          path: spec.ingress
+          value:
+            - from:
+                - podSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: second
+                      app.kubernetes.io/instance: RELEASE-NAME
+                      app.kubernetes.io/name: RELEASE-NAME
+      - documentIndex: *NetworkPolicyDocument
+        equal:
+          path: spec.egress
+          value:
+            - to:
+                - podSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: second
+                      app.kubernetes.io/instance: RELEASE-NAME
+                      app.kubernetes.io/name: RELEASE-NAME

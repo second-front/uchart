@@ -81,6 +81,11 @@
         "$ref": "schemas/virtualService.json#/instance"
       }
     },
+    "networkPolicies": {
+      "additionalProperties": {
+        "$ref": "schemas/networkPolicy.json#/instance"
+      }
+    },
     "volumes": {
       "additionalProperties": {
         "$ref": "schemas/volume.json#/instance"

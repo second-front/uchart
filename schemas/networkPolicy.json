@@ -1,0 +1,129 @@
+{
+  "instance": {
+    "type": "object",
+    "additionalProperties": false,
+
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "nameOverride": {
+        "type": "string"
+      },
+      "annotations": {
+        "$ref": "metadata.json#/annotations"
+      },
+      "labels": {
+        "$ref": "metadata.json#/labels"
+      },
+      "workload": {
+        "type": "string"
+      },
+      "podSelector": {
+        "$ref": "k8s-api.json#/meta.v1.LabelSelector"
+      },
+      "policyTypes": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [ "Ingress", "Egress" ]
+        }
+      },
+      "rules": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ingress": {
+            "type": "array",
+            "items": {
+              "$ref": "#/ingressRule"
+            }
+          },
+          "egress": {
+            "type": "array",
+            "items": {
+              "$ref": "#/egressRule"
+            }
+          }
+        }
+      }
+    },
+    "required": ["rules"]
+  },
+  "egressRule": {
+    "type": "object",
+    "description": "NetworkPolicyEgressRule describes a particular set of traffic that is allowed out of pods matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and to. This type is beta-level in 1.8",
+    "additionalProperties": false,
+    "properties": {
+      "ports": {
+        "type": "array",
+        "description": "ports is a list of destination ports for outgoing traffic. Each item in this list is combined using a logical OR. If this field is empty or missing, this rule matches all ports (traffic not restricted by port). If this field is present and contains at least one item, then this rule allows traffic only if the traffic matches at least one port in the list.",
+        "items": {
+          "$ref": "k8s-api.json#/networking.v1.NetworkPolicyPort"
+        }
+      },
+      "to": {
+        "type": "array",
+        "description": "to is a list of destinations for outgoing traffic of pods selected for this rule. Items in this list are combined using a logical OR operation. If this field is empty or missing, this rule matches all destinations (traffic not restricted by destination). If this field is present and contains at least one item, this rule allows traffic only if the traffic matches at least one item in the to list.",
+        "items": {
+          "$ref": "#/networkPolicyPeer"
+        }
+      }
+    }
+  },
+  "ingressRule": {
+    "type": "object",
+    "description": "NetworkPolicyIngressRule describes a particular set of traffic that is allowed to the pods matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and from.",
+    "additionalProperties": false,
+    "properties": {
+      "from": {
+        "type": "array",
+        "description": "from is a list of sources which should be able to access the pods selected for this rule. Items in this list are combined using a logical OR operation. If this field is empty or missing, this rule matches all sources (traffic not restricted by source). If this field is present and contains at least one item, this rule allows traffic only if the traffic matches at least one item in the from list.",
+        "items": {
+          "$ref": "#/networkPolicyPeer"
+        }
+      },
+      "ports": {
+        "type": "array",
+        "description": "ports is a list of ports which should be made accessible on the pods selected for this rule. Each item in this list is combined using a logical OR. If this field is empty or missing, this rule matches all ports (traffic not restricted by port). If this field is present and contains at least one item, then this rule allows traffic only if the traffic matches at least one port in the list.",
+        "items": {
+          "$ref": "k8s-api.json#/networking.v1.NetworkPolicyPort"
+        }
+      }
+    }
+  },
+  "networkPolicyPeer": {
+    "type": "object",
+    "description": "NetworkPolicyPeer describes a peer to allow traffic to/from. Only certain combinations of fields are allowed",
+    "additionalProperties": false,
+    "properties": {
+      "workload": { 
+        "type": "string",
+        "description": "specify they workload id to associate this rule with"
+      },
+      "ipBlock": {
+        "$ref": "k8s-api.json#/networking.v1.IPBlock",
+        "description": "ipBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be."
+      },
+      "namespaceSelector": {
+        "$ref": "k8s-api.json#/meta.v1.LabelSelector",
+        "description": "namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces.\n\nIf podSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the namespaces selected by namespaceSelector. Otherwise it selects all pods in the namespaces selected by namespaceSelector."
+      },
+      "podSelector": {
+        "$ref": "k8s-api.json#/meta.v1.LabelSelector",
+        "description": "podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods.\n\nIf namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the pods matching podSelector in the policy's own namespace."
+      }
+    },
+    "oneOf": [
+      { "required": ["workload"]},
+      { "required": ["ipBlock"]},
+      { 
+        "anyOf": [
+          { "required": ["podSelector"]},
+          { "required": ["namespaceSelector"]}
+        ]
+      }
+    ]
+  }
+}

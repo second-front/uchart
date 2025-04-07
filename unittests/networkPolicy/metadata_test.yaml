@@ -1,0 +1,96 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: NetworkPolicy metadata
+
+set:
+  networkPolicies.main:
+    workload: main
+    policyTypes:
+      - Ingress
+      - Egress
+    rules: {}
+
+templates:
+  - uchart.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default metadata should pass
+    documentSelector: &NetworkPolicySelector
+      path: $[?(@.kind == "NetworkPolicy")].metadata.name
+      value: RELEASE-NAME-main
+    asserts:
+      - notExists:
+          path: metadata.annotations
+      - equal:
+          path: metadata.labels
+          value:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/environment: dev
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+
+  - it: custom metadata should pass
+    set:
+      networkPolicies:
+        main:
+          annotations:
+            test_annotation: test
+          labels:
+            test_label: test
+    documentSelector: *NetworkPolicySelector
+    asserts:
+      - equal:
+          path: metadata.annotations
+          value:
+            test_annotation: test
+      - equal:
+          path: metadata.labels
+          value:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/environment: dev
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+            test_label: test
+
+  - it: custom metadata with global metadata should pass
+    set:
+      global:
+        labels:
+          global_label: test
+        annotations:
+          global_annotation: test
+      networkPolicies:
+        main:
+          annotations:
+            test_annotation: test
+          labels:
+            test_label: test
+    documentSelector: *NetworkPolicySelector
+    asserts:
+      - equal:
+          path: metadata.annotations
+          value:
+            global_annotation: test
+            test_annotation: test
+      - equal:
+          path: metadata.labels
+          value:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/environment: dev
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+            global_label: test
+            test_label: test

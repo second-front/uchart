@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: NetworkPolicy validations
+templates:
+  - uchart.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: networkPolicy requires either workload reference or podSelector
+    set:
+      networkPolicies:
+        main:
+          workload: ""
+          rules: {}
+    asserts:
+      - failedTemplate:
+          errorMessage: "workload reference or podSelector is required for NetworkPolicy. (NetworkPolicy main)"
+
+  - it: policyTypes is required
+    set:
+      networkPolicies:
+        main:
+          workload: main
+          policyTypes: []
+          rules: {}
+    asserts:
+      - failedTemplate:
+          errorMessage: "policyTypes is required for NetworkPolicy. (NetworkPolicy main)"
