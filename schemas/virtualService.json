@@ -65,13 +65,13 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "id": {
+      "service": {
         "type": "string"
       },
       "port": {
         "type": ["string", "integer"]
       }
     },
-    "required": ["id"]
+    "required": ["service"]
   } 
 }

@@ -80,13 +80,13 @@ tests:
                 - uri:
                     prefix: /dev
               route:
-                id: main
+                service: main
                 port: http
             - match:
                 - uri:
                     prefix: /test
               route:
-                id: main
+                service: main
                 port: http2
     documentSelector: *VirtualServiceSelector
     asserts:

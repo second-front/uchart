@@ -23,8 +23,8 @@
       {{- $host := "" -}}
       {{- $port := 0 -}}
 
-      {{- if .id -}}
-        {{- $service := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $root.Values.services "id" .id "kind" "service") | fromYaml -}}
+      {{- if .service -}}
+        {{- $service := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $root.Values.services "id" .service "kind" "service") | fromYaml -}}
 
         {{- $host = (printf "%s.%s.svc.cluster.local" $service.name $root.Release.Namespace) -}}
 
@@ -32,7 +32,7 @@
           {{- $port = (include "2f.uchart.lib.service.primaryPort" (dict "root" $root "serviceObject" $service) | fromYaml).port -}}
         {{- else if kindIs "string" .port -}}
         {{- /* If a port name is given, try to resolve to a number */ -}}
-          {{- $port = include "2f.uchart.lib.service.getPortNumberByName" (dict "root" $root "id" .id "portName" .port) | int -}}
+          {{- $port = include "2f.uchart.lib.service.getPortNumberByName" (dict "root" $root "id" .service "portName" .port) | int -}}
         {{- else -}}
           {{- $port = .port -}}
         {{- end -}}
