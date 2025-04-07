@@ -26,7 +26,7 @@ restartPolicy: {{ . | trim }}
 nodeSelector: {{ . | nindent 2 }}
   {{- end -}}
   {{- with (include "2f.uchart.lib.pod.getOption" (dict "ctx" $ctx "option" "affinity")) }}
-affinity: {{- tpl . $root | nindent 2 }}
+affinity: {{- include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" .) | nindent 2 }}
   {{- end -}}
   {{- with (include "2f.uchart.lib.pod.getOption" (dict "ctx" $ctx "option" "topologySpreadConstraints")) }}
 topologySpreadConstraints: {{ . | nindent 2 }}

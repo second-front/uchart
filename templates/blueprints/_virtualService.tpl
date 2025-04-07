@@ -28,9 +28,9 @@ metadata:
 spec:
   hosts:
   {{- if hasKey $virtualServiceObject "hostname" }}
-    - {{ tpl $virtualServiceObject.hostname $root | quote }}
+    - {{ include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" $virtualServiceObject.hostname) | toString }}
   {{- else }}
-    - {{ printf "%s.%s" $virtualServiceObject.id (tpl $root.Values.global.domain $root) }}
+    - {{ printf "%s.%s" $virtualServiceObject.id (include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" $root.Values.global.domain)) }}
   {{- end }}
   gateways:
     - {{ $virtualServiceObject.gateway }}

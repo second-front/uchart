@@ -63,14 +63,14 @@
     {{- range $envList -}}
       {{- if hasKey . "value" -}}
         {{- if kindIs "string" .value -}}
-          {{- $output = append $output (dict "name" .name "value" (tpl .value $root)) -}}
+          {{- $output = append $output (dict "name" .name "value" (include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" .value))) -}}
         {{- else if or (kindIs "float64" .value) (kindIs "bool" .value) -}}
           {{- $output = append $output (dict "name" .name "value" (.value | toString)) -}}
         {{- else -}}
           {{- $output = append $output (dict "name" .name "value" .value) -}}
         {{- end -}}
       {{- else if hasKey . "valueFrom" -}}
-        {{- $parsedValue := (tpl (.valueFrom | toYaml) $root) | fromYaml -}}
+        {{- $parsedValue := include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" (.valueFrom | toYaml)) | fromYaml -}}
         {{- $output = append $output (dict "name" .name "valueFrom" $parsedValue) -}}
       {{- else -}}
         {{- $output = append $output (dict "name" .name "valueFrom" (omit . "name")) -}}

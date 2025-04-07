@@ -41,7 +41,7 @@ Returns the value for volumes
       {{- $resources := $root.Values.configMaps -}}
       {{- $objectName := "" -}}
       {{- if $volumeValues.name -}}
-        {{- $objectName = tpl $volumeValues.name $root -}}
+        {{- $objectName = include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" $volumeValues.name) | toString -}}
       {{- else if $volumeValues.id -}}
         {{- $object := (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" $volumeValues.id "kind" "configMap") | fromYaml ) -}}
         {{- if not $object -}}
@@ -63,7 +63,7 @@ Returns the value for volumes
       {{- $resources := $root.Values.secrets -}}
       {{- $objectName := "" -}}
       {{- if $volumeValues.name -}}
-        {{- $objectName = tpl $volumeValues.name $root -}}
+        {{- $objectName = include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" $volumeValues.name) | toString -}}
       {{- else if $volumeValues.id -}}
         {{- $object := (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" $volumeValues.id "kind" "secret") | fromYaml ) -}}
         {{- if not $object -}}

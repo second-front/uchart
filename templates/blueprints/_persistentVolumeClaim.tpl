@@ -44,9 +44,9 @@ spec:
   volumeName: {{ $pvcObject.volumeName | quote }}
   {{- end }}
   {{- with $pvcObject.dataSource }}
-  dataSource: {{- tpl (toYaml .) $root | nindent 10 }}
+  dataSource: {{- include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" (. | toYaml)) | nindent 10 }}
   {{- end }}
   {{- with $pvcObject.dataSourceRef }}
-  dataSourceRef: {{- tpl (toYaml .) $root | nindent 10 }}
+  dataSourceRef: {{- include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" (. | toYaml)) | nindent 10 }}
   {{- end }}
 {{- end -}}

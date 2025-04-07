@@ -26,11 +26,11 @@ metadata:
   {{- end }}
 {{- with $configMapObject.data }}
 data:
-  {{- tpl (toYaml .) $root | nindent 2 }}
+  {{- include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" (. | toYaml)) | nindent 2 }}
 {{- end }}
 {{- with $configMapObject.binaryData }}
 binaryData:
-  {{- tpl (toYaml .) $root | nindent 2 }}
+  {{- include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" (. | toYaml)) | nindent 2 }}
 {{- end }}
 {{- end -}}
 

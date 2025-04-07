@@ -13,7 +13,7 @@
   {{- if hasKey $resourceValues "name" -}}
     {{- $resourceName = $resourceValues.name -}}
   {{- else if $resourceValues.nameOverride -}}
-    {{- $override := tpl $resourceValues.nameOverride $root -}}
+    {{- $override := include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" $resourceValues.nameOverride) | toString -}}
     {{- if not (contains $override $resourceName) -}}
       {{- $resourceName = printf "%s-%s" $resourceName $override -}}
     {{- end -}}

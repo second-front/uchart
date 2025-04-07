@@ -14,7 +14,7 @@
 
       {{- if hasKey . "configMap" -}}
         {{- $configMap := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $configMapResources "id" .configMap "kind" "configMap") | fromYaml -}}
-        {{- $configMapName := default (tpl .configMap $root) $configMap.name -}}
+        {{- $configMapName := $configMap.name | default (include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" .configMap)) -}}
         {{- $_ := set $item "configMapRef" (dict "name" $configMapName) -}}
       {{- else if hasKey . "configMapRef" -}}
         {{- if not (empty (dig "id" nil .configMapRef)) -}}
@@ -25,12 +25,12 @@
 
           {{- $_ := set $item "configMapRef" (dict "name" $configMap.name) -}}
         {{- else -}}
-          {{- $_ := set $item "configMapRef" (dict "name" (tpl .configMapRef.name $root)) -}}
+          {{- $_ := set $item "configMapRef" (dict "name" (include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" .configMapRef.name))) -}}
         {{- end -}}
 
       {{- else if hasKey . "secret" -}}
         {{- $secret := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $secretResources "id" .secret "kind" "secret") | fromYaml -}}
-        {{- $secretName := default (tpl .secret $root) $secret.name -}}
+        {{- $secretName := $secret.name | default (include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" .secret)) -}}
         {{- $_ := set $item "secretRef" (dict "name" $secretName) -}}
       {{- else if hasKey . "secretRef" -}}
         {{- if not (empty (dig "id" nil .secretRef)) -}}
@@ -41,7 +41,7 @@
 
           {{- $_ := set $item "secretRef" (dict "name" $secret.name) -}}
         {{- else -}}
-          {{- $_ := set $item "secretRef" (dict "name" (tpl .secretRef.name $root)) -}}
+          {{- $_ := set $item "secretRef" (dict "name" (include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" .secretRef.name))) -}}
         {{- end -}}
       {{- end -}}
 

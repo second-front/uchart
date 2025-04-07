@@ -24,6 +24,6 @@ metadata:
   labels: {{ . | toYaml | nindent 4 }}
   {{- end }}
   {{- with (omit $resourceObject "id" "name" "apiVersion" "kind" "labels" "annotations") }}
-    {{- tpl (toYaml .) $root | nindent 0 }}
+    {{- include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" (. | toYaml)) | nindent 0 }}
   {{- end }}
 {{- end }}

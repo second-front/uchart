@@ -33,6 +33,6 @@ metadata:
   labels: {{ . | toYaml | nindent 4 }}
   {{- end }}
 {{- with $stringData }}
-stringData: {{- tpl $stringData $root | nindent 2 }}
+stringData: {{- include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" $stringData) | nindent 2 }}
 {{- end }}
 {{- end -}}

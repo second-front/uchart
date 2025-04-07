@@ -23,7 +23,7 @@
             
             {{- $_ := set $fromRule "podSelector" $podSelector -}}
           {{- else -}}
-            {{- $fromRule = tpl ($from | toYaml) $root | fromYaml -}}
+            {{- $fromRule = include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" ($from | toYaml)) | fromYaml -}}
           {{- end -}}
 
           {{- $fromRules = append $fromRules $fromRule -}}
@@ -32,7 +32,7 @@
         {{- $_ := set $ingressRule "from" $fromRules -}}
       {{- end -}}
       {{- with $ingress.ports -}}
-        {{- $_ := set $ingressRule "ports" (tpl (. | toYaml) $root | fromYaml) -}}
+        {{- $_ := set $ingressRule "ports" (include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" (. | toYaml))) | fromYaml -}}
       {{- end -}}
       
       {{- $ingressRules = append $ingressRules $ingressRule -}}

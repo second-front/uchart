@@ -16,7 +16,7 @@
   {{- end -}}
 
   {{- /* Parse any nested templates */ -}}
-  {{- $name = tpl $name $root -}}
+  {{- $name = include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" $name) | toString -}}
 
   {{- $name | toYaml -}}
 {{- end -}}

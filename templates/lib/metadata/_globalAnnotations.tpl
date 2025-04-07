@@ -3,7 +3,7 @@
   {{- with .Values.global.annotations -}}
     {{- $annotations := dict -}}
     {{- range $k, $v := . -}}
-      {{- $_ := set $annotations $k (tpl $v $ | toString) -}}
+      {{- $_ := set $annotations $k (include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $ "value" $v) | toString) -}}
     {{- end -}}
 
     {{- $annotations | toYaml -}}

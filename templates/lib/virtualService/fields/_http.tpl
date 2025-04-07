@@ -38,7 +38,7 @@
         {{- end -}}
 
       {{- else if .host -}}
-        {{- $host = tpl .host $root | toString -}}
+        {{- $host = include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" .host) | toString -}}
         {{- $port = .port | required "route by host requires explict port defined" -}}
       {{- end -}}
       

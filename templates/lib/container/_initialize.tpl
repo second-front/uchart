@@ -43,7 +43,7 @@
     {{- end -}}
 
     {{- /* Process any templates in the tag */ -}}
-    {{- $imageTag = tpl $imageTag $root -}}
+    {{- $imageTag = include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" $imageTag) | toString -}}
 
     {{- $_ := set $objectValues.image "tag" $imageTag -}}
   {{- end -}}

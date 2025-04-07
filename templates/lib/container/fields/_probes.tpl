@@ -19,7 +19,7 @@
       {{- $probeDefinition := dict -}}
 
       {{- if $probeValues.custom -}}
-        {{- $parsedProbeSpec := tpl ($probeValues.spec | toYaml) $root -}}
+        {{- $parsedProbeSpec := include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $root "value" ($probeValues.spec | toYaml)) -}}
         {{- $probeDefinition = $parsedProbeSpec | fromYaml -}}
       {{- else -}}
         {{- $probeSpec := dig "spec" dict $probeValues -}}

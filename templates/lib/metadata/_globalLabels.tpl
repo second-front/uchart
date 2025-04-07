@@ -3,7 +3,7 @@
   {{- with .Values.global.labels -}}
     {{- $labels := dict -}}
     {{- range $k, $v := . -}}
-      {{- $_ := set $labels $k (tpl $v $ | toString) -}}
+      {{- $_ := set $labels $k (include "2f.uchart.lib.utils.recursiveTemplate" (dict "root" $ "value" $v) | toString) -}}
     {{- end -}}
     {{- $labels | toYaml -}}
   {{- end -}}
