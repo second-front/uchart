@@ -15,7 +15,7 @@
     {{- /* Perform validations on the workload before rendering */ -}}
     {{- include "2f.uchart.lib.workload.validate" (dict "root" $root "object" $workloadObject) -}}
 
-    {{- $workloadTypes := list "deployment" "cronjob" "daemonset" "statefulset" "job" -}}
+    {{- $workloadTypes := list "deployment" "cronJob" "daemonSet" "statefulSet" "job" -}}
     {{- if has $workloadObject.type $workloadTypes -}}
       {{- $args := (dict "root" $root "id" $key "values" $workloadObject) -}}
       {{- $resourceObject := include (printf "2f.uchart.lib.%s.initialize" $workloadObject.type) $args | fromYaml -}}
@@ -23,7 +23,7 @@
       {{- include (printf "2f.uchart.blueprints.%s" $workloadObject.type) (dict "root" $root "object" $resourceObject) | nindent 0 -}}
     {{- end -}}
 
-    {{- $scalableWorkloadTypes := list "deployment" "statefulset" -}}
+    {{- $scalableWorkloadTypes := list "deployment" "statefulSet" -}}
     {{- if has $workloadValues.type $scalableWorkloadTypes -}}
       {{- if dig "autoscaling" "enabled" false $workloadObject -}}
         {{- /* Create object from the raw HPA values */ -}}

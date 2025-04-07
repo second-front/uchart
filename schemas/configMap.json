@@ -17,7 +17,7 @@
       },
       "nameOverride": {
         "type": "string",
-        "description": "Override the name suffix that is used for this configmap"
+        "description": "Override the name suffix that is used for this configMap"
       },
       "data": {
         "type": "object",

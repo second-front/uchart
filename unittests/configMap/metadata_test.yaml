@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
-suite: configmap metadata
+suite: configMap metadata
 templates:
   - uchart.yaml
 values:

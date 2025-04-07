@@ -45,7 +45,7 @@ Returns the value for volumes
       {{- else if $volumeValues.id -}}
         {{- $object := (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" $volumeValues.id "kind" "configMap") | fromYaml ) -}}
         {{- if not $object -}}
-          {{- fail (printf "No configmap found with this id. (volume '%s', id '%s')" $id $volumeValues.id) -}}
+          {{- fail (printf "No configMap found with this id. (volume '%s', id '%s')" $id $volumeValues.id) -}}
         {{- end -}}
         {{- $objectName = $object.name -}}
       {{- end -}}

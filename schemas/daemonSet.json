@@ -2,7 +2,7 @@
     "rules": {
         "if": {
           "properties": {
-            "type": { "const": "daemonset" }
+            "type": { "const": "daemonSet" }
           },
           "required": [ "type" ]
         },
@@ -22,7 +22,7 @@
         "else": {
           "not": {
             "anyOf": [
-              { "required": [ "daemonset" ] }
+              { "required": [ "daemonSet" ] }
             ]
           }
         }

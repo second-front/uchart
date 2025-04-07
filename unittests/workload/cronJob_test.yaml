@@ -1,15 +1,15 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
-suite: cronjob configuration
+suite: cronJob configuration
 templates:
   - uchart.yaml
 values:
   - ../_values/workloads_main_default_container.yaml
 tests:
-  - it: default cronjob configuration should pass
+  - it: default cronJob configuration should pass
     set:
-      workloads.main.type: cronjob
-      workloads.main.cronjob.schedule: "*/20 * * * *"
+      workloads.main.type: cronJob
+      workloads.main.cronJob.schedule: "*/20 * * * *"
     asserts:
       - documentIndex: &ControllerDoc 0
         isKind:
@@ -42,14 +42,14 @@ tests:
           path: spec.jobTemplate.spec.template.spec.restartPolicy
           value: Never
 
-  - it: custom cronjob configuration should pass
+  - it: custom cronJob configuration should pass
     set:
       workloads:
         main:
-          type: cronjob
+          type: cronJob
           pod:
             restartPolicy: OnFailure
-          cronjob:
+          cronJob:
             suspend: &CronJobSuspended true
             schedule: &CronJobSchedule "0 3 * * *"
             concurrencyPolicy: &CronJobConcurrencyPolicy "Test"

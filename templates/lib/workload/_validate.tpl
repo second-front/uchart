@@ -3,7 +3,7 @@
   {{- $root := .root -}}
   {{- $workloadValues := .object -}}
 
-  {{- $allowedWorkloadTypes := list "deployment" "daemonset" "statefulset" "cronjob" "job" -}}
+  {{- $allowedWorkloadTypes := list "deployment" "daemonSet" "statefulSet" "cronJob" "job" -}}
   {{- if not (has $workloadValues.type $allowedWorkloadTypes) -}}
     {{- fail (printf "Not a valid workload.type (%s)" $workloadValues.type) -}}
   {{- end -}}

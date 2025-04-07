@@ -96,7 +96,7 @@ tests:
         notExists:
           path: spec.template.spec.containers[0].envFrom[1]
 
-  - it: envFrom configmap id reference should pass
+  - it: envFrom configMap id reference should pass
     set:
       workloads.main.containers.main.envFrom:
         - configMap: config
@@ -125,7 +125,7 @@ tests:
             configMapRef:
               name: RELEASE-NAME-config
 
-  - it: envFrom configmap id reference with multiple configMaps should pass
+  - it: envFrom configMap id reference with multiple configMaps should pass
     set:
       workloads.main.containers.main.envFrom:
         - configMap: second

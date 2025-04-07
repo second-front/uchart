@@ -202,8 +202,8 @@ tests:
   # - it: volumeClaimTemplates with default mounts should pass
   #   set:
   #     workloads.main:
-  #       type: statefulset
-  #       statefulset:
+  #       type: statefulSet
+  #       statefulSet:
   #         volumeClaimTemplates:
   #           - name: "storage"
   #             accessMode: "ReadWriteOnce"
@@ -223,8 +223,8 @@ tests:
   # - it: volumeClaimTemplates with globalMounts should pass
   #   set:
   #     workloads.main:
-  #       type: statefulset
-  #       statefulset:
+  #       type: statefulSet
+  #       statefulSet:
   #         volumeClaimTemplates:
   #           - name: "storage"
   #             accessMode: "ReadWriteOnce"
@@ -253,8 +253,8 @@ tests:
   # - it: volumeClaimTemplates with advancedMounts should pass
   #   set:
   #     workloads.main:
-  #       type: statefulset
-  #       statefulset:
+  #       type: statefulSet
+  #       statefulSet:
   #         volumeClaimTemplates:
   #           - name: "storage"
   #             accessMode: "ReadWriteOnce"

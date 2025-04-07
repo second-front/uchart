@@ -11,12 +11,12 @@
       },
       "type": {
         "type": "string",
-        "description": "Specifies the Kubernetes resource type to be used for the workload. Options include deployment, statefulset, daemonset, cronjob, or job.",
+        "description": "Specifies the Kubernetes resource type to be used for the workload. Options include deployment, statefulSet, daemonSet, cronJob, or job.",
         "enum": [
           "deployment",
-          "daemonset",
-          "statefulset",
-          "cronjob",
+          "daemonSet",
+          "statefulSet",
+          "cronJob",
           "job"
         ],
         "default": "deployment"
@@ -131,19 +131,19 @@
       "pdb": true,
       "strategy": true,
       "rollingUpdate": true,
-      "cronjob": true,
+      "cronJob": true,
       "job": true,
-      "statefulset": true
+      "statefulSet": true
     },
     "allOf": [
       {
         "$ref": "deployment.json#/rules"
       },
       {
-        "$ref": "statefulset.json#/rules"
+        "$ref": "statefulSet.json#/rules"
       },
       {
-        "$ref": "cronjob.json#/rules"
+        "$ref": "cronJob.json#/rules"
       },
       {
         "$ref": "job.json#/rules"

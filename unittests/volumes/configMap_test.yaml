@@ -1,15 +1,15 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
-suite: volumes configmap
+suite: volumes configMap
 templates:
   - uchart.yaml
 values:
   - ../_values/workloads_main_default_container.yaml
 tests:
-  - it: configmap volumes type should pass
+  - it: configMap volumes type should pass
     set:
       volumes:
-        configmap:
+        configMap:
           type: configMap
           name: mySettings
     asserts:
@@ -20,14 +20,14 @@ tests:
         equal:
           path: spec.template.spec.volumes[0]
           value:
-            name: configmap
+            name: configMap
             configMap:
               name: mySettings
 
-  - it: configmap volumes type with name template should pass
+  - it: configMap volumes type with name template should pass
     set:
       volumes:
-        configmap:
+        configMap:
           type: configMap
           name: '{{ include "2f.uchart.lib.chart.names.fullname" $ }}-config'
     asserts:
@@ -38,18 +38,18 @@ tests:
         equal:
           path: spec.template.spec.volumes[0]
           value:
-            name: configmap
+            name: configMap
             configMap:
               name: RELEASE-NAME-config
 
-  - it: configmap volumes type with id reference should pass
+  - it: configMap volumes type with id reference should pass
     set:
       configMaps:
         mySettings:
           data:
             test: testvalue
       volumes:
-        configmap:
+        configMap:
           type: configMap
           id: mySettings
     asserts:
@@ -63,16 +63,16 @@ tests:
         equal:
           path: spec.template.spec.volumes[0]
           value:
-            name: configmap
+            name: configMap
             configMap:
               name: RELEASE-NAME-mySettings
 
-  - it: configmap volumes type with invalid id reference should fail
+  - it: configMap volumes type with invalid id reference should fail
     set:
       volumes:
-        configmap:
+        configMap:
           type: configMap
           id: doesNotExist
     asserts:
       - failedTemplate:
-          errorMessage: "No configmap found with this id. (volume 'configmap', id 'doesNotExist')"
+          errorMessage: "No configMap found with this id. (volume 'configMap', id 'doesNotExist')"

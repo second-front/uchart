@@ -1,17 +1,17 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
-suite: workload metadata cronjob
+suite: workload metadata cronJob
 templates:
   - uchart.yaml
 values:
   - ../_values/workloads_main_default_container.yaml
 set:
-  workloads.main.cronjob.schedule: "*/20 * * * *"
+  workloads.main.cronJob.schedule: "*/20 * * * *"
 
 tests:
   - it: default metadata should pass
     set:
-      workloads.main.type: cronjob
+      workloads.main.type: cronJob
     asserts:
       - documentIndex: &workloadDoc 0
         isKind:
@@ -37,7 +37,7 @@ tests:
     set:
       workloads:
         main:
-          type: cronjob
+          type: cronJob
           annotations:
             test_annotation: test
           labels:
@@ -75,7 +75,7 @@ tests:
           global_annotation: test
       workloads:
         main:
-          type: cronjob
+          type: cronJob
           annotations:
             test_annotation: test
           labels:
@@ -110,7 +110,7 @@ tests:
     set:
       workloads:
         main:
-          type: cronjob
+          type: cronJob
           pod:
             annotations:
               test_annotation: test

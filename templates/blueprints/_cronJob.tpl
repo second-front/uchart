@@ -1,30 +1,30 @@
-{{- /* Blueprint for cronjobs objects. */ -}}
-{{- define "2f.uchart.blueprints.cronjob" -}}
+{{- /* Blueprint for cronJobs objects. */ -}}
+{{- define "2f.uchart.blueprints.cronJob" -}}
   {{- $root := .root -}}
-  {{- $cronjobObject := .object -}}
+  {{- $cronJobObject := .object -}}
 
   {{- $timeZone := "" -}}
   {{- if ge (int $root.Capabilities.KubeVersion.Minor) 27 }}
-    {{- $timeZone = dig "cronjob" "timeZone" "" $cronjobObject -}}
+    {{- $timeZone = dig "cronJob" "timeZone" "" $cronJobObject -}}
   {{- end -}}
 
   {{- $annotations := merge
-    (include "2f.uchart.lib.metadata.localMetadata" (dict "root" $root "values" $cronjobObject.annotations) | fromYaml)
+    (include "2f.uchart.lib.metadata.localMetadata" (dict "root" $root "values" $cronJobObject.annotations) | fromYaml)
     (include "2f.uchart.lib.metadata.globalAnnotations" $root | fromYaml)
   -}}
   {{- $labels := merge
-    (dict "app.kubernetes.io/component" $cronjobObject.id)
+    (dict "app.kubernetes.io/component" $cronJobObject.id)
     (include "2f.uchart.lib.metadata.standardLabels" $root | fromYaml)
-    (include "2f.uchart.lib.metadata.localMetadata" (dict "root" $root "values" $cronjobObject.labels) | fromYaml)
+    (include "2f.uchart.lib.metadata.localMetadata" (dict "root" $root "values" $cronJobObject.labels) | fromYaml)
     (include "2f.uchart.lib.metadata.globalLabels" $root | fromYaml)
   -}}
 
-  {{- $cronJobSettings := dig "cronjob" dict $cronjobObject -}}
+  {{- $cronJobSettings := dig "cronJob" dict $cronJobObject -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ $cronjobObject.name }}
+  name: {{ $cronJobObject.name }}
   namespace: {{ $root.Release.Namespace }}
   {{- with $annotations }}
   annotations: {{ . | toYaml | nindent 4 }}
@@ -56,11 +56,11 @@ spec:
       backoffLimit: {{ include "2f.uchart.lib.utils.defaultKeepNonNullValue" (dict "value" $cronJobSettings.backoffLimit "default" 6) }}
       template:
         metadata:
-          {{- with (include "2f.uchart.lib.pod.metadata.annotations" (dict "root" $root "workloadObject" $cronjobObject)) }}
+          {{- with (include "2f.uchart.lib.pod.metadata.annotations" (dict "root" $root "workloadObject" $cronJobObject)) }}
           annotations: {{ . | nindent 12 }}
           {{- end -}}
-          {{- with (include "2f.uchart.lib.pod.metadata.labels" (dict "root" $root "workloadObject" $cronjobObject)) }}
+          {{- with (include "2f.uchart.lib.pod.metadata.labels" (dict "root" $root "workloadObject" $cronJobObject)) }}
           labels: {{ . | nindent 12 }}
           {{- end }}
-        spec: {{ include "2f.uchart.lib.pod.spec" (dict "root" $root "workloadObject" $cronjobObject) | nindent 10 }}
+        spec: {{ include "2f.uchart.lib.pod.spec" (dict "root" $root "workloadObject" $cronJobObject) | nindent 10 }}
 {{- end -}}

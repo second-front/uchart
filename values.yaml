@@ -342,7 +342,7 @@ defaultPodOptions:
   priorityClassName: ""
 
   # -- Set Container restart policy.
-  # @default -- `Always`. When `workload.type` is `cronjob` it defaults to `Never`.
+  # @default -- `Always`. When `workload.type` is `cronJob` it defaults to `Never`.
   restartPolicy: ""
 
   # -- Allow specifying a runtimeClassName other than the default one (ie: nvidia)
@@ -365,13 +365,13 @@ workloads: {}
 #     enabled: true
 
 #     # -- Set the workload type.
-#     # Valid options are deployment, daemonset, statefulset, cronjob or job
+#     # Valid options are deployment, daemonSet, statefulSet, cronJob or job
 #     type: deployment
 #
-#     # -- Set annotations on the deployment/statefulset/daemonset/cronjob/job
+#     # -- Set annotations on the deployment/statefulSet/daemonSet/cronJob/job
 #     annotations: {}
 #
-#     # -- Set labels on the deployment/statefulset/daemonset/cronjob/job
+#     # -- Set labels on the deployment/statefulSet/daemonSet/cronJob/job
 #     labels: {}
 #
 #     autoScaling:
@@ -402,7 +402,7 @@ workloads: {}
 #       unavailable:
 #       # -- Set deployment RollingUpdate max surge
 #       surge:
-#       # -- Set statefulset RollingUpdate partition
+#       # -- Set statefulSet RollingUpdate partition
 #       partition:
 #
 #     # -- ReplicaSet revision history limit
@@ -417,9 +417,9 @@ workloads: {}
 #       # -- Explicitly set the service account name
 #       name:
 #
-#     # -- CronJob configuration. Required only when using `workload.type: cronjob`.
+#     # -- CronJob configuration. Required only when using `workload.type: cronJob`.
 #     # @default -- See below
-#     cronjob:
+#     cronJob:
 #       # -- Suspends the CronJob
 #       # [[ref]](https://kubernetes.io/docs/concepts/workloads/workloads/cron-jobs/#schedule-suspension)
 #       # @default -- false
@@ -464,8 +464,8 @@ workloads: {}
 #       # -- Specify the completionMode for the job
 #       completionMode:
 
-#     # -- StatefulSet configuration. Required only when using `workload.type: statefulset`.
-#     statefulset:
+#     # -- StatefulSet configuration. Required only when using `workload.type: statefulSet`.
+#     statefulSet:
 #       # -- Set podManagementPolicy, valid values are Parallel and OrderedReady (default).
 #       podManagementPolicy: OrderedReady
 
@@ -582,7 +582,7 @@ workloads: {}
 #         # A) Pass an app-template configMap id:
 #         #    - config: config
 #         # B) Pass any configMap name that is not also an id (Template enabled):
-#         #    - config: random-configmap-name
+#         #    - config: random-configMap-name
 #         # C) Pass an app-template configMap id, explicit syntax:
 #         #    - configMapRef:
 #         #        id: config

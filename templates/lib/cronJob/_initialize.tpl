@@ -1,5 +1,5 @@
 {{- /* Initialize Cronjob values */ -}}
-{{- define "2f.uchart.lib.cronjob.initialize" -}}
+{{- define "2f.uchart.lib.cronJob.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $objectValues := .values -}}

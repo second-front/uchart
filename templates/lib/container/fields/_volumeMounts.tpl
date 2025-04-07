@@ -16,8 +16,8 @@
   {{- end -}}
 
   {{- /* Collect volumeClaimTemplates */ -}}
-  {{- if not (empty (dig "statefulset" "volumeClaimTemplates" nil $workloadObject)) -}}
-    {{- $enabledVolumeTemplates := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $workloadObject.statefulset.volumeClaimTemplates) | fromYaml ) -}}
+  {{- if not (empty (dig "statefulSet" "volumeClaimTemplates" nil $workloadObject)) -}}
+    {{- $enabledVolumeTemplates := (include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $workloadObject.statefulSet.volumeClaimTemplates) | fromYaml ) -}}
     {{- range $key, $volume := $enabledVolumeTemplates -}}
       {{- $volumeValues := (mustDeepCopy $volume) -}}
 

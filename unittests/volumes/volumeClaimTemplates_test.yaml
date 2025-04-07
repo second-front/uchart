@@ -9,7 +9,7 @@ tests:
   - it: default should pass
     set:
       workloads.main:
-        type: statefulset
+        type: statefulSet
     asserts:
       - documentIndex: &StatefulSetDoc 0
         isKind:
@@ -21,8 +21,8 @@ tests:
   - it: volumeClaimTemplates should pass
     set:
       workloads.main:
-        type: statefulset
-        statefulset:
+        type: statefulSet
+        statefulSet:
           volumeClaimTemplates:
             storage:
               size: "10Gi"
@@ -47,8 +47,8 @@ tests:
   - it: volumeClaimTemplates with dataSource should pass
     set:
       workloads.main:
-        type: statefulset
-        statefulset:
+        type: statefulSet
+        statefulSet:
           volumeClaimTemplates:
             storage:
               size: "10Gi"
@@ -72,8 +72,8 @@ tests:
   - it: volumeClaimTemplates with templated dataSource name should pass
     set:
       workloads.main:
-        type: statefulset
-        statefulset:
+        type: statefulSet
+        statefulSet:
           volumeClaimTemplates:
             storage:
               size: "10Gi"

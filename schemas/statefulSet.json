@@ -2,13 +2,13 @@
   "rules": {
     "if": {
       "properties": {
-        "type": { "const": "statefulset" }
+        "type": { "const": "statefulSet" }
       },
       "required": [ "type" ]
     },
     "then": {
       "properties": {
-        "statefulset": {
+        "statefulSet": {
           "$ref": "#/options"
         },
         "strategy": {
@@ -46,13 +46,13 @@
     },
     "else": {
       "not": {
-        "required": [ "statefulset" ]
+        "required": [ "statefulSet" ]
       }
     }
   },
   "options": {
     "type": "object",
-    "description": "StatefulSet-specific configuration options. Only applicable when the instance type is 'statefulset'.",
+    "description": "StatefulSet-specific configuration options. Only applicable when the instance type is 'statefulSet'.",
     "additionalProperties": false,
     "properties": {
       "podManagementPolicy": {
@@ -152,7 +152,7 @@
       "RollingUpdate",
       "OnDelete"
     ],
-    "description": "Defines the update strategy for statefulsets. 'RollingUpdate' allows incremental updates while 'OnDelete' triggers legacy behavior. Only applicable when type is 'statefulset'.",
+    "description": "Defines the update strategy for statefulSets. 'RollingUpdate' allows incremental updates while 'OnDelete' triggers legacy behavior. Only applicable when type is 'statefulSet'.",
     "default": "RollingUpdate"
   },
   "rollingUpdate": {

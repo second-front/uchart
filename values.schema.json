@@ -63,7 +63,7 @@
     },
     "configMaps": {
       "additionalProperties": {
-        "$ref": "schemas/configmap.json#/instance"
+        "$ref": "schemas/configMap.json#/instance"
       }
     },
     "secrets": {

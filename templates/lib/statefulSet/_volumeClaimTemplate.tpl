@@ -1,13 +1,13 @@
 {{- /* VolumeClaimTemplates for StatefulSet */ -}}
-{{- define "2f.uchart.lib.statefulset.volumeclaimtemplates" -}}
+{{- define "2f.uchart.lib.statefulSet.volumeclaimtemplates" -}}
   {{- $root := .root -}}
-  {{- $statefulsetObject := .statefulsetObject -}}
+  {{- $statefulSetObject := .statefulSetObject -}}
 
   {{- /* Default to empty list */ -}}
   {{- $volumeClaimTemplates := list -}}
 
-  {{- range $id, $volumeClaimTemplate := (dig "statefulset" "volumeClaimTemplates" dict $statefulsetObject) -}}
-    {{- $vct := include "2f.uchart.lib.statefulset.volumeclaimtemplate" (dict "root" $root "id" $id "values" $volumeClaimTemplate) -}}
+  {{- range $id, $volumeClaimTemplate := (dig "statefulSet" "volumeClaimTemplates" dict $statefulSetObject) -}}
+    {{- $vct := include "2f.uchart.lib.statefulSet.volumeclaimtemplate" (dict "root" $root "id" $id "values" $volumeClaimTemplate) -}}
     {{- $volumeClaimTemplates = append $volumeClaimTemplates ($vct | fromYaml) -}}
   {{- end -}}
 
@@ -17,7 +17,7 @@
 {{- end -}}
 
 {{- /* Single VolumeClaimTemplate template */ -}}
-{{- define "2f.uchart.lib.statefulset.volumeclaimtemplate" -}}
+{{- define "2f.uchart.lib.statefulSet.volumeclaimtemplate" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $values := .values -}}

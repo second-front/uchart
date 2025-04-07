@@ -1,5 +1,5 @@
 {{- /* Initialize StatefulSet values */ -}}
-{{- define "2f.uchart.lib.statefulset.initialize" -}}
+{{- define "2f.uchart.lib.statefulSet.initialize" -}}
   {{- $root := .root -}}
   {{- $id := .id -}}
   {{- $objectValues := .values -}}

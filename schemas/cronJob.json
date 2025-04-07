@@ -2,19 +2,19 @@
   "rules": {
     "if": {
       "properties": {
-        "type": { "const": "cronjob" }
+        "type": { "const": "cronJob" }
       },
       "required": [ "type" ]
     },
     "then": {
       "properties": {
-        "cronjob": {
-          "$ref": "#/cronjob.options",
-          "description": "CronJob-specific settings. These apply only when the instance type is set to 'cronjob'."
+        "cronJob": {
+          "$ref": "#/cronJob.options",
+          "description": "CronJob-specific settings. These apply only when the instance type is set to 'cronJob'."
         }
       },
       "allOf": [
-        { "required": [ "cronjob" ] },
+        { "required": [ "cronJob" ] },
         {
           "not": {
             "anyOf": [
@@ -30,15 +30,15 @@
       "allOf": [
         {
           "not": {
-            "required": [ "cronjob" ]
+            "required": [ "cronJob" ]
           }
         }
       ]
     }
   },
-  "cronjob.options": {
+  "cronJob.options": {
     "type": "object",
-    "description": "CronJob configuration for scheduled jobs. Use this section only when the instance type is set to 'cronjob'.",
+    "description": "CronJob configuration for scheduled jobs. Use this section only when the instance type is set to 'cronJob'.",
     "additionalProperties": false,
     "properties": {
       "backoffLimit": {
