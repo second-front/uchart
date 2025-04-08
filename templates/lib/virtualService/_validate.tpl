@@ -14,7 +14,7 @@
 
         {{- /* ensure all port name references resolve */ -}}
         {{- if and .port (kindIs "string" .port) -}}
-          {{- $port := include "2f.uchart.lib.service.getPortNumberByName" (dict "root" $root "id" .id "portName" .port) -}}
+          {{- $port := include "2f.uchart.lib.service.utils.getPortNumberByName" (dict "root" $root "id" .id "portName" .port) -}}
           {{- if not $port -}}
             {{- fail (printf "unable to resolve port with this name. (virtualService: '%s', service: '%s', port: '%s')" $virtualServiceObject.id .id .port) -}}
           {{- end -}}

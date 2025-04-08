@@ -1,6 +1,4 @@
-{{- /*
-Returns the value for labels
-*/ -}}
+{{- /* Returns the value for labels */ -}}
 {{- define "2f.uchart.lib.pod.metadata.labels" -}}
   {{- $root := .root -}}
   {{- $workloadObject := .workloadObject -}}
