@@ -59,7 +59,9 @@
       }
     },
     "serviceAccounts": {
-      "$ref": "schemas/serviceAccount.json#/settings"
+      "additionalProperties": {
+        "$ref": "schemas/serviceAccount.json#/instance"
+      }
     },
     "configMaps": {
       "additionalProperties": {

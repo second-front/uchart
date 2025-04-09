@@ -5,7 +5,7 @@
   {{- $resourceValues := .values -}}
   {{- $resources := .resources -}}
   {{- $kind := .kind -}}
-  {{- $dynamicNameKinds := list "workload" "service" "horizontalPodAutoscaler" "podDisruptionBudget" "virtualService" -}}
+  {{- $dynamicNameKinds := list "workload" "service" "serviceAccount" "horizontalPodAutoscaler" "podDisruptionBudget" "virtualService" -}}
 
   {{- /* Determine and inject the name */ -}}
   {{- $resourceName := (include "2f.uchart.lib.chart.names.fullname" $root) -}}
@@ -28,10 +28,8 @@
       {{- end -}}
     {{- end -}}
   {{- else -}}
-    {{- if and (ne $id "default") (ne $kind "serviceAccount") -}}
-      {{- if not (eq $resourceName $id) -}}
-        {{- $resourceName = printf "%s-%s" $resourceName $id -}}
-      {{- end -}}
+    {{- if not (eq $resourceName $id) -}}
+      {{- $resourceName = printf "%s-%s" $resourceName $id -}}
     {{- end -}}
   {{- end -}}
 

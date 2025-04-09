@@ -12,4 +12,17 @@
         {{- end -}}
     {{- end -}}
   {{- end -}}
+
+  {{- /* Validate serviceAccount Values */ -}}
+  {{- $serviceAccountWorkloads := list -}}
+  {{- $enabledServiceAccounts := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" .Values.serviceAccounts) | fromYaml -}}
+  {{- range $id, $serviceAccount := $enabledServiceAccounts -}}
+    {{- with $serviceAccount.workload -}}
+      {{- if mustHas . $serviceAccountWorkloads -}}
+        {{- fail (printf "multiple ServiceAccounts enabled with workload id, workloads can only have one serviceAccount. (serviceAccount: '%s', workload: '%s')" $id .) -}}
+      {{- else -}}
+        {{- $serviceAccountWorkloads := append $serviceAccountWorkloads . -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}

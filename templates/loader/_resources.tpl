@@ -5,6 +5,7 @@
 
   {{- /* Build the templates */ -}}
   {{- include "2f.uchart.lib.volume.render" . | nindent 0 -}}
+  {{- include "2f.uchart.lib.serviceAccount.render" . | nindent 0 -}}
   {{- include "2f.uchart.lib.configMap.render" . | nindent 0 -}}
   {{- include "2f.uchart.lib.secret.render" . | nindent 0 -}}
   {{- include "2f.uchart.lib.workload.render" . | nindent 0 -}}

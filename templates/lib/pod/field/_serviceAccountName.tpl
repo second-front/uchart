@@ -5,14 +5,15 @@
   {{- $resources := $root.Values.serviceAccounts -}}
 
   {{- $serviceAccountName := "default" -}}
-  {{- $defaultServiceAccount := include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" "default" "kind" "serviceAccount") | fromYaml -}}
-
-  {{- if $root.Values.enforceServiceAccountCreation -}}
-    {{- if (get $defaultServiceAccount "create") -}}
-      {{- $serviceAccountName = get $defaultServiceAccount "name" -}}
+  
+  {{- /* Find serviceAccount key with matching workload */ -}}
+  {{- $enabledServiceAccounts := include "2f.uchart.lib.utils.enabledResources" (dict "root" $root "resources" $resources) | fromYaml -}}
+  {{- range $id, $serviceAccount := $enabledServiceAccounts -}}
+    {{- with $serviceAccount.workload -}}
+      {{- if eq . $workloadObject.id -}}
+        {{- $serviceAccountName = get (include "2f.uchart.lib.utils.getById" (dict "root" $root "resources" $resources "id" $id "kind" "serviceAccount") | fromYaml) "name" -}}
+      {{- end -}}
     {{- end -}}
-  {{- else -}}
-      {{- $serviceAccountName = get $defaultServiceAccount "name" -}}
   {{- end -}}
 
   {{- with $workloadObject.serviceAccount -}}
