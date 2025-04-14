@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../values.schema.json
 ---
+schema: "2.0"
 global:
   customerName: test
   applicationName: RELEASE-NAME

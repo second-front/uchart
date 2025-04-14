@@ -1,0 +1,80 @@
+{{- define "2f.uchart.legacy.argoWrapper.subCharts" -}}
+{{- if and .Values.subCharts (not .Values.argocd.wrapAll) (not (typeIs "bool" .Values.subCharts)) }}
+  {{- range $subChart, $v := .Values.subCharts}}
+  {{- with $ -}}
+  {{ if not (empty $v) }}
+  {{ if not (eq $v.enabled false) }}
+
+{{/* Variables */}}
+{{- $name := $v.name | default (printf "%s-%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName $subChart) -}}
+{{- $chartUrl := $v.chartUrl | default "registry.gamewarden.io/charts" }}
+{{- $namespace := $v.namespace | default .Values.argocd.namespace | default .Values.global.applicationName }}
+{{- $revision := $v.revision | default $.Chart.Version }}
+---
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: {{ $name }}
+  namespace: argocd
+{{-  if $v.wave }}
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ $v.wave }}
+{{- end }}
+spec:
+  project: "{{ default (default (printf "%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName) $v.project) .Values.argocd.projectOverride }}"
+  destination:
+    namespace: {{ $namespace }}
+    {{- if eq $v.chart "uchart" }}
+    name: in-cluster
+    {{- else }}
+    name: {{ .Values.global.destinationCluster }}
+    {{- end }}
+  syncPolicy:
+    {{- if eq $v.sync false }}
+    automated:
+      prune: false
+      selfHeal: false
+    {{- else }}
+    automated:
+      prune: true
+      selfHeal: true
+    {{- end }}
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=false
+      - RespectIgnoreDifferences=true
+    {{- if not (eq $v.serverSideApply false) }}
+      - ServerSideApply=true
+    {{- end }}
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
+  revisionHistoryLimit: 3
+  sources:
+    - repoURL: {{ $chartUrl }}
+      targetRevision: {{ $revision }}
+      chart: {{ $v.chart | default "uchart" }}
+      helm:
+        {{-  if $v.values }}
+        {{- $globalValues := dict "applicationName" $v.namespace "customerName" .Values.global.customerName "impactLevel" .Values.global.impactLevel "environment" .Values.global.environment }}
+        {{- $mergedGlobal := merge $globalValues (default dict $v.values.global) }}
+        values: |
+          {{- toYaml (merge $v.values (dict "global" $mergedGlobal)) | nindent 10 }}
+          {{- if .Values.argocd.projectOverride }}
+          argocd:
+            projectOverride: {{ .Values.argocd.projectOverride }}
+          {{- end }}
+        {{- end }}
+      {{- if $v.valuesRepo }}
+        valueFiles:
+        {{- toYaml  $v.valueFiles | nindent 8 }}
+    - repoURL: {{ $v.valuesRepo }}
+      targetRevision: {{ $v.valuesRevision | default "main" }}
+      ref: values
+    {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}

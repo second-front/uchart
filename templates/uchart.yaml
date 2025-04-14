@@ -1,6 +1,11 @@
 ---
-{{- /* initialize values */ -}}
-{{- include "2f.uchart.loader.initialize" . -}}
+{{- if eq .Values.schema "2.0" -}}
+  {{- /* initialize values */ -}}
+  {{- include "2f.uchart.loader.initialize" . -}}
 
-{{- /* Render the templates */ -}}
-{{- include "2f.uchart.loader.resources" . -}}
+  {{- /* Render the templates */ -}}
+  {{- include "2f.uchart.loader.resources" . -}}
+{{- else if eq .Values.schema "1.0" -}}
+  {{- /* Render the templates */ -}}
+  {{- include "2f.uchart.loader.legacyResources" . -}}
+{{- end -}}

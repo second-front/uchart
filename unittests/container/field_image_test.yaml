@@ -57,6 +57,7 @@ tests:
 
   - it: tag from defaultContainerOptions should pass
     set:
+      schema: "2.0"
       global:
         customerName: test
         applicationName: RELEASE-NAME
@@ -81,6 +82,7 @@ tests:
 
   - it: tag from defaultContainerOptions with container override should pass
     set:
+      schema: "2.0"
       global:
         customerName: test
         applicationName: RELEASE-NAME
@@ -105,6 +107,7 @@ tests:
 
   - it: registry from defaultContainerOptions should pass when stategy is merge
     set:
+      schema: "2.0"
       global:
         customerName: test
         applicationName: RELEASE-NAME
@@ -132,6 +135,7 @@ tests:
 
   - it: registry from defaultContainerOptions with container override should pass
     set:
+      schema: "2.0"
       global:
         customerName: test
         applicationName: RELEASE-NAME
@@ -154,6 +158,7 @@ tests:
 
   - it: registry from global should pass
     set:
+      schema: "2.0"
       global:
         customerName: test
         applicationName: RELEASE-NAME

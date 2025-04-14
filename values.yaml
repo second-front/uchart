@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=values.schema.json
 ---
+schema: "1.0"
+
 # nameOverride: ''
 # fullnameOverride: ''
 

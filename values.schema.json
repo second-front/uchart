@@ -3,100 +3,38 @@
   "$id": "file://./values.schema.json",
   "type": "object",
   "properties": {
-    "global": {
-      "type": "object",
-      "properties": {
-        "nameOverride": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "fullnameOverride": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "customerName": {
-          "type": "string"
-        },
-        "applicationName": {
-          "type": "string"
-        },
-        "complianceLevel": {
-          "type": "string"
-        },
-        "environment": {
-          "type": "string"
-        },
-        "imageRegistry": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "labels": {
-          "$ref": "schemas/metadata.json#/labels"
-        },
-        "annotations": {
-          "$ref": "schemas/metadata.json#/annotations"
+    "schema": {
+      "type": "string",
+      "enum": [
+        "1.0",
+        "2.0"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema": {
+            "const": "2.0"
+          }
         }
       },
-      "required": [
-        "customerName",
-        "applicationName",
-        "complianceLevel",
-        "environment"
-      ]
-    },
-    "defaultPodOptions": {
-      "$ref": "schemas/pod.json#/options"
-    },
-    "workloads": {
-      "additionalProperties": {
-        "$ref": "schemas/workload.json#/instance"
+      "then": {
+        "$ref": "new-values.schema.json"
       }
     },
-    "serviceAccounts": {
-      "additionalProperties": {
-        "$ref": "schemas/serviceAccount.json#/instance"
-      }
-    },
-    "configMaps": {
-      "additionalProperties": {
-        "$ref": "schemas/configMap.json#/instance"
-      }
-    },
-    "secrets": {
-      "additionalProperties": {
-        "$ref": "schemas/secret.json#/instance"
-      }
-    },
-    "services": {
-      "additionalProperties": {
-        "$ref": "schemas/service.json#/instance"
-      }
-    },
-    "virtualServices": {
-      "additionalProperties": {
-        "$ref": "schemas/virtualService.json#/instance"
-      }
-    },
-    "networkPolicies": {
-      "additionalProperties": {
-        "$ref": "schemas/networkPolicy.json#/instance"
-      }
-    },
-    "volumes": {
-      "additionalProperties": {
-        "$ref": "schemas/volume.json#/instance"
-      }
-    },
-    "extraManifests": {
-      "additionalProperties": {
-        "$ref": "schemas/extraManifest.json#/instance"
+    {
+      "if": {
+        "properties": {
+          "schema": {
+            "const": "1.0"
+          }
+        }
+      },
+      "then": {
+        "$ref": "old-values.schema.json"
       }
     }
-  }
+  ]
 }

@@ -1,0 +1,17 @@
+{{- define "2f.uchart.legacy.imageCredentials" -}}
+{{- if .Values.imageCredentials }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: reg-creds
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.global.applicationName | default .Values.applicationName }}
+    release: {{ .Release.Name }}
+    chart: {{.Chart.Name}}-{{.Chart.Version | replace "+" "_"}}
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: {{ template "globalImagePullSecrets" . }}
+{{- end }}
+{{- end }}

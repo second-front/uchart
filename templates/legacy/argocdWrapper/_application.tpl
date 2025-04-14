@@ -1,0 +1,68 @@
+{{- define "2f.uchart.legacy.argoWrapper.application" -}}
+{{- $defaultProject := printf "%s-%s-%s" (required "customerName is required" .Values.global.customerName) (required "environment is required" .Values.global.environment) (required "applicationName is required" .Values.global.applicationName) -}}
+{{- if and .Values.microservices (not .Values.argocd.wrapperAppOff) (not .Values.argocd.wrapAll)}}
+# check if any subcharts are enabled 
+---
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}"
+  namespace: argocd
+{{-  if .Values.argocd.wrapperAppWave }}
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ .Values.argocd.wrapperAppWave }}
+{{- end }}
+spec:
+  project: "{{ default (printf "%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName) .Values.argocd.projectOverride }}"
+  destination:
+    namespace: {{ .Values.argocd.namespace | default .Values.global.applicationName }}
+    name: {{ .Values.global.destinationCluster }}
+  syncPolicy:
+    {{- if .Values.argocd.wrapperSync }}
+    automated:
+      prune: true
+      selfHeal: true
+    {{- end }}
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=false
+      - RespectIgnoreDifferences=true
+    {{- if not (eq .Values.argocd.serverSideApply false) }}
+      - ServerSideApply=true
+    {{- end }}
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: .;**/values.yaml
+  revisionHistoryLimit: 3
+  sources:
+    - repoURL: registry.gamewarden.io/charts
+      targetRevision: 1.0.39
+      chart: uchart
+      helm:
+        values: |
+          microservices:
+          {{- toYaml  .Values.microservices | nindent 12 }}
+          global:
+          {{- toYaml  .Values.global | nindent 12 }}
+          defaults:
+          {{- toYaml  .Values.defaults | nindent 12 }}
+          ciliumNetworkPolicies:
+          {{- toYaml  .Values.ciliumNetworkPolicies | nindent 12 }}
+          networkPolicies:
+          {{- toYaml  .Values.networkPolicies | nindent 12 }}
+          argocd:
+          {{- toYaml  .Values.argocd | nindent 12 }}
+          config:
+          {{- toYaml  .Values.config | nindent 12 }}
+          generatedSecrets:
+          {{- toYaml  .Values.generatedSecrets | nindent 12 }}
+          extraManifests:
+          {{- toYaml  .Values.extraManifests | nindent 12 }}
+          manifests:
+          {{- toYaml  .Values.manifests | nindent 12 }}
+          secretsJobGeneration:
+          {{- toYaml  .Values.secretsJobGeneration | nindent 12 }}
+{{- end }}
+{{- end }}

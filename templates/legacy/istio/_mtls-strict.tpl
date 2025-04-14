@@ -1,0 +1,24 @@
+{{- define "2f.uchart.legacy.istio.mtls" -}}
+{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
+{{- $istioMtlsEnabled := .Values.global.istio.mtls.enabled }}
+{{- if and $istioMtlsEnabled .Values.microservices }}
+{{- $jobEnabled := false }}
+{{- range $key, $value := .Values.microservices }}
+  {{- if and $value (or (hasKey $value "job") (hasKey $value "cronjob")) }}
+    {{- $jobEnabled = true }}
+  {{- end }}
+{{- end }}
+{{- if not $jobEnabled }}
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: {{ .Values.global.applicationName }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  mtls:
+    mode: STRICT
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,55 @@
+{{- define "2f.uchart.legacy.job" -}}
+{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
+{{- range $msvc, $v := .Values.microservices }}
+{{- with $ -}}
+
+{{- if not (empty $v) }}
+{{- if $v.job }}
+{{- if ($v.job).enabled }}
+
+{{/* Variables */}}
+{{- $backoffLimit := $v.job.backoffLimit | default 6 }}
+{{- $completions := $v.job.completions | default 1 }}
+{{- $parallelism := $v.job.parallelism | default 1 }}
+{{- $suspended := $v.job.suspended | default false }}
+
+
+{{- $mergedEnvFrom := $v.envFrom | default (list) }}
+{{- $defaultsEnvFrom := .Values.defaults.envFrom | default (list) }}
+{{- range $defaultsEnvFrom }}
+  {{- $mergedEnvFrom = append $mergedEnvFrom . }}
+{{- end }}
+
+{{- $labels := $v.labels }}
+{{- $annotations := $v.annotations | default (dict) }}
+{{- $namespace := $v.namespace | default .Release.Namespace }}
+
+{{- if not $suspended }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $msvc }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $msvc }}
+    {{- include "universal-app-chart.labels" . | nindent 4 }}
+    {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  completions: {{ $completions }}
+  parallelism: {{ $parallelism }}
+  backoffLimit: {{ $backoffLimit }}
+  template:
+    {{- include "podTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "v" $v) | nindent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

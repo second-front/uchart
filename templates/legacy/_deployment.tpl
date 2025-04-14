@@ -1,0 +1,61 @@
+{{- define "2f.uchart.legacy.deployment" -}}
+{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
+{{- range $msvc, $v := .Values.microservices}}
+{{- with $ -}}
+{{ if and (not (empty $v)) (not $v.containers) (not $v.cronjob) (not $v.job) (ne $v.enabled false) }}
+{{- $statefulsetEnabled := (($v.statefulset).enabled) }}
+{{- if not $statefulsetEnabled }}
+{{- $daemonsetEnabled := (($v.daemonset).enabled) }}
+{{- if not $daemonsetEnabled }}
+{{/* Deployment Variables */}}
+{{- $annotations := $v.annotations | default (dict) }}
+{{- $appLabel := $v.appLabel | default $msvc }}
+{{- $autoscalingEnabled := (($v.autoscaling).enabled) | default .Values.defaults.autoscaling.enabled }}
+{{- $deploymentName := (($v.service).overrideName) | default $msvc }}
+{{- $labels := $v.labels }}
+{{- $namespace := $v.namespace | default .Release.Namespace }}
+{{- $podAnnotations := $v.podAnnotations | default .Values.defaults.podAnnotations }}
+{{- $replicaCount := $v.replicaCount | default .Values.defaults.replicaCount }}
+{{- $selectorLabels := $v.selectorLabels }}
+{{- $strategy := $v.strategy | default .Values.defaults.strategy }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $deploymentName }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $appLabel }}
+    {{- include "universal-app-chart.labels" . | nindent 4 }}
+    {{- if not ($v.service).disableIstioInjection }}
+    {{- include "universal-app-chart.istioLabels" . | nindent 4 }}
+    {{- end }}
+    {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  revisionHistoryLimit: 3
+  {{- if not $autoscalingEnabled }}
+  replicas: {{ $replicaCount }}
+  {{- end }}
+  strategy:
+    {{- toYaml $strategy | nindent 4 }}
+  selector:
+    matchLabels:
+      app: {{ $appLabel }}
+      {{- include "universal-app-chart.selectorLabels" . | nindent 6 }}
+      {{- if not ($v.service).disableIstioInjection }}
+      {{- include "universal-app-chart.istioLabels" . | nindent 6 }}
+      {{- end }}
+      {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 6 }} {{- end }}
+  template:
+    {{- include "podTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "appLabel" $appLabel "v" $v) | nindent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
