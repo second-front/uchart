@@ -1,0 +1,29 @@
+schema: "2.0"
+global:
+  customerName: test
+  applicationName: RELEASE-NAME
+  complianceLevel: il2
+  environment: dev
+  imageRegistry: r.gamewarden.io
+  domain: test.dev
+
+serviceAccounts:
+  test-sa:
+    enabled: true
+
+rbac:
+  roles:
+    defaultRole:
+      type: Role
+      rules:
+        - apiGroups: [""]
+          resources: ["pods"]
+          verbs: ["get", "list"]
+
+  bindings:
+    defaultBinding:
+      type: RoleBinding
+      roleRef:
+        id: defaultRole
+      subjects:
+        - id: test-sa

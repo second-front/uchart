@@ -96,6 +96,9 @@
       "additionalProperties": {
         "$ref": "schemas/extraManifest.json#/instance"
       }
+    },
+    "rbac": {
+      "$ref": "schemas/rbac.json#/rbac"
     }
   }
 }

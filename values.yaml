@@ -696,6 +696,8 @@ workloads: {}
 #     # Each initContainer should have its own key
 #     initContainers: {}
 
+rbac: {}
+
 serviceAccount:
   # -- Specifies whether a service account should be created
   # The id for this ServiceAccount will be `default`

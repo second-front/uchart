@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: rbac validations
+templates:
+  - uchart.yaml
+values:
+  - ../_values/rbac_values.yaml
+tests:
+  - it: role rules can't be empty
+    set:
+      rbac:
+        roles:
+          invalidRole:
+            type: Role
+            rules: []
+    asserts:
+      - failedTemplate:
+          errorMessage: "Rules can't be empty"

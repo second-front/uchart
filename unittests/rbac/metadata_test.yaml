@@ -1,0 +1,121 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: rbac metadata
+templates:
+  - uchart.yaml
+values:
+  - ../_values/rbac_values.yaml
+tests:
+  - it: default role metadata should pass
+    asserts:
+      - hasDocuments:
+          count: 3
+      - documentIndex: &RoleDocument 1
+        isKind:
+          of: Role
+      - documentIndex: *RoleDocument
+        notExists:
+          path: metadata.annotations
+      - documentIndex: *RoleDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+
+  - it: custom role metadata should pass
+    set:
+      rbac:
+        roles:
+          defaultRole:
+            annotations:
+              test_annotation: test
+            labels:
+              test_label: test
+    asserts:
+      - hasDocuments:
+          count: 3
+      - documentIndex: &RoleDocument 1
+        isKind:
+          of: Role
+      - documentIndex: *RoleDocument
+        equal:
+          path: metadata.annotations
+          value:
+            test_annotation: test
+      - documentIndex: *RoleDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+            test_label: test
+
+  - it: default binding metadata should pass
+    asserts:
+      - hasDocuments:
+          count: 3
+      - documentIndex: &BindingDocument 2
+        isKind:
+          of: RoleBinding
+      - documentIndex: *BindingDocument
+        notExists:
+          path: metadata.annotations
+      - documentIndex: *BindingDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+
+  - it: custom role metadata should pass
+    set:
+      rbac:
+        bindings:
+          defaultBinding:
+            annotations:
+              test_annotation: test
+            labels:
+              test_label: test
+    asserts:
+      - hasDocuments:
+          count: 3
+      - documentIndex: &BindingDocument 2
+        isKind:
+          of: RoleBinding
+      - documentIndex: *BindingDocument
+        equal:
+          path: metadata.annotations
+          value:
+            test_annotation: test
+      - documentIndex: *BindingDocument
+        equal:
+          path: metadata.labels
+          value:
+            app.gamewarden.io/complianceLevel: il2
+            app.gamewarden.io/customer: test
+            app.gamewarden.io/environment: dev
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            argocd.argoproj.io/instance: RELEASE-NAME
+            helm.sh/chart: uchart-2.0.0
+            test_label: test

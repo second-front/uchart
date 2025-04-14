@@ -1,0 +1,125 @@
+{
+  "rbac": {
+    "type": "object",
+    "description": "role and role binding configurations",
+    "additionalProperties": false,
+    "properties": {
+      "roles": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/role"
+        }
+      },
+      "bindings": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/binding"
+        }
+      }
+    }
+  },
+  "role": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": { "type": "boolean", "default": true },
+      "annotations": {
+        "$ref": "metadata.json#/annotations",
+        "description": "Provide additional Annotations to the role."
+      },
+      "labels": {
+        "$ref": "metadata.json#/labels",
+        "description": "Provide additional Labels to the role."
+      },
+      "nameOverride": {
+        "type": "string",
+        "description": "Override the name that is used for this role"
+      },
+      "suffixOverride": {
+        "type": "string",
+        "description": "Override the name suffix that is used for this role"
+      },
+      "type": { "type": "string", "enum": ["Role", "ClusterRole"] },
+      "rules": {}
+    }
+  },
+  "binding": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": { "type": "boolean", "default": true },
+      "annotations": {
+        "$ref": "metadata.json#/annotations",
+        "description": "Provide additional Annotations to the binding."
+      },
+      "labels": {
+        "$ref": "metadata.json#/labels",
+        "description": "Provide additional Labels to the binding."
+      },
+      "nameOverride": {
+        "type": "string",
+        "description": "Override the name that is used for this binding"
+      },
+      "suffixOverride": {
+        "type": "string",
+        "description": "Override the name suffix that is used for this binding"
+      },
+      "type": { "type": "string", "enum": ["RoleBinding", "ClusterRoleBinding"] },
+      "roleRef": {
+        "oneOf": [
+          {
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": ["id"]
+          },
+          {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": ["Role", "ClusterRole"],
+                "default": "Role"
+              }
+            },
+            "required": ["name"]
+          }
+        ]
+      },
+      "subjects": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": ["id"]
+            },
+            {
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "default": "ServiceAccount"
+                },
+                "namespace": {
+                  "type": "string"
+                }
+              },
+              "required": ["name"]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

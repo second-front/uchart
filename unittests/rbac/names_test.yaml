@@ -1,0 +1,54 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: rbac names
+templates:
+  - uchart.yaml
+values:
+  - ../_values/rbac_values.yaml
+tests:
+  - it: default role and rolebinding names should pass
+    asserts:
+      - hasDocuments:
+          count: 3
+      - documentIndex: &RoleDocument 1
+        isKind:
+          of: Role
+      - documentIndex: *RoleDocument
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME-defaultRole
+
+      - documentIndex: &BindingDocument 2
+        isKind:
+          of: RoleBinding
+      - documentIndex: *BindingDocument
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME-defaultBinding
+
+  - it: custom role name should pass
+    set:
+      rbac:
+        roles:
+          defaultRole:
+            nameOverride: customRole
+        bindings:
+          defaultBinding:
+            nameOverride: customBinding
+    asserts:
+      - hasDocuments:
+          count: 3
+      - documentIndex: &RoleDocument 1
+        isKind:
+          of: Role
+      - documentIndex: &BindingDocument 2
+        isKind:
+          of: RoleBinding
+      - documentIndex: *RoleDocument
+        equal:
+          path: metadata.name
+          value: customRole
+      - documentIndex: *BindingDocument
+        equal:
+          path: metadata.name
+          value: customBinding
