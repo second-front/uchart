@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: route names
+templates:
+  - uchart.yaml
+values:
+  - ../_values/workloads_main_default_container.yaml
+tests:
+  - it: default name
+    set:
+      routes.main:
+        enabled: true
+        parentRefs:
+          - name: test
+            namespace: test
+    documentSelector:
+      path: $[?(@.kind == "HTTPRoute")].metadata.name
+      value: RELEASE-NAME
+    asserts:
+      - exists:
+          path: metadata.name
+
+  - it: name override should pass
+    set:
+      routes.main:
+        enabled: true
+        parentRefs:
+          - name: test
+            namespace: test
+        nameOverride: http-test
+    documentSelector:
+      path: $[?(@.kind == "HTTPRoute")].metadata.name
+      value: http-test
+    asserts:
+      - exists:
+          path: metadata.name
+
+  - it: name override with template should pass
+    set:
+      routes.main:
+        enabled: true
+        parentRefs:
+          - name: test
+            namespace: test
+        nameOverride: "{{ .Chart.Name }}"
+    documentSelector:
+      path: $[?(@.kind == "HTTPRoute")].metadata.name
+      value: uchart
+    asserts:
+      - exists:
+          path: metadata.name
+
+  - it: name suffix should pass
+    set:
+      routes.main:
+        enabled: true
+        parentRefs:
+          - name: test
+            namespace: test
+        suffixOverride: http
+    documentSelector:
+      path: $[?(@.kind == "HTTPRoute")].metadata.name
+      value: RELEASE-NAME-http
+    asserts:
+      - exists:
+          path: metadata.name
+
+  - it: name suffix with template should pass
+    set:
+      routes.main:
+        enabled: true
+        parentRefs:
+          - name: test
+            namespace: test
+        suffixOverride: "{{ .Chart.Name }}"
+    documentSelector:
+      path: $[?(@.kind == "HTTPRoute")].metadata.name
+      value: RELEASE-NAME-uchart
+    asserts:
+      - exists:
+          path: metadata.name
+
+  - it: multiple routes
+    set:
+      routes:
+        main:
+          parentRefs:
+            - name: main
+              namespace: main
+        test:
+          parentRefs:
+            - name: test
+              namespace: test
+    asserts:
+      - documentSelector:
+          path: $[?(@.kind == "HTTPRoute")].metadata.name
+          value: RELEASE-NAME-main
+        exists:
+          path: metadata.name
+      - documentSelector:
+          path: $[?(@.kind == "HTTPRoute")].metadata.name
+          value: RELEASE-NAME-test
+        exists:
+          path: metadata.name

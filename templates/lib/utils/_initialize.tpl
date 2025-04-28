@@ -5,7 +5,15 @@
   {{- $resourceValues := .values -}}
   {{- $resources := .resources -}}
   {{- $kind := .kind -}}
-  {{- $dynamicNameKinds := list "workload" "service" "serviceAccount" "horizontalPodAutoscaler" "podDisruptionBudget" "virtualService" -}}
+  {{- $dynamicNameKinds := list 
+    "horizontalPodAutoscaler"
+    "podDisruptionBudget"
+    "route"
+    "service"
+    "serviceAccount"
+    "virtualService"
+    "workload"
+  -}}
 
   {{- /* Determine and inject the name */ -}}
   {{- $resourceName := (include "2f.uchart.lib.chart.names.fullname" $root) -}}

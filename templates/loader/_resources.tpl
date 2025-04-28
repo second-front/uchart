@@ -11,6 +11,7 @@
   {{- include "2f.uchart.lib.workload.render" . | nindent 0 -}}
   {{- include "2f.uchart.lib.service.render" . | nindent 0 -}}
   {{- include "2f.uchart.lib.virtualService.render" . | nindent 0 -}}
+  {{- include "2f.uchart.lib.route.render" . | nindent 0 -}}
   {{- include "2f.uchart.lib.networkPolicy.render" . | nindent 0 -}}
   {{- include "2f.uchart.lib.extraManifest.render" . | nindent 0 -}}
   {{- include "2f.uchart.lib.rbac.render" . | nindent 0 -}}

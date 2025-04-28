@@ -77,6 +77,11 @@
         "$ref": "schemas/service.json#/instance"
       }
     },
+    "routes": {
+      "additionalProperties": {
+        "$ref": "schemas/route.json#/instance"
+      }
+    },
     "virtualServices": {
       "additionalProperties": {
         "$ref": "schemas/virtualService.json#/instance"
