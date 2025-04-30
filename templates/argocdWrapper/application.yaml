@@ -1,5 +1,5 @@
 {{- $defaultProject := printf "%s-%s-%s" (required "customerName is required" .Values.global.customerName) (required "environment is required" .Values.global.environment) (required "applicationName is required" .Values.global.applicationName) -}}
-{{- if and .Values.microservices (not .Values.argocd.wrapperAppOff) (not .Values.argocd.wrapAll)}}
+{{- if and .Values.subCharts .Values.microservices (not .Values.argocd.wrapperAppOff) (not .Values.argocd.wrapAll)}}
 # check if any subcharts are enabled 
 ---
 kind: Application
@@ -26,6 +26,7 @@ spec:
       - CreateNamespace=true
       - Validate=false
       - RespectIgnoreDifferences=true
+      - ApplyOutOfSyncOnly=true
     {{- if not (eq .Values.argocd.serverSideApply false) }}
       - ServerSideApply=true
     {{- end }}
@@ -37,7 +38,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.39
+      targetRevision: 1.0.40
       chart: uchart
       helm:
         values: |
