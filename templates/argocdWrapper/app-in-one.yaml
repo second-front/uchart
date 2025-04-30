@@ -26,6 +26,7 @@ spec:
       - CreateNamespace=true
       - Validate=false
       - RespectIgnoreDifferences=true
+      - ApplyOutOfSyncOnly=true
     {{- if not (eq .Values.argocd.serverSideApply false) }}
       - ServerSideApply=true
     {{- end }}
