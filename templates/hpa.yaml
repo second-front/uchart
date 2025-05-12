@@ -26,6 +26,9 @@ spec:
     name: {{ $targetName }}
   minReplicas: {{ $minReplicas }}
   maxReplicas: {{ $maxReplicas }}
+  {{- if $v.autoscaling.behavior }}
+  behavior: {{ toYaml $v.autoscaling.behavior | nindent 4 }}
+  {{- end }}
   metrics:
     {{- if and $v.autoscaling.metrics (not (empty $v.autoscaling.metrics)) }}
       {{- range $m := $v.autoscaling.metrics }}
