@@ -119,6 +119,19 @@ microservices:
             target:
               type: AverageValue
               averageValue: 30
+      # -- Custom behavior for scaling
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policies:
+            - type: Percent
+              value: 10
+              periodSeconds: 60
+        scaleUp:
+          policies:
+            - type: Percent
+              value: 200
+              periodSeconds: 60
         ## - Support multiple configmaps like this
     envs:
       ENV_VAR_1: value1
