@@ -85,6 +85,7 @@ spec:
           {{- $disablePortName := (($v.service).disablePortName) | default $.Values.defaults.service.disablePortName }}
           {{- $appProtocol := (($container.service).appProtocol) | default $.Values.defaults.service.appProtocol }}
           {{- $additionalPorts := (($container.service).additionalPorts) | default $.Values.defaults.service.additionalPorts }}
+          {{- $selectorLabels := $container.selectorLabels }}
           {{- $sessionAffinity := (($container.service).sessionAffinity) }}
           {{- $headless := (($container.service).headless) | default $.Values.defaults.service.headless }}
           {{- $overrideName := (($container.service).overrideName) | default $.Values.defaults.service.overrideName }}
@@ -132,9 +133,9 @@ spec:
 {{- end }}
   selector:
     app: {{ $containerName }}
-    app.kubernetes.io/instance: {{ $.Release.Name }}
+    # app.kubernetes.io/instance: {{ $.Release.Name }}
     authentication: istio-auth
-    app.kubernetes.io/name: {{ printf "%s-%s" $.Release.Name $.Chart.Name | trunc 63 | trimSuffix "-" }}
+    # app.kubernetes.io/name: {{ printf "%s-%s" $.Release.Name $.Chart.Name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 {{- end }}
