@@ -46,13 +46,6 @@ app.gamewarden.io/environment: {{required ".Values.global.environment is require
 {{- end }}
 
 {{/*
-Istio Labels
-*/}}
-{{- define "universal-app-chart.istioLabels" -}}
-authentication: istio-auth
-{{- end }}
-
-{{/*
 Selector labels
 */}}
 {{- define "universal-app-chart.selectorLabels" -}}

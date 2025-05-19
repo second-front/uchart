@@ -27,7 +27,6 @@ metadata:
   labels:
     app: {{ $msvc }}
     {{- include "universal-app-chart.labels" . | nindent 4 }}
-    {{- include "universal-app-chart.istioLabels" . | nindent 4 }}
     {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
   {{- if $annotations }}
   annotations:
@@ -47,7 +46,6 @@ spec:
     matchLabels:
       app: {{ $msvc }}
       {{- include "universal-app-chart.selectorLabels" . | nindent 6 }}
-      {{- include "universal-app-chart.istioLabels" . | nindent 6 }}
       {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 6 }} {{- end }}
   template:
     {{- include "containerTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "v" $v) | nindent 4 }}

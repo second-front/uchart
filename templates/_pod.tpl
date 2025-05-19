@@ -50,7 +50,6 @@ metadata:
   labels:
     app: {{ .appLabel | default .msvc }}
     {{- include "universal-app-chart.selectorLabels" $global | nindent 4 }}
-    {{- include "universal-app-chart.istioLabels" $global | nindent 4 }}
     {{- if .labels -}} {{- toYaml .labels | nindent 4 }} {{- end }}
     {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 4 }} {{- end }}
     {{- include "universal-app-chart.labels" $global | nindent 4 }}
