@@ -20,13 +20,13 @@
 {{- $livenessProbe := $v.livenessProbe -}}
 {{- $nodeSelector := $v.nodeSelector | default .Values.defaults.nodeSelector -}}
 
-{{- $defaultPodSecurityContext := .Values.defaults.podSecurityContext | default dict }}
+{{- $defaultPodSecurityContext := .Values.defaults.podSecurityContext | default dict | deepCopy }}
 {{- $customPodSecurityContext := $v.podSecurityContext | default dict }}
 {{- $mergedPodSecurityContext := mergeOverwrite $defaultPodSecurityContext $customPodSecurityContext }}
 {{- $readinessProbe := $v.readinessProbe -}}
 {{- $resources := $v.resources | default .Values.defaults.resources -}}
 {{- $restartPolicy := $v.restartPolicy -}}
-{{- $defaultSecurityContext := .Values.defaults.securityContext | default dict }}
+{{- $defaultSecurityContext := .Values.defaults.securityContext | default dict | deepCopy }}
 {{- $customSecurityContext := $v.securityContext | default dict }}
 {{- $mergedSecurityContext := mergeOverwrite $defaultSecurityContext $customSecurityContext }}
 {{- $selectorLabels := $v.selectorLabels }}
