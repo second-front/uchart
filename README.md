@@ -162,3 +162,7 @@ rm $(ls *.tgz)
 for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i; done
 for i in $(ls docs/test-values); do helm template . -f docs/test-values/$i | kubeconform -ignore-missing-schemas -strict; done
 ```
+
+## Unit tests
+1. Install unittests plugin: '''helm plugin install https://github.com/helm-unittest/helm-unittest'''
+2. run test: `helm unittest -f 'unittests/.yaml' .`
