@@ -1,5 +1,3 @@
-{{- $repoURL := .Values.global.image.defaultImageRegistry }}
-
 ---
 # Source: uchart/templates/argocdWrapper/app-in-one.yaml
 kind: Application
@@ -26,7 +24,7 @@ spec:
         istio-injection: enabled
   revisionHistoryLimit: 3
   sources:
-    - repoURL: {{ printf "%s/charts" $repoURL }}
+    - repoURL: registry.gamewarden.io/charts
       targetRevision: 1.0.44
       chart: uchart
       helm:
@@ -177,7 +175,7 @@ spec:
             annotations: {}
             data: {}
             enabled: false
-    - repoURL: {{ printf "%s/charts" $repoURL }}
+    - repoURL: registry.gamewarden.io/charts
       targetRevision: 0.0.1
       chart: rabbitmq
       helm:
@@ -191,7 +189,7 @@ spec:
         valueFiles:
           - $clamav/rabbimq/base.yaml
           - $clamav/rabbimq/dev.yaml
-    - repoURL: {{ printf "%s/charts" $repoURL }}
+    - repoURL: registry.gamewarden.io/charts
       targetRevision: 0.0.1
       chart: redis
       helm:
