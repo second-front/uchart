@@ -1,5 +1,6 @@
 {{- $defaultProject := printf "%s-%s-%s" (required "customerName is required" .Values.global.customerName) (required "environment is required" .Values.global.environment) (required "applicationName is required" .Values.global.applicationName) -}}
 {{- if and .Values.subCharts .Values.microservices (not .Values.argocd.wrapperAppOff) (not .Values.argocd.wrapAll)}}
+{{- $repoURL := .Values.global.image.defaultImageRegistry }}
 # check if any subcharts are enabled 
 ---
 kind: Application
@@ -37,7 +38,7 @@ spec:
         argocd.argoproj.io/manifest-generate-paths: .;**/values.yaml
   revisionHistoryLimit: 3
   sources:
-    - repoURL: registry.gamewarden.io/charts
+    - repoURL: {{ printf "%s/charts" $repoURL }}
       targetRevision: 1.0.44
       chart: uchart
       helm:
