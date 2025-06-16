@@ -1,7 +1,9 @@
+{{- $repoURL := .Values.global.image.defaultImageRegistry }}
+
 ---
 project: default
 sources:
-  - repoURL: registry.gamewarden.io/charts
+  - repoURL: {{ printf "%s/charts" $repoURL }}
     targetRevision: 1.0.2
     chart: uchart
     helm:

@@ -1,3 +1,5 @@
+{{- $repoURL := .Values.global.image.defaultImageRegistry }}
+
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -8,7 +10,7 @@ spec:
     namespace: argocd
     server: https://kubernetes.default.svc
   sources:
-    - repoURL: registry.gamewarden.io/charts
+    - repoURL: {{ printf "%s/charts" $repoURL }}
       targetRevision: 1.0.44
       chart: uchart
       helm:
