@@ -222,7 +222,7 @@
                 "items": {
                   "additionalProperties": false,
                   "type": "object",
-                  "required": ["name" ],
+                  "required": ["name"],
                   "properties": {
                     "name": {
                       "type": "string"
@@ -357,33 +357,6 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "allowPrivilegeEscalation": {
-                    "type": "boolean"
-                  },
-                  "capabilities": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "add": {
-                        "items": {
-                          "type": "string"
-                        },
-                        "type": "array"
-                      },
-                      "drop": {
-                        "items": {
-                          "type": "string"
-                        },
-                        "type": "array"
-                      }
-                    }
-                  },
-                  "readOnlyRootFilesystem": {
-                    "type": "boolean"
-                  },
-                  "runAsNonRoot": {
-                    "type": "boolean"
-                  },
                   "runAsUser": {
                     "description": "UID of container to run as user.",
                     "type": "integer"
@@ -735,13 +708,6 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "fsGroup": {
-                "description": "Sets the group ID of files created in the volume.",
-                "type": "integer"
-              },
-              "runAsNonRoot": {
-                "type": "boolean"
-              },
               "runAsUser": {
                 "description": "UID of container to run as user.",
                 "type": "integer"
@@ -749,14 +715,6 @@
               "runAsGroup": {
                 "description": "GID of container to run as group.",
                 "type": "integer"
-              },
-              "supplementalGroups": {
-                "description": "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod",
-                "type": "string"
-              },
-              "fsGroupChangePolicy": {
-                "description": "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#configure-volume-permission-and-ownership-change-policy-for-pods",
-                "type": "string"
               }
             }
           },
@@ -832,33 +790,6 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "allowPrivilegeEscalation": {
-                "type": "boolean"
-              },
-              "capabilities": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "add": {
-                    "items": {
-                      "type": "string"
-                    },
-                    "type": "array"
-                  },
-                  "drop": {
-                    "items": {
-                      "type": "string"
-                    },
-                    "type": "array"
-                  }
-                }
-              },
-              "readOnlyRootFilesystem": {
-                "type": "boolean"
-              },
-              "runAsNonRoot": {
-                "type": "boolean"
-              },
               "runAsUser": {
                 "description": "UID of container to run as user.",
                 "type": "integer"
