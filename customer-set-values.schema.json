@@ -371,11 +371,13 @@
                 "properties": {
                   "runAsUser": {
                     "description": "UID of container to run as user.",
-                    "type": "integer"
+                    "type": "integer",
+                    "pattern": "^(?!0$)[0-9]+$"
                   },
                   "runAsGroup": {
                     "description": "GID of container to run as group.",
-                    "type": "integer"
+                    "type": "integer",
+                    "pattern": "^(?!0$)[0-9]+$"
                   }
                 }
               },
@@ -722,11 +724,13 @@
             "properties": {
               "runAsUser": {
                 "description": "UID of container to run as user.",
-                "type": "integer"
+                "type": "integer",
+                "pattern": "^(?!0$)[0-9]+$"
               },
               "runAsGroup": {
                 "description": "GID of container to run as group.",
-                "type": "integer"
+                "type": "integer",
+                "pattern": "^(?!0$)[0-9]+$"
               }
             }
           },
@@ -804,11 +808,13 @@
             "properties": {
               "runAsUser": {
                 "description": "UID of container to run as user.",
-                "type": "integer"
+                "type": "integer",
+                "pattern": "^(?!0$)[0-9]+$"
               },
               "runAsGroup": {
                 "description": "GID of container to run as group.",
-                "type": "integer"
+                "type": "integer",
+                "pattern": "^(?!0$)[0-9]+$"
               }
             }
           },
