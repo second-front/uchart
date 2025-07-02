@@ -42,17 +42,8 @@
             "default": true,
             "type": "boolean"
           },
-          "valueFiles": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
           "values": {
             "type": "object"
-          },
-          "valuesRepo": {
-            "type": "string"
           },
           "wave": {
             "type": "string"
@@ -918,19 +909,7 @@
                 "readOnly": {
                   "type": "boolean"
                 },
-                "subPath": {
-                  "type": "string"
-                },
-                "mountPath": {
-                  "type": "string"
-                },
                 "name": {
-                  "type": "string"
-                },
-                "mountPropagation": {
-                  "type": "string"
-                },
-                "subPathExpr": {
                   "type": "string"
                 }
               },
