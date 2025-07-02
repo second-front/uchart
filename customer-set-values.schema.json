@@ -5,8 +5,20 @@
       "additionalProperties": {
         "properties": {
           "chart": {
-            "default": "uchart",
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "milvus",
+              "mongodb",
+              "mysql",
+              "nats",
+              "neo4j",
+              "opensearch",
+              "postgresql",
+              "postgresql-ha",
+              "rabbitmq",
+              "redis",
+              "redis-cluster"
+            ]
           },
           "chartUrl": {
             "default": "registry.gamewarden.io/charts",
