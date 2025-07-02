@@ -21,6 +21,7 @@
             ]
           },
           "chartUrl": {
+            "const": "registry.gamewarden.io/charts",
             "default": "registry.gamewarden.io/charts",
             "type": "string"
           },
@@ -31,14 +32,7 @@
           "name": {
             "type": "string"
           },
-          "namespace": {
-            "type": "string"
-          },
           "project": {
-            "type": "string"
-          },
-          "revision": {
-            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
             "type": "string"
           },
           "serverSideApply": {
