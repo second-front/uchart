@@ -4,6 +4,7 @@
 {{- $additionalPorts := (($v.service).additionalPorts) | default .Values.defaults.service.additionalPorts -}}
 {{- $name := (($v.service).name) | default .Values.defaults.service.name -}}
 {{- $port := (($v.service).port) | default .Values.defaults.service.port -}}
+{{- $protocol := (($v.service).protocol) | default .Values.defaults.service.protocol -}}
 {{- $targetPort := (($v.service).targetPort) | default .Values.defaults.service.targetPort -}}
 {{- $type := (($v.service).type) | default .Values.defaults.service.type -}}
 {{- $affinity := $v.affinity | default .Values.defaults.affinity -}}
@@ -155,7 +156,7 @@ spec:
       ports:
         - name: {{ $name }}
           containerPort: {{ $targetPort }}
-          protocol: TCP
+          protocol: {{ $protocol }}
         {{- if $additionalPorts }}
         {{- range $additionalPorts }}
         - name: {{ .name }}
