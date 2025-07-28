@@ -11,6 +11,8 @@
 {{- $completions := $v.job.completions | default 1 }}
 {{- $parallelism := $v.job.parallelism | default 1 }}
 {{- $suspended := $v.job.suspended | default false }}
+{{- $ttlSecondsAfterFinished := $v.job.ttlSecondsAfterFinished | default 3600 }}
+
 
 
 {{- $mergedEnvFrom := $v.envFrom | default (list) }}
@@ -42,9 +44,7 @@ spec:
   completions: {{ $completions }}
   parallelism: {{ $parallelism }}
   backoffLimit: {{ $backoffLimit }}
-  {{- if $v.job.ttlSecondsAfterFinished }}
-  ttlSecondsAfterFinished: {{ $v.job.ttlSecondsAfterFinished }}
-  {{- end }}
+  ttlSecondsAfterFinished: {{ $ttlSecondsAfterFinished }}
   template:
     {{- include "podTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "v" $v) | nindent 4 }}
 {{- end }}
