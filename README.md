@@ -149,7 +149,6 @@ https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.46.json
 ```
 helm package .
 helm push $(ls *.tgz) oci://registry.gamewarden.io/charts
-rm $(ls *.tgz)
 helm push $(ls *.tgz) oci://ghcr.io/second-front
 helm push $(ls *.tgz) oci://r.gamewarden.io/charts
 rm $(ls *.tgz)
