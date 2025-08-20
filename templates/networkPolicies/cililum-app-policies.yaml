@@ -1,0 +1,138 @@
+{{- if .Values.ciliumNetworkPolicies.appPolicy.enabled }}
+{{- if .Values.microservices }}
+{{- if ne .Release.Namespace "argocd" }}
+{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-host-kubelet
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpointSelector:
+    matchLabels: {}
+  egress:
+  - toEntities:
+    - host
+    - remote-node
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-kube-apiserver
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpointSelector:
+    matchLabels: {}
+  egress:
+  - toEntities:
+    - kube-apiserver
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-jaeger
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpointSelector:
+    matchLabels: {}
+  egress:
+  - toPorts:
+    - ports:
+      - port: "9411"
+        protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-dns
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpointSelector:
+    matchLabels: {}
+  egress:
+  - toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-istio
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpointSelector:
+    matchLabels: {}
+  egress:
+  - toPorts:
+    - ports:
+      - port: "15012"
+        protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-authservice
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpointSelector:
+    matchLabels: {}
+  egress:
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: authservice
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-allow-neuvector
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpointSelector:
+    matchLabels: {}
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: neuvector
+    toPorts:
+      - ports:
+        - port: "18400"
+          protocol: TCP
+        - port: "18401"
+          protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: app-policy
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpointSelector:
+    matchLabels: {}
+  egress:
+  - toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: istio-system
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: {{ .Release.Namespace }}
+  - toCIDR:
+    - 10.0.0.0/16
+    - 172.20.0.0/16
+  - toCIDRSet:
+    - cidr: 169.254.169.0/24
+      except:
+      - 169.254.169.254/32
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: {{ .Release.Namespace }}
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: istio-system
+  - fromCIDR:
+    - 10.0.0.0/16
+    - 172.20.0.0/16
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
