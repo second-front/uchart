@@ -1,6 +1,6 @@
 {{- $networkPoliciesEnabled := .Values.ciliumNetworkPolicies.enabled }}
 {{- $namespace := .Release.Namespace }}
-{{- if and $networkPoliciesEnabled .Values.ciliumNetworkPolicies.customPolicies}}
+{{- if and $networkPoliciesEnabled .Values.ciliumNetworkPolicies.customPolicies (ne .Release.Namespace "argocd") }}
 {{- range .Values.ciliumNetworkPolicies.customPolicies }}
 {{- if and .name .spec }}
 ---
