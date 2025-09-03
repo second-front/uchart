@@ -6,7 +6,7 @@ type: application
 <<<<<<< HEAD
 version: 1.0.46
 =======
-version: 1.0.47
+version: 1.0.48
 >>>>>>> main
 home: https://github.com/second-front/uchart
 sources: [https://github.com/second-front/uchart]
