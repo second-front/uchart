@@ -1,6 +1,7 @@
 {{- $defaultProject := printf "%s-%s-%s" (required "customerName is required" .Values.global.customerName) (required "environment is required" .Values.global.environment) (required "applicationName is required" .Values.global.applicationName) -}}
 {{- if and .Values.subCharts .Values.microservices .Values.argocd.wrapAll }}
 {{- $appName := .Values.argocd.wrapAllNameOverride | default (printf "%s-%s-%s" .Values.global.customerName .Values.global.environment .Values.global.applicationName ) -}}
+{{- $repoURL := .Values.global.image.defaultImageRegistry }}
 ---
 kind: Application
 apiVersion: argoproj.io/v1alpha1
@@ -35,8 +36,8 @@ spec:
         istio-injection: enabled
   revisionHistoryLimit: 3
   sources:
-    - repoURL: registry.gamewarden.io/charts
-      targetRevision: 1.0.47
+    - repoURL: {{ printf "%s/charts" $repoURL }}
+      targetRevision: 1.0.48
       chart: uchart
       helm:
         values: |
