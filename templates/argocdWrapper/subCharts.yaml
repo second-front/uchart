@@ -67,10 +67,10 @@ spec:
             projectOverride: {{ .Values.argocd.projectOverride }}
           {{- end }}
         {{- end }}
-    {{- if $v.valuesFiles }}
+      {{- if $v.valuesFiles }}
         valueFiles:
         {{- toYaml  $v.valueFiles | nindent 8 }}
-    {{- end }}
+      {{- end }}
     {{- if $v.valuesRepo }}
     - repoURL: {{ $v.valuesRepo }}
       targetRevision: {{ $v.valuesRevision | default "main" }}
