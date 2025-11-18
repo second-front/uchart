@@ -67,7 +67,7 @@ spec:
             projectOverride: {{ .Values.argocd.projectOverride }}
           {{- end }}
         {{- end }}
-      {{- if $v.valuesFiles }}
+      {{- if $v.valueFiles }}
         valueFiles:
         {{- toYaml  $v.valueFiles | nindent 8 }}
       {{- end }}
