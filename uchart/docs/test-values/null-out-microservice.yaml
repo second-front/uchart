@@ -1,7 +1,0 @@
-# Null out microservices from demo-example
-
-# Template with helm template . -f docs/test-values/demo-example.yaml -f docs/test-values/null-out-microservice.yaml
-
-microservices:
-  backend: null
-  frontend: null
