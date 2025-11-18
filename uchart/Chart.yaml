@@ -1,0 +1,16 @@
+annotations:
+  schema: https://schemas.gamewarden.io/schemas/helm/uchart/uchart-latest.json
+apiVersion: v2
+description: A universal application chart for gamewarden environments
+home: https://github.com/second-front/uchart
+icon: https://assets.website-files.com/6030224cd6bd6639e9d922c9/60e73ee577cd823be4d24834_GW-Icon.svg
+maintainers:
+- email: anthony.butt@secondfront.com
+  name: Anthony Butt
+- email: lucas.pick@secondfront.com
+  name: Lucas Pick
+name: uchart
+sources:
+- https://github.com/second-front/uchart
+type: application
+version: 1.0.44

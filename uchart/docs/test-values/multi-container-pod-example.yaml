@@ -1,0 +1,142 @@
+---
+##  INFO
+##    Multi container pods requires image tag to be set at the microservice level:
+##
+##      microservices:
+##        backendMultiContainer:
+##          image:
+##            tag: null
+##
+##    Virtual Services are not enabled with multi-container deployments or statefulsets
+
+
+global:
+  applicationName: example
+  customerName: customer
+  impactLevel: IL2
+  environment: development
+  gateway: istio-system/private
+  domain: practice.gamewarden.io
+  image:
+    defaultImageRegistry: registry.gamewarden.io
+    defaultImageRepository: testcustomer
+  istio:
+    mtls:
+      enabled: false
+
+microservices:
+  backendMultiContainer:
+    replicaCount: 2
+    image:
+      tag:
+    enabled: true
+    containers:
+      backend:
+        envs:
+          test1: yes
+          test2: noooo
+        labels:
+          protect: keycloak
+        resources:
+          limits:
+            cpu: 400m
+            memory: 3Gi
+          requests:
+            cpu: 400m
+            memory: 3Gi
+        image:
+          name: rear
+          tag: isanotherwaytosayit
+        service:
+          type: ClusterIP
+          port: 80
+          name: http
+          targetPort: 8080
+          appProtocol: http
+          additionalPorts:
+            - port: 5005
+              targetPort: 5005
+              protocol: TCP
+              name: backend
+      gingerbreadMan:
+        securityContext:
+          # test: test
+        envs:
+          testVar1: eat
+          testVariableTwo: me
+        image:
+          name: test1image
+          tag: test1
+      mainContainer:
+        image:
+          name: test2image
+          tag: test2
+
+  frontend:
+    image:
+      tag:
+    statefulset:
+      enabled: true
+    replicaCount: 2
+    volumeClaimTemplates:
+    - metadata:
+        name: www
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "my-storage-class"
+        resources:
+          requests:
+            storage: 1Gi
+    containers:
+      backend:
+        labels:
+          protect: keycloak
+        resources:
+          limits:
+            cpu: 400m
+            memory: 3Gi
+          requests:
+            cpu: 400m
+            memory: 3Gi
+        image:
+          name: rear
+          tag: isanotherwaytosayit
+        service:
+          type: ClusterIP
+          port: 80
+          name: http
+          targetPort: 8080
+          appProtocol: http
+          additionalPorts:
+            - port: 5005
+              targetPort: 5005
+              protocol: TCP
+              name: backend
+        envFrom:
+          - secretRef:
+              name: example
+          - configMapRef:
+              name: example
+        extraEnvs:
+          - name: SPRING_DATASOURCE_USERNAME
+            value: DBAdmin
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: example
+                key: APP_DB_PASS
+          - name: SPECIAL_LEVEL_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: special-config
+                key: SPECIAL_LEVEL
+        volumeMounts:
+          - name: example-config-volume
+            mountPath: /wfConfig
+    volumes:
+      - name: example-config-volume
+        configMap:
+          name: example-lens
+          items:
+            - key: config.json
+              path: config.json

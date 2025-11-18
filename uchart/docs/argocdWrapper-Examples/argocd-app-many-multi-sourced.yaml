@@ -1,0 +1,211 @@
+---
+# Source: uchart/templates/argocdWrapper/app-in-one.yaml
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: Example Company-development-example
+  namespace: argocd
+spec:
+  project: Example Company-development-example
+  destination:
+    namespace: example
+    name: multi-tenant-development-cluster
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=false
+      - RespectIgnoreDifferences=true
+      - ServerSideApply=true
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
+  revisionHistoryLimit: 3
+  sources:
+    - repoURL: registry.gamewarden.io/charts
+      targetRevision: 1.0.44
+      chart: uchart
+      helm:
+        values: |
+          microservices:
+            backend:
+              annotations:
+                argocd.argoproj.io/hook: PreSync
+                argocd.argoproj.io/hook-delete-policy: HookSucceeded
+              autoscaling:
+                enabled: true
+                maxReplicas: 100
+                minReplicas: 1
+                targetCPUUtilizationPercentage: 80
+              config:
+                airplane-data:
+                  .env: |
+                    logLevel: trace
+                    secretswithinconfigmap: sosecretshere
+                    service-url: http://localghost:9005
+                car-json-data:
+                  test: testString
+                  test2: testString2
+              envFrom:
+              - secretRef:
+                  name: example
+              - configMapRef:
+                  name: example
+              image:
+                tag: 0.0.0
+              match:
+              - uri:
+                  prefix: /api
+              rbac:
+                rules:
+                - apiGroups:
+                  - apps
+                  resources:
+                  - deployments
+                  verbs:
+                  - get
+                  - list
+                  - watch
+                  - update
+              serviceAccount:
+                create: enabled
+            frontend:
+              annotations:
+                argocd.argoproj.io/hook: PreSync
+                argocd.argoproj.io/hook-delete-policy: HookSucceeded
+              envFrom:
+              - secretRef:
+                  name: example
+              - configMapRef:
+                  name: example
+              image:
+                tag: 0.0.0
+              prefix: /
+              resources:
+                limits:
+                  cpu: 400m
+                  memory: 3Gi
+                requests:
+                  cpu: 400m
+                  memory: 3Gi
+              restartPolicy: Always
+              service:
+                enabled: false
+              statefulset:
+                enabled: true
+          global:
+            applicationName: example
+            customerName: Example Company
+            destinationCluster: multi-tenant-development-cluster
+            domain: practice.gamewarden.io
+            environment: development
+            gateway: istio-system/private
+            image:
+              defaultImageRegistry: registry.gamewarden.io
+              defaultImageRepository: testcustomer
+            impactLevel: IL2
+            istio:
+              mtls:
+                enabled: false
+          defaults:
+            affinity: {}
+            autoscaling:
+              enabled: false
+              maxReplicas: 10
+              minReplicas: 1
+              targetCPUUtilizationPercentage: 80
+            domain: gamewarden.io
+            envFrom:
+            - configMapRef:
+                name: default-config
+            extraEnvs: {}
+            image:
+              pullPolicy: IfNotPresent
+              tag: ""
+            imagePullSecrets:
+            - name: private-registry
+            minReadySeconds: 0
+            nodeSelector: {}
+            podAnnotations: {}
+            podDisruptionBudget: {}
+            podSecurityContext: {}
+            replicaCount: 1
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+            securityContext: {}
+            service:
+              additionalPorts: {}
+              appProtocol: TCP
+              disablePortName: false
+              enabled: true
+              headless: false
+              name: http
+              port: 80
+              targetPort: 8080
+              type: ClusterIP
+            serviceAccount:
+              annotations: {}
+              create: false
+              labels: {}
+              name: ""
+            strategy: {}
+            tolerations: []
+            virtualService:
+              enabled: false
+          ciliumNetworkPolicies:
+            appPolicy:
+              enabled: true
+            customPolicies: []
+            enabled: false
+          argocd:
+            createNamespace: false
+            disableProjectCreation: true
+            projectOverride: ""
+            serverSideApply: true
+            sourceNamespaces: []
+            wrapAll: true
+            wrapperAppOff: false
+            wrapperAppWave: ""
+            wrapperSync: true
+          config:
+            annotations: {}
+            data: {}
+            enabled: false
+    - repoURL: registry.gamewarden.io/charts
+      targetRevision: 0.0.1
+      chart: rabbitmq
+      helm:
+        values: |
+          test: values
+          global:
+            applicationName:
+            customerName: Example Company
+            impactLevel: IL2
+            environment: development
+        valueFiles:
+          - $clamav/rabbimq/base.yaml
+          - $clamav/rabbimq/dev.yaml
+    - repoURL: registry.gamewarden.io/charts
+      targetRevision: 0.0.1
+      chart: redis
+      helm:
+        values: |
+          test: values
+          global:
+            applicationName:
+            customerName: Example Company
+            impactLevel: IL2
+            environment: development
+        valueFiles:
+          - $clamav/redis/base.yaml
+          - $clamav/redis/dev.yaml
+    - repoURL: https://github.com/second-front/values.git
+      targetRevision: main
+      ref: rabbitmq
+    - repoURL: https://github.com/second-front/values.git
+      targetRevision: main
+      ref: redis

@@ -1,0 +1,95 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: testapp
+spec:
+  destination:
+    name: ''
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  source:
+    path: ''
+    repoURL: registry.gamewarden.io/charts
+    targetRevision: 1.0.0
+    chart: uchart
+    helm:
+      values: |-
+        global:
+          applicationName: "ice"
+          customerName: testapp
+          impactLevel: il2
+          environment: dev
+          destinationCluster: multi-tenant-development-cluster
+          image:
+            defaultImageRepository: testapp
+        microservices:
+          backend:
+            labels:
+              protect: keycloak
+            namespace: ice
+            resources:
+              limits:
+                cpu: 400m
+                memory: 3Gi
+              requests:
+                cpu: 400m
+                memory: 3Gi
+            image:
+              repository: registry.gamewarden.io/steelbank/cgr/busybox
+              tag: "1.36.1-r25"
+            command:
+              - /bin/sh
+              - -exc
+              - sleep 120
+        subCharts:
+          clamav:
+            chartUrl: 'registry.gamewarden.io/charts'
+            revision: 0.0.2
+          redis:
+            revision: 17.9.5
+            values:
+              auth:
+                existingSecret: "generated-secrets"
+                existingSecretPasswordKey: "GENERATED_REDIS_PASSWORD"
+          redis2:
+            revision: 17.9.5
+            name: redis
+            values:
+              nameOverride: redis2
+              auth:
+                existingSecret: "generated-secrets"
+                existingSecretPasswordKey: "GENERATED_REDIS_PASSWORD"
+          opensearch:
+            revision: 2.19.0
+            values:
+              extraEnvs:
+                - name: DISABLE_INSTALL_DEMO_CONFIG
+                  value: 'true'
+                - name: DISABLE_SECURITY_PLUGIN
+                  value: 'true'
+              global:
+                dockerRegistry: registry.gamewarden.io
+              image:
+                repository: steelbank/cgr/opensearch
+                tag: 2.13.0-r0
+              imagePullSecrets:
+                - name: private-registry
+              persistence:
+                image: steelbank/cgr/busybox
+                imageTag: 1.36.1-r25
+              replicas: 2
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+project: default
+destination:
+  server: https://kubernetes.default.svc
+  namespace: argocd
+syncPolicy:
+  automated:
+    prune: true
+    selfHeal: true

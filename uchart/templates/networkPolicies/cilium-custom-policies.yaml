@@ -1,0 +1,17 @@
+{{- $networkPoliciesEnabled := .Values.ciliumNetworkPolicies.enabled }}
+{{- $namespace := .Release.Namespace }}
+{{- if and $networkPoliciesEnabled .Values.ciliumNetworkPolicies.customPolicies}}
+{{- range .Values.ciliumNetworkPolicies.customPolicies }}
+{{- if and .name .spec }}
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ .name }}
+  namespace: {{ $namespace }}
+spec:
+{{ toYaml .spec | indent 2 }}
+---
+{{- end }}
+{{- end }}
+{{- end }}

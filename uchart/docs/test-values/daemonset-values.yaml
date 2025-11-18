@@ -1,0 +1,69 @@
+---
+defaults:
+  envFrom:
+    - configMapRef:
+        name: default-config
+
+microservices:
+  example-daemonset:
+    daemonset:
+      enabled: true
+    image:
+      repository: example-repo
+      tag: 1.0.0
+    command:
+      - /bin/sh
+      - -c
+    args:
+      - /scripts/example-command.sh    # Command script to run
+    envs:
+      ENV_VAR_1: value1
+      ENV_VAR_2: value2
+    envFrom:
+      - secretRef:
+          name: example
+      - configMapRef:
+          name: example
+    securityContext:
+      capabilities:
+        add:
+          - SYS_NICE
+        drop:
+          - KILL
+    resources:
+      limits:
+        cpu: 400m
+        memory: 3Gi
+      requests:
+        cpu: 400m
+        memory: 3Gi
+    initContainers:
+      - name: theme
+        image: registry.gamewarden.io/steelbank/cgr/git:2.44.0-r2
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+          - -c
+          - |-
+            git clone https://oauth2:$token@code.gamewarden.io/sandbox/gamewarden-kc-theme.git /tmp/themes
+            cp -R /tmp/themes/theme/* /tmp/
+            rm -rf /tmp/themes
+        volumeMounts:
+          - name: theme
+            mountPath: /tmp/
+        env:
+          - name: token
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-keycloak-git
+                key: token
+    volumeMounts:
+      - name: example-config-volume
+        mountPath: /wfConfig
+    volumes:
+      - name: example-config-volume
+        configMap:
+          name: example-lens
+          items:
+            - key: config.json
+              path: config.json

@@ -54,9 +54,6 @@ spec:
       targetRevision: {{ $revision }}
       chart: {{ $v.chart | default "uchart" }}
       helm:
-        {{- if $v.releaseName }}
-        releaseName: {{ $v.releaseName }}
-        {{- end }}
         {{-  if $v.values }}
         {{- $globalValues := dict "applicationName" $v.namespace "customerName" .Values.global.customerName "impactLevel" .Values.global.impactLevel "environment" .Values.global.environment }}
         {{- $mergedGlobal := merge $globalValues (default dict $v.values.global) }}
@@ -67,11 +64,9 @@ spec:
             projectOverride: {{ .Values.argocd.projectOverride }}
           {{- end }}
         {{- end }}
-    {{- if $v.valuesFiles }}
+      {{- if $v.valuesRepo }}
         valueFiles:
         {{- toYaml  $v.valueFiles | nindent 8 }}
-    {{- end }}
-    {{- if $v.valuesRepo }}
     - repoURL: {{ $v.valuesRepo }}
       targetRevision: {{ $v.valuesRevision | default "main" }}
       ref: values

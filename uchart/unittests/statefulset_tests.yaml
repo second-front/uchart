@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+tests:
+  - it: should not create microservice deployment when disabled
+    set:
+      global.applicationName: test-app
+      microservices:
+        backend:
+          enabled: false
+    asserts:
+    - hasDocuments: 
+        count: 0
+    template: templates/deployment.yaml
+  - it: should not create microservice statefulset when disabled
+    set:
+      global.applicationName: test-app
+      microservices:
+        backend:
+          enabled: false
+          statefulset:
+            enabled: true
+    asserts:
+    - hasDocuments: 
+        count: 0
+    template: templates/statefulset.yaml
+  - it: statefulset should have correct image tag
+    set:
+      global.applicationName: test-app
+      microservices:
+        backend:
+          statefulset:
+            enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: "nil pointer evaluating interface {}.tag"
+  - it: statefulset should be templated
+    set:
+      global.applicationName: test-app
+      microservices:
+        backend:
+          statefulset:
+            enabled: true
+          image:
+            name: backend
+            tag: latest
+    asserts:
+    - hasDocuments: 
+        count: 1
+    template: templates/statefulset.yaml

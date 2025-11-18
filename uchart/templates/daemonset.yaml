@@ -1,0 +1,47 @@
+{{- if or (.Values.argocd.wrapperAppOff) (not .Values.subCharts) }}
+{{- range $msvc, $v := .Values.microservices }}
+{{- with $ -}}
+
+{{ if and (not (empty $v)) (not $v.containers) (not $v.cronjob) (not $v.job) (ne $v.enabled false) }}
+{{- $daemonsetEnabled := (($v.daemonset).enabled) }}
+{{- if $daemonsetEnabled }}
+{{- if $v.image.tag }}
+
+{{/* DaemonSet Variables */}}
+{{- $annotations := $v.annotations | default (dict) }}
+{{- $appLabel := $v.appLabel | default $msvc }}
+{{- $envs := $v.envs }}
+{{- $labels := $v.labels }}
+{{- $minReadySeconds := $v.minReadySeconds | default .Values.defaults.minReadySeconds }}
+{{- $namespace := $v.namespace | default .Release.Namespace }}
+{{- $selectorLabels := $v.selectorLabels }}
+{{- $volumeClaimTemplates := $v.volumeClaimTemplates }}
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ $msvc }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $msvc }}
+    {{- include "universal-app-chart.labels" . | nindent 4 }}
+    {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  minReadySeconds: {{ $minReadySeconds }}
+  selector:
+    matchLabels:
+      app: {{ $msvc }}
+      {{- include "universal-app-chart.selectorLabels" . | nindent 6 }}
+      {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 6 }} {{- end }}
+  template:
+    {{- include "podTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "appLabel" $appLabel "v" $v) | nindent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

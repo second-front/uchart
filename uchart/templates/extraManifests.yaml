@@ -1,0 +1,25 @@
+{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
+{{- if eq (kindOf .Values.extraManifests) "slice" }}
+  {{- range .Values.extraManifests }}
+---
+  {{ tpl (toYaml .) $ }}
+  {{- end }}
+{{- else if eq (kindOf .Values.extraManifests) "map" }}
+  {{- range $key, $value := .Values.extraManifests }}
+---
+  {{- with $ -}}
+  {{ toYaml $value }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+
+
+{{- if eq (kindOf .Values.manifests) "map" }}
+  {{- range $key, $value := .Values.manifests }}
+---
+  {{- with $ -}}
+  {{ toYaml $value }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}
