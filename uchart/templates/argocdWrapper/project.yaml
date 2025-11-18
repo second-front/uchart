@@ -1,0 +1,53 @@
+{{- if and .Values.subCharts ( not .Values.argocd.disableProjectCreation) }}
+---
+kind: AppProject
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/managed-by: uchart
+  name: "{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}"
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+  - group: ""
+    kind: Namespace
+  - group: '*'
+    kind: CustomResourceDefinition
+  description: Application Project for {{ .Values.global.customerName }}
+  destinations:
+  - name: {{ .Values.global.destinationCluster }}
+    namespace: "*"
+  - name: "in-cluster"
+    namespace: "argocd"
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  sourceNamespaces:
+  - {{ .Values.global.applicationName }}
+  {{- if .Values.argocd.sourceNamespaces }}
+  {{- range .Values.argocd.sourceNamespaces }}
+  - {{ . }}
+  {{- end }}
+  {{- end }}
+  sourceRepos:
+  - '*'
+  roles:
+  - description: "{{ .Values.global.customerName }}'s read only role for argocd"
+    groups:
+      - /Customers/{{ .Values.global.customerName }}/developers
+    name: "{{ .Values.global.customerName }}-read-only"
+    policies:
+      - p, proj:{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}:{{ .Values.global.customerName }}-read-only, applications, get, {{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}/*, allow
+      - p, proj:{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}:{{ .Values.global.customerName }}-read-only, applications, sync, {{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}/*, allow
+  - description: "{{ .Values.global.customerName }}'s {{ .Values.global.environment }} roles for argocd"
+    groups:
+    - /Customers/{{ .Values.global.customerName }}/{{ .Values.global.environment }}/developers
+    name: "{{ .Values.global.customerName }}-extra-{{ .Values.global.environment }}-roles"
+    policies:
+    - p, proj:{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}:{{ .Values.global.customerName }}-extra-{{ .Values.global.environment }}-roles, exec, create, {{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}/*, allow
+    - p, proj:{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}:{{ .Values.global.customerName }}-extra-{{ .Values.global.environment }}-roles, applications, action/apps/Deployment/restart,{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}/*, allow
+    - p, proj:{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}:{{ .Values.global.customerName }}-extra-{{ .Values.global.environment }}-roles, applications, action/apps/StatefulSet/restart,{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}/*, allow
+    - p, proj:{{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}:{{ .Values.global.customerName }}-extra-{{ .Values.global.environment }}-roles, applications, sync, {{ .Values.global.customerName }}-{{ .Values.global.environment }}-{{ .Values.global.applicationName }}/*, allow
+{{- end }}

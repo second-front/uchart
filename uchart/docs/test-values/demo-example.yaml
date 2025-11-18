@@ -1,0 +1,193 @@
+---
+global:
+  applicationName: example
+  customerName: Example Company
+  impactLevel: IL2
+  environment: development
+  gateway: istio-system/private
+  domain: practice.gamewarden.io
+  image:
+    defaultImageRegistry: registry.gamewarden.io
+    defaultImageRepository: testcustomer
+  istio:
+    mtls:
+      enabled: false
+
+ciliumNetworkPolicies:
+  enabled: false
+
+
+defaults:
+  envFrom:
+    - configMapRef:
+        name: default-config
+  podSecurityContext:
+    fsGroup: 1111
+    fsGroupChangePolicy: OnRootMismatch
+    runAsNonRoot: true
+  securityContext:
+    runAsUser: 1111
+    runAsGroup: 1111
+    runAsNonRoot: true
+
+# extraManifests:
+#   test:
+#     apiVersion: v1
+#     a: test
+#     kind: test
+
+additional: property-test
+
+microservices:
+  backend:
+    enabled: true
+    match:
+      - uri:
+          prefix: /api
+    workingDir: /app
+    args:
+      - test
+    volumeMounts:
+      - name: example-config-volume
+        mountPath: /wfConfig
+    image:
+      tag: 0.0.0
+    # service:
+    #   disableIstioInjection: true
+    serviceAccount:
+      create: enabled
+      name: backend
+    podSecurityContext:
+      fsGroup: 2333
+    podAnnotations:
+      test: test
+    pdb:
+      minAvailable: 1
+      maxUnavailable: 2
+      annotations:
+        test: test
+    securityContext:
+      runAsUser: 2333
+    rbac:
+      rules:
+        - apiGroups: [apps]
+          resources: [deployments]
+          verbs: [get, list, watch, update]
+    autoscaling:
+      # -- Horizontal Autoscaling of pods
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 100
+      metrics:
+        - type: Resource  # CPU resource-based scaling
+          resource:
+            name: cpu
+            target:
+              type: Utilization
+              averageUtilization: 50  # Target average CPU utilization (percentage)
+        - type: Resource  # Memory resource-based scaling
+          resource:
+            name: memory
+            target:
+              type: Utilization
+              averageUtilization: 70  # Target average memory utilization (percentage)
+        - type: Pods  # Pods-based scaling (optional)
+          pods:
+            metric:
+              name: requests-per-second
+            target:
+              type: AverageValue
+              averageValue: 100m  # Target value per pod
+        - type: Object  # Custom metric-based scaling (optional)
+          object:
+            metric:
+              name: http_requests_total
+            describedObject:
+              apiVersion: networking.k8s.io/v1
+              kind: Ingress
+              name: my-ingress  # Object to scale based on
+            target:
+              type: Value
+              value: 1000  # Target value for the metric
+        - type: External
+          external:
+            metric:
+              name: queue_messages_ready
+              selector:
+                matchLabels:
+                  queue: worker_tasks
+            target:
+              type: AverageValue
+              averageValue: 30
+      # -- Custom behavior for scaling
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policies:
+            - type: Percent
+              value: 10
+              periodSeconds: 60
+        scaleUp:
+          policies:
+            - type: Percent
+              value: 200
+              periodSeconds: 60
+        ## - Support multiple configmaps like this
+    envs:
+      ENV_VAR_1: value1
+      ENV_VAR_2: value2
+    config:
+      airplane-data:
+        .env: |
+          logLevel: trace
+          secretswithinconfigmap: sosecretshere
+          service-url: http://localghost:9005
+      car-json-data:
+        test: testString
+        test2: testString2
+    envFrom:
+      - secretRef:
+          name: example
+      - configMapRef:
+          name: example
+    annotations:
+      argocd.argoproj.io/hook: PreSync
+      argocd.argoproj.io/hook-delete-policy: HookSucceeded
+  frontend:
+    enabled: false
+    annotations:
+      argocd.argoproj.io/hook: PreSync
+      argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    statefulset:
+      enabled: true
+    prefix: /
+    image:
+      tag: 0.0.0
+    service:
+      enabled: false
+    resources:
+      limits:
+        cpu: 400m
+        memory: 3Gi
+      requests:
+        cpu: 400m
+        memory: 3Gi
+    envFrom:
+      - secretRef:
+          name: example
+      - configMapRef:
+          name: example
+    restartPolicy: Always
+
+generatedSecrets:
+  enabled: false
+
+# rbac:
+#   create: true
+
+# defaults:
+  # serviceAccount:
+  #   create: true
+  #   name: "utility"
+  # virtualService:
+  #   enabled: false

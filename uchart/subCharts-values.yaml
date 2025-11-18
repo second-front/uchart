@@ -1,0 +1,121 @@
+subCharts:
+  pgadmin:
+    enabled: false
+    chart: pgadmin
+    revision: '0.1.5'
+    values:
+      existingSecret: "###CUSTOMER_NAME###"
+      serverDefinitions:
+        servers:
+          firstServer:
+            Group: "###CUSTOMER_NAME###"
+            Host: "###CUSTOMER_DB_HOST###"
+            MaintenanceDB: "###CUSTOMER_NAME###"
+            Name: "###CUSTOMER_NAME###"
+            PassFile: /var/lib/pgadmin/pgpass
+            Port: 5432
+            Shared: true
+            SharedUsername: DBAdmin
+            SSLMode: prefer
+            Username: DBAdmin
+###
+  strimzi-kafka-operator:
+    enabled: false
+    chart: strimzi-kafka-operator
+    revision: 0.44.0
+    serverSideApply: false
+    values:
+      defaultImageRegistry: registry.gamewarden.io
+      defaultImageRepository: ironbank-proxy/ironbank/opensource/strimzi
+      defaultImageTag: 0.44.0
+      image:
+        imagePullSecrets:
+          - name: private-registry
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+        allowPrivilegeEscalation: false
+      extraEnvs:
+        - name: STRIMZI_POD_SECURITY_PROVIDER_CLASS
+          value: restricted
+###
+  vault:
+    enabled: false
+    revision: 0.29.1
+    serverSideApply: false
+###
+  redis:
+    enabled: false
+    revision: '20.7.0'
+    serverSideApply: false
+###
+  rabbitmq:
+    enabled: false
+    revision: '15.2.5'
+###
+  nats:
+    enabled: false
+    revision: '1.2.10'
+###
+  postgresql:
+    enabled: false
+    revision: '16.4.6'
+    serverSideApply: false
+###
+  mysql:
+    enabled: false
+    serverSideApply: false
+    revision: '9.1.7-bb.1'
+    values:
+      architecture: replication
+      auth:
+        database: "###CUSTOMER_NAME###"
+        username: "###CUSTOMER_NAME###"
+        existingSecret: generated-secrets
+      primary:
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+      secondary:
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+        replicaCount: 2
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - mysql
+                topologyKey: "kubernetes.io/hostname"
+###
+  minio-standalone:
+    enabled: false
+    revision: 0.0.2
+    values:
+      microservices:
+        minio-standalone:
+          extraEnvs:
+            - name: MINIO_ACCESS_KEY
+              value: "gamewarden"
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: generated-secrets
+                  key: GENERATED_MINIO_SECRET_KEY
+            - name: MINIO_SERVER_URL
+              value: https://###CUSTOMER_DOMAIN###
+            - name: MINIO_BROWSER_REDIRECT_URL
+              value: https://###CUSTOMER_DOMAIN###

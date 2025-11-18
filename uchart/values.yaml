@@ -1,0 +1,301 @@
+# yaml-language-server: $schema=values.schema.json
+---
+nameOverride: ''
+fullnameOverride: ''
+
+## Global values are used for subcharts
+global:
+  gateway: istio-system/private
+  # -- Required
+  applicationName: testapp
+  # -- Required
+  customerName: testapp
+  # -- Required - Used for resource tracking with labels and used for ArgoCD naming
+  impactLevel: il2
+  # -- Required
+  environment: dev
+  # -- Required for using ArgocdWrapper method with subCharts key
+  destinationCluster: multi-tenant-development-cluster
+  image:
+    # -- Use this with <microservice-name>.image.name instead of using <microservice-name>.image.repository to reduce duplicate yaml code in values.yaml
+    defaultImageRegistry: registry.gamewarden.io
+    defaultImageRepository: testapp
+  # -- Istio settings
+  istio:
+    # -- enforce mtls PeerAuthentication
+    mtls:
+      enabled: true
+
+ciliumNetworkPolicies:
+  enabled: false
+  appPolicy:
+    enabled: true
+  # -- To add additional policies to the app namespace
+  customPolicies: []
+  #  - name: custom-policy-1
+  #    spec:
+  #      endpointSelector:
+  #       matchLabels: {}
+  #      egress:
+  #       - toCIDR:
+  #         - 192.168.1.0/24
+  #      ingress:
+  #       - fromCIDR:
+  #         - 10.0.0.0/16
+networkPolicies:
+  enabled: false
+  appPolicy:
+    enabled: true
+  # -- To add additional netpols to the app namespace
+  customPolicies: []
+  #  - name: custom-policy-1
+  #    spec:
+  #      podSelector:
+  #       matchLabels: {}
+  #      egress:
+  #       - toCIDR:
+  #         - 192.168.1.0/24
+  #      ingress:
+  #       - fromCIDR:
+  #         - 10.0.0.0/16
+
+imageCredentials: []
+
+rbac:
+  create: false
+  rules: []
+  # RBAC rules for KUBE_PING
+  #  - apiGroups:
+  #      - ""
+  #    resources:
+  #      - pods
+  #    verbs:
+  #      - get
+  #      - list
+
+# -- Global application configmap - used for all microservices deployed to one namespace
+config:
+  enabled: false
+  data: {}
+  annotations: {}
+
+# -- Global application secret - used for all microservices deployed to one namespace
+secrets:
+  enabled: false
+  # data:
+  #   test0: test0
+  #   test1: test1
+  # stringData:
+  #   test2: test2
+  #   test3: test3
+  # generateKeys:
+  #   - DB_PASSWORD
+  #   - JOB_SECRET
+
+# ref: https://kubernetes.io/docs/concepts/configuration/secret/#secret-types
+# Support secret types: "Opaque", "kubernetes.io/tls", "kubernetes.io/basic-auth", Opaque-nuget
+generateSecretsJob:
+  enabled: false
+  # image: ''  # image used for the job
+  secrets: {}
+# [example usage](docs/test-values/secrets-generation.yaml) 
+
+defaults:
+  # -- domain for istio virtual services
+  domain: gamewarden.io
+  # -- istio virtual service from chart enabled
+  virtualService:
+    enabled: false
+  # -- Number of replicas for the microservice
+  replicaCount: 1
+  #  statefulsets: min # of secs for which a newly created Pod should be ready without any of its containers crashing
+
+  # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  strategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 25%
+    #   maxUnavailable: 25%
+
+  minReadySeconds: 0
+
+  image:
+    pullPolicy: IfNotPresent
+    # -- Required - repository tag along with either repository or name (one is required)
+    tag: ''
+  # -- Pull secrets for the image/s
+  imagePullSecrets:
+    - name: private-registry
+  serviceAccount:
+    # -- Specifies whether a service account should be created
+    create: false
+    # -- Annotations to add to the service account
+    annotations: {}
+    labels: {}
+    # -- The name of the service account to use.
+    # -- If not set and create is true, a name is generated using the fullname template
+    name: 'default'
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    # runAsUser: 1000
+
+  # -- Extra environment variables
+  extraEnvs: {}
+    # - name: EXAMPLE
+    #   value: example
+    # - name: EXAMPLE_FROM
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: mysecret
+    #       key: password
+    #       optional: false
+
+  # -- Extra environment variables from secrets or configMaps
+  envFrom: []
+    # - secretRef:
+    #     name: mysecret
+    # - configMapRef:
+    #     name: myconfig
+
+  # -- Example Pod Disruption Budget values
+  podDisruptionBudget: {}
+    # minAvailable: 5
+    # maxUnavailable: 1
+
+  service:
+    # -- Use a service with Microservice
+    enabled: true
+    # -- Set the service to headless
+    headless: false
+    # -- Set the service type (ClusterIP, NodePort, LoadBalancer, ExternalName )
+    type: ClusterIP
+    # -- Set the port you want to expose the service on.
+    port: 80
+    # -- Set a name for the port
+    name: http
+    # -- Set to true to remove the port name
+    disablePortName: false
+    # disableIstioInjection: true # used in rare circumstances where you do not want the service to be injected with the Istio sidecar
+    # -- Set the default targetPort of service to 8080 ( Port the application is listening on within the container )
+    targetPort: 8080
+    # -- Set the app procotol to allow explicit selection. (http, http2, https, tcp, tls, grpc, mongo, mysql, redis)
+    appProtocol: TCP
+    # -- Add additional ports to expose
+    additionalPorts: {}
+    #   - port: 69
+    #     targetPort: 6969
+    #     protocol: TCP
+    #     name: http
+
+  resources:
+    # by default run without limits, and no limitRanges are set
+    # limits:
+    #   cpu: "2"
+    #   memory: 2Gi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  autoscaling:
+    #  -- Horizontal Autoscaling of pods - see [configuration example for usage](docs/Example-Microservices.md) for more information.
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+
+  # -- Restrict a Pod to only be able to run on a particular Node.
+  nodeSelector: {}
+  # -- Applied to pods, and allow (but do not require) the pods to schedule onto nodes with matching taints.
+  tolerations: []
+  # -- Ensure that pods are hosted on specific nodes
+  affinity: {}
+
+
+# -- Extra kubernetes objects to deploy inline - Takes in MAP or LIST
+# @schema
+# type: [array, object]
+# @schema
+extraManifests: []
+  #   yourNameOfFirstResource:
+  #     apiVersion: kafka.strimzi.io/v1beta2
+  #     kind: Kafka
+  #     metadata:
+  #       name: kafka-cluster
+  #       namespace: test
+  #     spec:...
+  # - apiVersion: kafka.strimzi.io/v1beta2
+  #   kind: Kafka
+  #   metadata:
+  #       name: kafka-cluster
+  #       namespace: example
+  #   spec: ...
+
+# -- Extra kubernetes objects to deploy inline
+manifests: {}
+  #   yourNameOfFirstResource:
+  #     apiVersion: kafka.strimzi.io/v1beta2
+  #     kind: Kafka
+  #     metadata:
+  #       name: kafka-cluster
+  #       namespace: test
+  #     spec:...
+
+# Microservices: example of two services, the first being deployment and second a statefulset
+microservices: {}
+# Please refer to the [configuration example for usage](docs/Example-Microservices.md) for more information.
+
+# -- Used to get around ArgoCD generating new secrets with argocd ignore annotations
+generatedSecrets:
+  enabled: false
+
+# -- ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below
+subCharts: {}
+  # clamav:                                       # Example subChart that is disabled
+  #   enabled: false                              # default is true
+  #   chartUrl: 'registry.gamewarden.io/charts'   # default is 'registry.gamewarden.io/charts'
+  #   chart: "clamav"                             # default is 'uchart'
+  #   name: clamav                                # renames the argocd Application to be something different, default is the subChart key
+  #   revision: 0.0.2                             # required - version of included chart
+  #   # namespace: otherNamespace                   # only desired if you want to deploy to a different namespace than your applicationName
+  #   # values: {}                                  # optional - helm values in-line
+  #   # valueFiles: []                              # optional - if used with valuesRepo, it will turn the subChart application into a multi-sourced application
+  #   # valuesRepo: ""                              # optional - git repo location of where the values files are retrieved from
+  #   # wave: ""                                    # optional - used to create the annotations for argocd sync waves
+  #   # sync: true                                  # default true - used to turn off automated sync and pruning for the subChart
+  #   # project: ""                                 # optional - default is inherited from created project - this is an override
+  #   # serverSideApply: true                       # default true
+
+argocd:
+# -- Disable option for creation of project for applications created from subCharts if nesting
+  disableProjectCreation: true
+# -- Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName
+  sourceNamespaces: []
+  # - customerNamespaceTwo
+# -- Create all namespaces beforehand in sourceNamespaces (the main namespace auto-creates from argocd)
+  createNamespace: false
+# -- Namespace override for all argocd applications deployment
+  namespace: ""
+# -- Turn off the argocdWrapper Application.yaml template and instead deploy microservices without being under an argocd application
+  wrapperAppOff: false
+  ## Default within subCharts sets wrapperAppOff to true
+# -- Set argocd sync wave number on just the argocdWrapper Application if used
+  wrapperAppWave: ''
+# -- Sync options - Turn on or off automated syncing with pruning for the argocdWrapper Application from microservice
+  wrapperSync: true
+# -- Project override for the argocdWrapper microservice Application
+  projectOverride: ""
+# -- Server Side Apply on Application wrapper (not subCharts)
+  serverSideApply: true
+# -- wrapper all-in-one where the microservices and subCharts all are placed into a single wrapped application with multiple sources
+  wrapAll: false
+# -- wrapper all-in-one argocd application name override
+  wrapAllNameOverride: ""

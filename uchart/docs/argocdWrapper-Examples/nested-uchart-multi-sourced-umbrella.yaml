@@ -1,0 +1,54 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: example-umbrella
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: registry.gamewarden.io/charts
+      targetRevision: 1.0.44
+      chart: uchart
+      helm:
+        values: |-
+          global:
+            applicationName: "example"
+            customerName: example
+            impactLevel: il4
+            environment: dev
+            destinationCluster: example-dev-cluster-c8739fa
+            image:
+              defaultImageRegistry: registry.gamewarden.io
+              defaultImageRepository: example
+          subCharts:
+            uni-backend:
+              namespace: argocd
+              chartUrl: registry.gamewarden.io/charts
+              chart: uchart
+              project: "example-dev-example"
+              valuesRepo: https://code.il2.gamewarden.io/gamewarden/customers/example/ex-values.git
+              valueFiles:
+              - $values/uni-backend/base.yaml
+              - $values/uni-backend/dev.yaml
+              valuesRevision: add-conversions
+              values:
+                global:
+                  destinationCluster: example-dev-cluster-c8739fa
+                  applicationName: uni-backend
+                argocd:
+                  wrapperAppOff: true
+                  projectOverride: "example-dev-example"
+          argocd:
+            sourceNamespaces:
+            - "in-cluster"
+            - "uni-backend"
+            - "argocd"
+            disableProjectCreation: false
+            projectOverride: "example-dev-example"
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

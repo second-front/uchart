@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+tests:
+  - it: should not create microservice deployment when disabled
+    set:
+      global.applicationName: test-app
+      microservices:
+        backend:
+          enabled: false
+    asserts:
+    - hasDocuments: 
+        count: 0
+    template: templates/deployment.yaml
+  - it: should not create microservice deployment when disabled
+    set:
+      global.applicationName: test-app
+      microservices:
+        backend:
+          enabled: false
+    asserts:
+    - hasDocuments: 
+        count: 0
+    template: templates/deployment.yaml
+  - it: deployment should have correct image tag
+    set:
+      global.applicationName: test-app
+      microservices:
+        backend:
+          enabled: true
+    asserts:
+    - hasDocuments: 
+        count: 1
+    template: templates/deployment.yaml
+  - it: deployment should be templated
+    set:
+      global.applicationName: test-app
+      microservices:
+        backend:
+          image:
+            name: backend
+            tag: latest
+    asserts:
+    - hasDocuments: 
+        count: 1
+    template: templates/deployment.yaml

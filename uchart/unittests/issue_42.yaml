@@ -1,0 +1,105 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+templates:
+  - templates/deployment.yaml
+  - templates/daemonset.yaml
+  - templates/statefulset.yaml
+tests:
+  - it: should create correct security context for different workloads/microservices
+    set:
+      global.applicationName: test-app
+      argocd:
+        wrapperAppOff: true
+        createProject: false
+      microservices:
+        statsd-relay:
+          daemonset:
+            enabled: true
+          image:
+            name: statsd-relay
+            tag: latest
+          securityContext:
+            runAsUser: 65532
+        statsd:
+          statefulset:
+            enabled: true
+          replicaCount: 4
+          image:
+            name: statsd
+            tag: latest
+        graphite-backend:
+          replicaCount: 1
+          strategy:
+            type: Recreate
+          image:
+            name: go-carbon
+            tag: latest
+          securityContext:
+            runAsUser: 65532
+          podSecurityContext:
+            fsGroup: 65532
+        graphite-api:
+          replicaCount: 2
+          image:
+            name: carbonapi
+            tag: latest
+          securityContext:
+            runAsUser: 65532
+        carbon-relay-ng:
+          deployment:
+            enabled: true
+          image:
+            name: grafana/carbon-relay-ng
+            tag: latest
+          securityContext:
+            runAsNonRoot: false
+            readOnlyRootFilesystem: false
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 65532
+        template: templates/daemonset.yaml
+        documentSelector:
+          path: metadata.name
+          value: statsd-relay
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: false
+        template: templates/deployment.yaml
+        documentSelector:
+          path: metadata.name
+          value: carbon-relay-ng
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: false
+        template: templates/deployment.yaml
+        documentSelector:
+          path: metadata.name
+          value: carbon-relay-ng
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 65532
+        template: templates/deployment.yaml
+        documentSelector:
+          path: metadata.name
+          value: graphite-api
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 65532
+        template: templates/deployment.yaml
+        documentSelector:
+          path: metadata.name
+          value: graphite-backend
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 65532
+        template: templates/deployment.yaml
+        documentSelector:
+          path: metadata.name
+          value: graphite-backend
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+        template: templates/statefulset.yaml
+        documentSelector:
+          path: metadata.name
+          value: statsd
