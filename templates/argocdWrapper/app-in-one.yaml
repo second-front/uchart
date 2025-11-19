@@ -37,7 +37,7 @@ spec:
   revisionHistoryLimit: 3
   sources:
     - repoURL: {{ printf "%s/charts" $repoURL }}
-      targetRevision: 1.0.48
+      targetRevision: 1.0.52
       chart: uchart
       helm:
         values: |
