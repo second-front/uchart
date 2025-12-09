@@ -53,6 +53,15 @@
           "required": [],
           "title": "wrapperSync",
           "type": "boolean"
+        },
+        "ignoreDifferences": {
+          "description": "Add entries to ignore differences between live and desired states during the diff",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "ignoreDifferences",
+          "type": "array"
         }
       },
       "required": [],
@@ -525,7 +534,7 @@
           "properties": {
             "defaultImageRegistry": {
               "default": "registry.gamewarden.io",
-              "description": "Use this with \u003cmicroservice-name\u003e.image.name instead of using \u003cmicroservice-name\u003e.image.repository to reduce duplicate yaml code in values.yaml",
+              "description": "Use this with <microservice-name>.image.name instead of using <microservice-name>.image.repository to reduce duplicate yaml code in values.yaml",
               "required": [],
               "title": "defaultImageRegistry",
               "type": "string"
