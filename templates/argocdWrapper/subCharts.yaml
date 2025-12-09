@@ -49,6 +49,9 @@ spec:
       labels:
         istio-injection: enabled
   revisionHistoryLimit: 3
+  {{- if .Values.argocd.ignoreDifferences }}
+  ignoreDifferences: {{ .Values.argocd.ignoreDifferences | toYaml | nindent 4 }}
+  {{- end }}
   sources:
     - repoURL: {{ $chartUrl }}
       targetRevision: {{ $revision }}
