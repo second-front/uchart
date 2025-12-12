@@ -1,6 +1,5 @@
 {{- if .Values.ciliumNetworkPolicies.appPolicy.enabled }}
 {{- $namespace := .Release.Namespace }}
-{{- if .Values.microservices }}
 {{- if ne .Release.Namespace "argocd" }}
 ---
 apiVersion: cilium.io/v2
@@ -132,6 +131,5 @@ spec:
   - fromCIDR:
     - 10.0.0.0/16
     - 172.20.0.0/16
-{{- end }}
 {{- end }}
 {{- end }}

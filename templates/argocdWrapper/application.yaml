@@ -1,5 +1,5 @@
 {{- $defaultProject := printf "%s-%s-%s" (required "customerName is required" .Values.global.customerName) (required "environment is required" .Values.global.environment) (required "applicationName is required" .Values.global.applicationName) -}}
-{{- if and .Values.subCharts .Values.microservices (not .Values.argocd.wrapperAppOff) (not .Values.argocd.wrapAll)}}
+{{- if and .Values.subCharts (not .Values.argocd.wrapperAppOff) (not .Values.argocd.wrapAll)}}
 {{- $repoURL := .Values.global.image.defaultImageRegistry }}
 # check if any subcharts are enabled 
 ---
@@ -43,8 +43,10 @@ spec:
       chart: uchart
       helm:
         values: |
+          {{- if .Values.microservices }}
           microservices:
           {{- toYaml  .Values.microservices | nindent 12 }}
+          {{- end }}
           global:
           {{- toYaml  .Values.global | nindent 12 }}
           defaults:
