@@ -1,0 +1,99 @@
+# Test values file for validating helm chart works with subCharts only (without microservices)
+# This file can be used with: helm template test-release ./uchart -f unittests/test-values-subcharts-only.yaml
+
+global:
+  domain: test.example.com
+  customerName: test-customer
+  applicationName: test-app
+  environment: test
+  impactLevel: il2
+  destinationCluster: test-cluster
+  gateway: istio-system/main-gateway
+  image:
+    defaultImageRegistry: registry.example.com
+    defaultImageRepository: test-customer
+  istio:
+    mtls:
+      enabled: true
+
+# ArgoCD configuration
+argocd:
+  namespace: test-app-test
+  sourceNamespaces:
+    - "test-app-test"
+    - "argocd"
+  projectOverride: test-customer-test-test-app
+  wrapAll: false
+  wrapperAppOff: false
+  wrapperSync: true
+
+# SubCharts configuration - defines external charts to deploy
+subCharts:
+  backend:
+    chartUrl: registry.example.com/charts
+    enabled: true
+    revision: 1.0.0
+    chart: backend-service
+    name: backend
+    serverSideApply: true
+    values:
+      global:
+        imageRegistry: registry.example.com/test-customer
+        imagePullSecrets:
+          - name: private-registry
+      service:
+        port: 8080
+      replicas: 2
+
+  frontend:
+    chartUrl: registry.example.com/charts
+    enabled: true
+    revision: 2.0.0
+    chart: frontend-service
+    name: frontend
+    serverSideApply: true
+    values:
+      global:
+        imageRegistry: registry.example.com/test-customer
+        imagePullSecrets:
+          - name: private-registry
+      service:
+        port: 3000
+      replicas: 1
+
+# Infrastructure configuration - should work without microservices
+ciliumNetworkPolicies:
+  appPolicy:
+    enabled: true
+
+networkPolicies:
+  enabled: false
+
+generatedSecrets:
+  enabled: true
+
+defaults:
+  domain: example.com
+  virtualService:
+    enabled: false
+  imagePullSecrets:
+    - name: private-registry
+  service:
+    port: 80
+    targetPort: 8080
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+
+# Note: microservices section is intentionally omitted to test the fix

@@ -1,5 +1,4 @@
 {{- if .Values.networkPolicies.enabled }}
-{{- if .Values.microservices }}
 {{- if ne .Release.Namespace "argocd" }}
 {{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
 ---
@@ -146,7 +145,6 @@ spec:
   policyTypes:
   - Ingress
   - Egress
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

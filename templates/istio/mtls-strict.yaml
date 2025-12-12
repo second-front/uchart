@@ -1,11 +1,13 @@
 {{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
 {{- $istioMtlsEnabled := .Values.global.istio.mtls.enabled }}
-{{- if and $istioMtlsEnabled .Values.microservices }}
+{{- if $istioMtlsEnabled }}
 {{- $jobEnabled := false }}
+{{- if .Values.microservices }}
 {{- range $key, $value := .Values.microservices }}
   {{- if and $value (or (hasKey $value "job") (hasKey $value "cronjob")) }}
     {{- $jobEnabled = true }}
   {{- end }}
+{{- end }}
 {{- end }}
 {{- if not $jobEnabled }}
 ---
