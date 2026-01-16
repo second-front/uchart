@@ -3,11 +3,11 @@ apiVersion: v2
 name: uchart
 description: A universal application chart for gamewarden environments
 type: application
-version: 1.0.53
+version: 2.0.0
 home: https://github.com/second-front/uchart
 sources: [https://github.com/second-front/uchart]
 icon: https://assets.website-files.com/6030224cd6bd6639e9d922c9/60e73ee577cd823be4d24834_GW-Icon.svg
-appVersion: ''
+appVersion: '2.0.0'
 maintainers:
   - email: anthony.butt@secondfront.com
     name: Anthony Butt
@@ -15,3 +15,16 @@ maintainers:
     name: Lucas Pick
 annotations:
   schema: https://schemas.gamewarden.io/schemas/helm/uchart/uchart-latest.json
+
+# Optional dependencies - can be enabled/disabled via values.yaml subCharts section
+# Run "helm dependency update" to download these charts
+dependencies: []
+  # Example dependencies (uncomment and configure as needed):
+  # - name: redis
+  #   version: "17.9.5"
+  #   repository: "https://charts.bitnami.com/bitnami"
+  #   condition: subCharts.redis.enabled
+  # - name: postgresql
+  #   version: "12.0.0"
+  #   repository: "https://charts.bitnami.com/bitnami"
+  #   condition: subCharts.postgresql.enabled

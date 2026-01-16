@@ -1,4 +1,3 @@
-{{- if or (.Values.argocd.wrapperAppOff) (not .Values.subCharts) }}
 {{- range $msvc, $v := .Values.microservices }}
 {{- with $ -}}
 
@@ -39,7 +38,6 @@ spec:
       {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 6 }} {{- end }}
   template:
     {{- include "podTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "appLabel" $appLabel "v" $v) | nindent 4 }}
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

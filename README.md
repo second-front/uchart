@@ -20,7 +20,23 @@ microservices:
   <MSVC_NAME_2>: # (example: backend)
     ...
 ```
-5. Configure available subcharts as needed like postgres, pgadmin, etc...
+3. (Optional) Add chart dependencies in Chart.yaml
+```yaml
+dependencies:
+  - name: redis
+    version: "17.9.5"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: subCharts.redis.enabled
+```
+4. Configure subcharts in values.yaml
+```yaml
+subCharts:
+  redis:
+    enabled: true
+    auth:
+      password: "mypassword"
+```
+5. Run `helm dependency update` to download dependency charts
 6. See ***example*** deployed app for ***usage*** [here](docs/test-values)
 
 ## Supported Features
@@ -28,7 +44,7 @@ microservices:
 
 # uchart
 
-chart version: 1.0.53
+chart version: 2.0.0
 
 A universal application chart for gamewarden environments
 
@@ -49,17 +65,6 @@ A universal application chart for gamewarden environments
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| argocd.createNamespace | bool | `false` | Create all namespaces beforehand in sourceNamespaces (the main namespace auto-creates from argocd) |
-| argocd.disableProjectCreation | bool | `true` | Disable option for creation of project for applications created from subCharts if nesting |
-| argocd.namespace | string | `""` | Namespace override for all argocd applications deployment |
-| argocd.projectOverride | string | `""` | Project override for the argocdWrapper microservice Application |
-| argocd.serverSideApply | bool | `true` | Server Side Apply on Application wrapper (not subCharts) |
-| argocd.sourceNamespaces | list | `[]` | Add additional allowed namespaces to deploy to beyond the default single namespace from applicationName |
-| argocd.wrapAll | bool | `false` | wrapper all-in-one where the microservices and subCharts all are placed into a single wrapped application with multiple sources |
-| argocd.wrapAllNameOverride | string | `""` | wrapper all-in-one argocd application name override |
-| argocd.wrapperAppOff | bool | `false` | Turn off the argocdWrapper Application.yaml template and instead deploy microservices without being under an argocd application |
-| argocd.wrapperAppWave | string | `""` | Set argocd sync wave number on just the argocdWrapper Application if used |
-| argocd.wrapperSync | bool | `true` | Sync options - Turn on or off automated syncing with pruning for the argocdWrapper Application from microservice |
 | ciliumNetworkPolicies.appPolicy.enabled | bool | `true` |  |
 | ciliumNetworkPolicies.customPolicies | list | `[]` | To add additional policies to the app namespace |
 | ciliumNetworkPolicies.enabled | bool | `false` |  |
@@ -106,15 +111,14 @@ A universal application chart for gamewarden environments
 | fullnameOverride | string | `""` |  |
 | generateSecretsJob.enabled | bool | `false` |  |
 | generateSecretsJob.secrets | object | `{}` |  |
-| generatedSecrets | object | `{"enabled":false}` | Used to get around ArgoCD generating new secrets with argocd ignore annotations |
+| generatedSecrets | object | `{"enabled":false}` |  |
 | global.applicationName | string | `"testapp"` | Required |
 | global.customerName | string | `"testapp"` | Required |
-| global.destinationCluster | string | `"multi-tenant-development-cluster"` | Required for using ArgocdWrapper method with subCharts key |
 | global.environment | string | `"dev"` | Required |
 | global.gateway | string | `"istio-system/private"` |  |
 | global.image.defaultImageRegistry | string | `"registry.gamewarden.io"` | Use this with <microservice-name>.image.name instead of using <microservice-name>.image.repository to reduce duplicate yaml code in values.yaml |
 | global.image.defaultImageRepository | string | `"testapp"` |  |
-| global.impactLevel | string | `"il2"` | Required - Used for resource tracking with labels and used for ArgoCD naming |
+| global.impactLevel | string | `"il2"` | Required - Used for resource tracking with labels |
 | global.istio | object | `{"mtls":{"enabled":true}}` | Istio settings |
 | global.istio.mtls | object | `{"enabled":true}` | enforce mtls PeerAuthentication |
 | imageCredentials | list | `[]` |  |
@@ -127,7 +131,7 @@ A universal application chart for gamewarden environments
 | rbac.create | bool | `false` |  |
 | rbac.rules | list | `[]` |  |
 | secrets | object | `{"enabled":false}` | Global application secret - used for all microservices deployed to one namespace |
-| subCharts | object | `{"clamav":{"chart":"clamav","chartUrl":"registry.gamewarden.io/charts","enabled":false,"name":"clamav","revision":"0.0.2"}}` | ArgoCD Wrapper for deploying extra ArgoCD Applictions, one argocd application for each subchart added below |
+| subCharts | object | `{}` | Helm chart dependencies configuration - configure dependency charts defined in Chart.yaml. See [SubCharts Usage Guide](docs/SubCharts-Usage.md) |
 
 ## How to generate schema automatically
 ```
@@ -142,7 +146,7 @@ rm merged-values.yaml
 
 ## Chart schema available also at:
 ```
-https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.53.json
+https://schemas.gamewarden.io/schemas/helm/uchart/uchart-2.0.0.json
 ```
 
 ## Manually push new version of chart to registry and push tag to git

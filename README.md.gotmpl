@@ -20,7 +20,23 @@ microservices:
   <MSVC_NAME_2>: # (example: backend)
     ...
 ```
-5. Configure available subcharts as needed like postgres, pgadmin, etc...
+3. (Optional) Add chart dependencies in Chart.yaml
+```yaml
+dependencies:
+  - name: redis
+    version: "17.9.5"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: subCharts.redis.enabled
+```
+4. Configure subcharts in values.yaml
+```yaml
+subCharts:
+  redis:
+    enabled: true
+    auth:
+      password: "mypassword"
+```
+5. Run `helm dependency update` to download dependency charts
 6. See ***example*** deployed app for ***usage*** [here](docs/test-values)
 
 ## Supported Features
@@ -56,7 +72,7 @@ rm merged-values.yaml
 
 ## Chart schema available also at:
 ```
-https://schemas.gamewarden.io/schemas/helm/uchart/uchart-1.0.53.json
+https://schemas.gamewarden.io/schemas/helm/uchart/uchart-{{ template "chart.version" . }}.json
 ```
 
 ## Manually push new version of chart to registry and push tag to git

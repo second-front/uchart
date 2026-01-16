@@ -1,6 +1,4 @@
 {{- if .Values.networkPolicies.enabled }}
-{{- if ne .Release.Namespace "argocd" }}
-{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -145,6 +143,4 @@ spec:
   policyTypes:
   - Ingress
   - Egress
-{{- end }}
-{{- end }}
 {{- end }}

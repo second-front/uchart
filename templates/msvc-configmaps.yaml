@@ -1,4 +1,3 @@
-{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
 
 {{- range $msvc, $v := .Values.microservices }}
 {{- with $v }}
@@ -27,7 +26,6 @@ data:
 {{- end }}
     {{- end }}
   {{- end }}
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

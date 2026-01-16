@@ -22,9 +22,6 @@ helm unittest uchart/
 # Or with color output
 helm unittest uchart/ --color
 
-# Run specific test file
-helm unittest uchart/ -f 'tests/subcharts_without_microservices_test.yaml'
-
 # Run with verbose output
 helm unittest uchart/ -v
 ```
@@ -33,17 +30,22 @@ helm unittest uchart/ -v
 
 ## Test Files
 
-### `subcharts_without_microservices_test.yaml`
-Tests to verify the chart works correctly with `subCharts` defined but without `microservices`. This validates the fix for allowing infrastructure resources to be created independently.
+### `subcharts_only_test.yaml`
+Tests to verify the chart works correctly with `subCharts` (Helm dependencies) defined but without `microservices`. This validates that infrastructure resources can be created independently.
 
 **What it tests:**
-- ✅ ArgoCD Application wrappers are created with only subCharts
 - ✅ CiliumNetworkPolicy resources are created without microservices
 - ✅ Kubernetes NetworkPolicy resources are created without microservices
 - ✅ Istio mTLS PeerAuthentication is created without microservices
 - ✅ Generated secrets are created without microservices
-- ✅ Resource templates (deployment, service, etc.) are NOT created when using subCharts mode
+- ✅ Global configmaps and secrets work without microservices
+- ✅ Deployment/Service/StatefulSet resources are NOT created when only subCharts are defined
 - ✅ VirtualService is NOT created without microservices
+
+**Run with:**
+```bash
+helm unittest uchart/ -f 'tests/subcharts_only_test.yaml'
+```
 
 ### `deployment_test.yaml`
 Tests for deployment resource templates.
@@ -60,41 +62,37 @@ Tests for specific issue #42.
 
 ```bash
 # Generate manifests using the test values file
-helm template test-release ./uchart -f uchart/tests/test-values-subcharts-only.yaml
+helm template test-release . -f tests/test-values-subcharts-only.yaml
 
 # Verify specific resource types are generated
-helm template test-release ./uchart -f uchart/tests/test-values-subcharts-only.yaml | grep -E "^kind:" | sort | uniq -c
+helm template test-release . -f tests/test-values-subcharts-only.yaml | grep -E "^kind:" | sort | uniq -c
 
 # Expected output:
-#   3 kind: Application           (ArgoCD wrappers)
-#   8 kind: CiliumNetworkPolicy   (Network policies)
+#   8 kind: CiliumNetworkPolicy   (Network policies for infrastructure)
+#   1 kind: ConfigMap              (Global config)
+#   1 kind: PeerAuthentication    (Istio mTLS)
+#   1 kind: Secret                (Generated secrets)
+#   0 kind: Deployment            (no microservices)
+#   0 kind: Service               (no microservices)
+#   0 kind: StatefulSet           (no microservices)
+
+# Or using the docs example:
+helm template test-release . -f docs/test-values/subcharts-only-example.yaml
 ```
 
-### Test with microservices only (no subCharts)
+### Test with microservices
 
 ```bash
 # Use the default values.yaml which includes microservices
 helm template test-release ./uchart -f uchart/values.yaml
 ```
 
-## Architecture Validation
+### Test with both subCharts and microservices
 
-The tests validate three deployment modes:
-
-1. **subCharts only** (no microservices)
-   - ArgoCD Applications wrap external charts
-   - Infrastructure resources (network policies, secrets, mTLS) are created
-   - No direct resource templates (deployments, services) are created
-
-2. **microservices only** (no subCharts)
-   - Direct resource templates are created
-   - Infrastructure resources are created
-   - No ArgoCD Application wrappers
-
-3. **Both subCharts and microservices**
-   - ArgoCD Applications for subCharts
-   - Additional microservices can supplement
-   - Infrastructure resources are created
+```bash
+# Use the combined example
+helm template test-release ./uchart -f uchart/docs/test-values/example-with-subcharts.yaml
+```
 
 ## Writing New Tests
 

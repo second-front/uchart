@@ -1,5 +1,24 @@
 # Test values file for validating helm chart works with subCharts only (without microservices)
-# This file can be used with: helm template test-release ./uchart -f unittests/test-values-subcharts-only.yaml
+# This file can be used with: helm template test-release . -f tests/test-values-subcharts-only.yaml
+#
+# This validates that infrastructure resources can be created without requiring microservices
+# For v2.0.0: Uses Helm chart dependencies instead of ArgoCD Applications
+#
+# To use this file with actual subcharts:
+# 1. Add dependencies to Chart.yaml (see example below)
+# 2. Run: helm dependency update
+# 3. Test: helm template test-release . -f tests/test-values-subcharts-only.yaml
+#
+# Example Chart.yaml dependencies:
+# dependencies:
+#   - name: redis
+#     version: "17.9.5"
+#     repository: "https://charts.bitnami.com/bitnami"
+#     condition: subCharts.redis.enabled
+#   - name: postgresql
+#     version: "12.0.0"
+#     repository: "https://charts.bitnami.com/bitnami"
+#     condition: subCharts.postgresql.enabled
 
 global:
   domain: test.example.com
@@ -7,7 +26,6 @@ global:
   applicationName: test-app
   environment: test
   impactLevel: il2
-  destinationCluster: test-cluster
   gateway: istio-system/main-gateway
   image:
     defaultImageRegistry: registry.example.com
@@ -16,53 +34,45 @@ global:
     mtls:
       enabled: true
 
-# ArgoCD configuration
-argocd:
-  namespace: test-app-test
-  sourceNamespaces:
-    - "test-app-test"
-    - "argocd"
-  projectOverride: test-customer-test-test-app
-  wrapAll: false
-  wrapperAppOff: false
-  wrapperSync: true
+# No microservices defined - testing infrastructure-only deployment
+microservices: {}
 
-# SubCharts configuration - defines external charts to deploy
+# SubCharts configuration - defines Helm chart dependencies
+# Note: These would need corresponding entries in Chart.yaml dependencies
 subCharts:
-  backend:
-    chartUrl: registry.example.com/charts
+  redis:
     enabled: true
-    revision: 1.0.0
-    chart: backend-service
-    name: backend
-    serverSideApply: true
-    values:
-      global:
-        imageRegistry: registry.example.com/test-customer
-        imagePullSecrets:
-          - name: private-registry
-      service:
-        port: 8080
-      replicas: 2
+    architecture: standalone
+    auth:
+      enabled: true
+      password: "test-redis-password"
+    master:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
 
-  frontend:
-    chartUrl: registry.example.com/charts
+  postgresql:
     enabled: true
-    revision: 2.0.0
-    chart: frontend-service
-    name: frontend
-    serverSideApply: true
-    values:
-      global:
-        imageRegistry: registry.example.com/test-customer
-        imagePullSecrets:
-          - name: private-registry
-      service:
-        port: 3000
-      replicas: 1
+    auth:
+      username: testuser
+      password: "test-postgres-password"
+      database: testdb
+    primary:
+      resources:
+        requests:
+          cpu: 250m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
 
 # Infrastructure configuration - should work without microservices
 ciliumNetworkPolicies:
+  enabled: true
   appPolicy:
     enabled: true
 
@@ -96,4 +106,4 @@ defaults:
     readOnlyRootFilesystem: true
     runAsNonRoot: true
 
-# Note: microservices section is intentionally omitted to test the fix
+# Note: microservices section is intentionally omitted to test infrastructure-only deployment

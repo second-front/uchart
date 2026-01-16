@@ -39,7 +39,6 @@ helm.sh/chart: {{ include "universal-app-chart.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-argocd.argoproj.io/instance: {{ .Values.global.applicationName }}
 app.gamewarden.io/customerName: {{required ".Values.global.customerName is required" .Values.global.customerName}}
 app.gamewarden.io/impactLevel: {{required ".Values.global.impactLevel is required" .Values.global.impactLevel}}
 app.gamewarden.io/environment: {{required ".Values.global.environment is required" .Values.global.environment}}
