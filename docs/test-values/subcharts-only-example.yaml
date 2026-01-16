@@ -1,0 +1,81 @@
+---
+# Example: Using only subCharts without microservices
+#
+# This deploys infrastructure components (Redis, PostgreSQL) without any custom application
+# Useful for:
+# - Setting up shared infrastructure
+# - Database/cache-only deployments
+# - Development environments with just backing services
+#
+# Prerequisites:
+# 1. Add dependencies to Chart.yaml (see below)
+# 2. Run: helm dependency update
+# 3. Deploy: helm install myinfra . -f this-file.yaml
+#
+# Example Chart.yaml dependencies:
+# dependencies:
+#   - name: redis
+#     version: "17.9.5"
+#     repository: "https://charts.bitnami.com/bitnami"
+#     condition: subCharts.redis.enabled
+#   - name: postgresql
+#     version: "12.0.0"
+#     repository: "https://charts.bitnami.com/bitnami"
+#     condition: subCharts.postgresql.enabled
+
+global:
+  applicationName: myinfra
+  customerName: mycompany
+  impactLevel: il2
+  environment: dev
+
+# No microservices defined - that's okay!
+microservices: {}
+
+# Configure only the infrastructure charts
+subCharts:
+  # Redis for caching/session storage
+  redis:
+    enabled: true
+    architecture: standalone
+    auth:
+      enabled: true
+      password: "redis-password"
+    master:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      persistence:
+        enabled: true
+        size: 8Gi
+
+  # PostgreSQL for database
+  postgresql:
+    enabled: true
+    auth:
+      username: appuser
+      password: "postgres-password"
+      database: appdb
+    primary:
+      resources:
+        requests:
+          cpu: 250m
+          memory: 256Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+      persistence:
+        enabled: true
+        size: 10Gi
+
+# Optional: Enable network policies for infrastructure
+networkPolicies:
+  enabled: false
+
+# Optional: Generate secrets for the infrastructure
+generatedSecrets:
+  enabled: false

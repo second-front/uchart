@@ -6,9 +6,6 @@
     enabled: true
     labels:
       protect: keycloak
-    annotations:
-      argocd.argoproj.io/hook: PreSync
-      argocd.argoproj.io/hook-delete-policy: HookSucceeded
     namespace: testapp
     resources:
       limits:

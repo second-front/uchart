@@ -1,0 +1,85 @@
+---
+# Example: Using uchart with Helm chart dependencies (subCharts)
+#
+# This example demonstrates how to use standard Helm dependencies with uchart.
+#
+# Prerequisites:
+# 1. Add dependencies to Chart.yaml (see example below)
+# 2. Run: helm dependency update
+# 3. Deploy: helm install myapp . -f this-file.yaml
+#
+# Example Chart.yaml dependencies section:
+# dependencies:
+#   - name: redis
+#     version: "17.9.5"
+#     repository: "https://charts.bitnami.com/bitnami"
+#     condition: subCharts.redis.enabled
+#   - name: postgresql
+#     version: "12.0.0"
+#     repository: "https://charts.bitnami.com/bitnami"
+#     condition: subCharts.postgresql.enabled
+
+global:
+  applicationName: myapp
+  customerName: mycompany
+  impactLevel: il2
+  environment: dev
+  image:
+    defaultImageRegistry: registry.example.com
+    defaultImageRepository: mycompany
+
+# Your microservices
+microservices:
+  backend:
+    image:
+      repository: registry.example.com/mycompany/backend
+      tag: "1.0.0"
+    service:
+      enabled: true
+      port: 8080
+    extraEnvs:
+      - name: REDIS_HOST
+        value: "myapp-redis-master"
+      - name: REDIS_PORT
+        value: "6379"
+      - name: DB_HOST
+        value: "myapp-postgresql"
+      - name: DB_PORT
+        value: "5432"
+
+# Configure Helm chart dependencies here
+subCharts:
+  # Redis configuration (passed to the redis dependency chart)
+  redis:
+    enabled: true
+    architecture: standalone
+    auth:
+      enabled: true
+      password: "redis-password"
+    master:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
+  # PostgreSQL configuration (passed to the postgresql dependency chart)
+  postgresql:
+    enabled: true
+    auth:
+      username: appuser
+      password: "postgres-password"
+      database: appdb
+    primary:
+      resources:
+        requests:
+          cpu: 250m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
+generatedSecrets:
+  enabled: false

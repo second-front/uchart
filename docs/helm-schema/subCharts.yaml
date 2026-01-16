@@ -1,42 +1,61 @@
----
-# @schema
-# type: object
-# properties:
-#   subCharts:
-#     type: object
-#     additionalProperties:  # Allows any subchart name (e.g., clamav)
-#       type: object
-#       properties:
-#         enabled:
-#           type: boolean
-#           default: true
-#         chartUrl:
-#           type: string
-#           default: 'registry.gamewarden.io/charts'
-#         chart:
-#           type: string
-#           default: 'uchart'
-#         name:
-#           type: string
-#         revision:
-#           type: string  # Version of included chart
-#           pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'  # Enforce versioning format (optional)
-#         namespace:
-#           type: string
-#         values:
-#           type: object  # Allows any Helm values to be defined inline
-#         valueFiles:
-#           type: array
-#           items:
-#             type: string  # List of value file paths
-#         valuesRepo:
-#           type: string
-#         wave:
-#           type: string
-#         sync:
-#           type: boolean
-#           default: true
-#         project:
-#           type: string
-# @schema
-subCharts: {}
+# This file is used for helm-schema generation
+# It provides example structure for the subCharts section
+# For v2.0.0: SubCharts are Helm chart dependencies, not ArgoCD Applications
+#
+# Usage: This file is merged with values.yaml and other schema files to generate values.schema.json
+# See README.md for the full schema generation command
+
+subCharts:
+  # Example subchart configuration
+  # The key name must match the dependency name in Chart.yaml
+  redis:
+    # Enable or disable this subchart
+    enabled: true
+    # All other fields are passed directly to the dependency chart
+    # Refer to the specific chart's values for available options
+    architecture: standalone
+    auth:
+      enabled: true
+      password: "example-password"
+    master:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      persistence:
+        enabled: true
+        size: 8Gi
+
+  postgresql:
+    enabled: true
+    auth:
+      username: appuser
+      password: "example-password"
+      database: appdb
+    primary:
+      resources:
+        requests:
+          cpu: 250m
+          memory: 256Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+      persistence:
+        enabled: true
+        size: 20Gi
+
+  rabbitmq:
+    enabled: false
+    auth:
+      username: user
+      password: "example-password"
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+    persistence:
+      enabled: true
+      size: 8Gi

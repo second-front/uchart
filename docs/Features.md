@@ -1,15 +1,12 @@
 # Supported features:
 * Affinity, toloerations and topologySpreadConstraints
 * Annotations and labels
-* Argocd wrapper - supports various overrides to meet many use cases
-* Argocd wrapper to create a single additional argocd application to put all subCharts and the application stack in
-* Argocd wrapper to create additional Argocd applications for each subChart
 * Cronjobs
 * Daemonsets
 * Deployments
 * Disabling and enabling microservices
-* Disabling and enabling subCharts under subCharts
 * Example files for various use cases
+* Helm chart dependencies (subCharts) - supports infrastructure-only deployments without microservices
 * Extra manfiests object
 * Generating secrets from a job for various secret jobs
 * Global configmaps

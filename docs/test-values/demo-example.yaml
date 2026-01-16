@@ -150,14 +150,8 @@ microservices:
           name: example
       - configMapRef:
           name: example
-    annotations:
-      argocd.argoproj.io/hook: PreSync
-      argocd.argoproj.io/hook-delete-policy: HookSucceeded
   frontend:
     enabled: false
-    annotations:
-      argocd.argoproj.io/hook: PreSync
-      argocd.argoproj.io/hook-delete-policy: HookSucceeded
     statefulset:
       enabled: true
     prefix: /

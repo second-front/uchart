@@ -1,4 +1,3 @@
-{{- if and (or .Values.argocd.wrapperAppOff (not .Values.subCharts)) .Values.config.enabled -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -13,4 +12,3 @@ metadata:
 {{ include "universal-app-chart.labels" . | indent 4 }}
 data:
 {{ toYaml .Values.config.data | indent 2 }}
-{{- end }}

@@ -1,4 +1,3 @@
-{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
 {{- if eq (kindOf .Values.extraManifests) "slice" }}
   {{- range .Values.extraManifests }}
 ---
@@ -21,5 +20,4 @@
   {{ toYaml $value }}
   {{- end }}
   {{- end }}
-{{- end }}
 {{- end }}

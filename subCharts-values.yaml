@@ -1,121 +1,296 @@
+# SubCharts Reference Library
+# This file contains example configurations for common Helm chart dependencies
+# Copy the sections you need into your values.yaml under the subCharts: key
+#
+# For v2.0.0: These are Helm chart dependencies, not ArgoCD Applications
+#
+# How to use:
+# 1. Add the desired chart to Chart.yaml dependencies section
+# 2. Copy the configuration below into your values.yaml under subCharts:
+# 3. Run: helm dependency update
+# 4. Deploy with: helm install myapp . -f values.yaml
+#
+# Example Chart.yaml dependencies section:
+# dependencies:
+#   - name: redis
+#     version: "20.7.0"
+#     repository: "https://charts.bitnami.com/bitnami"
+#     condition: subCharts.redis.enabled
+
 subCharts:
-  pgadmin:
-    enabled: false
-    chart: pgadmin
-    revision: '0.1.5'
-    values:
-      existingSecret: "###CUSTOMER_NAME###"
-      serverDefinitions:
-        servers:
-          firstServer:
-            Group: "###CUSTOMER_NAME###"
-            Host: "###CUSTOMER_DB_HOST###"
-            MaintenanceDB: "###CUSTOMER_NAME###"
-            Name: "###CUSTOMER_NAME###"
-            PassFile: /var/lib/pgadmin/pgpass
-            Port: 5432
-            Shared: true
-            SharedUsername: DBAdmin
-            SSLMode: prefer
-            Username: DBAdmin
-###
-  strimzi-kafka-operator:
-    enabled: false
-    chart: strimzi-kafka-operator
-    revision: 0.44.0
-    serverSideApply: false
-    values:
-      defaultImageRegistry: registry.gamewarden.io
-      defaultImageRepository: ironbank-proxy/ironbank/opensource/strimzi
-      defaultImageTag: 0.44.0
-      image:
-        imagePullSecrets:
-          - name: private-registry
-      securityContext:
-        capabilities:
-          drop:
-            - ALL
-        allowPrivilegeEscalation: false
-      extraEnvs:
-        - name: STRIMZI_POD_SECURITY_PROVIDER_CLASS
-          value: restricted
-###
-  vault:
-    enabled: false
-    revision: 0.29.1
-    serverSideApply: false
-###
-  redis:
-    enabled: false
-    revision: '20.7.0'
-    serverSideApply: false
-###
-  rabbitmq:
-    enabled: false
-    revision: '15.2.5'
-###
-  nats:
-    enabled: false
-    revision: '1.2.10'
-###
+  # PostgreSQL Database
+  # Chart: https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+  # Add to Chart.yaml:
+  #   - name: postgresql
+  #     version: "16.4.6"
+  #     repository: "https://charts.bitnami.com/bitnami"
+  #     condition: subCharts.postgresql.enabled
   postgresql:
     enabled: false
-    revision: '16.4.6'
-    serverSideApply: false
+    auth:
+      username: appuser
+      password: "###CHANGE_ME###"
+      database: appdb
+      # Use existing secret
+      # existingSecret: generated-secrets
+    primary:
+      resources:
+        requests:
+          cpu: 250m
+          memory: 256Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+      persistence:
+        enabled: true
+        size: 20Gi
 ###
+
+  # MySQL Database
+  # Chart: https://github.com/bitnami/charts/tree/main/bitnami/mysql
+  # Add to Chart.yaml:
+  #   - name: mysql
+  #     version: "11.1.14"
+  #     repository: "https://charts.bitnami.com/bitnami"
+  #     condition: subCharts.mysql.enabled
   mysql:
     enabled: false
-    serverSideApply: false
-    revision: '9.1.7-bb.1'
-    values:
-      architecture: replication
-      auth:
-        database: "###CUSTOMER_NAME###"
-        username: "###CUSTOMER_NAME###"
-        existingSecret: generated-secrets
-      primary:
-        resources:
-          requests:
-            cpu: 2000m
-            memory: 2Gi
-          limits:
-            cpu: 2000m
-            memory: 2Gi
-      secondary:
-        resources:
-          requests:
-            cpu: 2000m
-            memory: 2Gi
-          limits:
-            cpu: 2000m
-            memory: 2Gi
-        replicaCount: 2
-        affinity:
-          podAntiAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
-                  matchExpressions:
-                    - key: app.kubernetes.io/name
-                      operator: In
-                      values:
-                        - mysql
-                topologyKey: "kubernetes.io/hostname"
+    architecture: replication
+    auth:
+      database: "###CUSTOMER_NAME###"
+      username: "###CUSTOMER_NAME###"
+      # Use existing secret
+      existingSecret: generated-secrets
+    primary:
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 2Gi
+        limits:
+          cpu: 2000m
+          memory: 2Gi
+    secondary:
+      replicaCount: 2
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 2Gi
+        limits:
+          cpu: 2000m
+          memory: 2Gi
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - mysql
+              topologyKey: "kubernetes.io/hostname"
 ###
+
+  # Redis Cache
+  # Chart: https://github.com/bitnami/charts/tree/main/bitnami/redis
+  # Add to Chart.yaml:
+  #   - name: redis
+  #     version: "20.7.0"
+  #     repository: "https://charts.bitnami.com/bitnami"
+  #     condition: subCharts.redis.enabled
+  redis:
+    enabled: false
+    architecture: standalone
+    auth:
+      enabled: true
+      # Use existing secret
+      existingSecret: generated-secrets
+      existingSecretPasswordKey: GENERATED_REDIS_PASSWORD
+    master:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      persistence:
+        enabled: true
+        size: 8Gi
+###
+
+  # RabbitMQ Message Queue
+  # Chart: https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq
+  # Add to Chart.yaml:
+  #   - name: rabbitmq
+  #     version: "15.2.5"
+  #     repository: "https://charts.bitnami.com/bitnami"
+  #     condition: subCharts.rabbitmq.enabled
+  rabbitmq:
+    enabled: false
+    auth:
+      username: user
+      password: "###CHANGE_ME###"
+      # Use existing secret
+      # existingSecret: generated-secrets
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    persistence:
+      enabled: true
+      size: 8Gi
+###
+
+  # NATS Message Queue
+  # Chart: https://github.com/nats-io/k8s/tree/main/helm/charts/nats
+  # Add to Chart.yaml:
+  #   - name: nats
+  #     version: "1.2.10"
+  #     repository: "https://nats-io.github.io/k8s/helm/charts/"
+  #     condition: subCharts.nats.enabled
+  nats:
+    enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+###
+
+  # Vault Secret Management
+  # Chart: https://github.com/hashicorp/vault-helm
+  # Add to Chart.yaml:
+  #   - name: vault
+  #     version: "0.29.1"
+  #     repository: "https://helm.releases.hashicorp.com"
+  #     condition: subCharts.vault.enabled
+  vault:
+    enabled: false
+    server:
+      resources:
+        requests:
+          cpu: 250m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      ha:
+        enabled: false
+###
+
+  # PgAdmin - PostgreSQL Admin UI
+  # Chart: https://github.com/rowanruseler/helm-charts/tree/master/charts/pgadmin4
+  # Add to Chart.yaml:
+  #   - name: pgadmin4
+  #     version: "1.30.0"
+  #     repository: "https://helm.runix.net"
+  #     condition: subCharts.pgadmin4.enabled
+  #     alias: pgadmin
+  pgadmin:
+    enabled: false
+    env:
+      email: admin@example.com
+      password: "###CHANGE_ME###"
+    # Use existing secret
+    # existingSecret: "###CUSTOMER_NAME###"
+    serverDefinitions:
+      servers:
+        firstServer:
+          Group: "###CUSTOMER_NAME###"
+          Host: "###CUSTOMER_DB_HOST###"
+          MaintenanceDB: "###CUSTOMER_NAME###"
+          Name: "###CUSTOMER_NAME###"
+          Port: 5432
+          Username: DBAdmin
+          # Password from pgpass file
+          PassFile: /var/lib/pgadmin/pgpass
+          SSLMode: prefer
+          Shared: true
+          SharedUsername: DBAdmin
+###
+
+  # Strimzi Kafka Operator
+  # Chart: https://github.com/strimzi/strimzi-kafka-operator
+  # Add to Chart.yaml:
+  #   - name: strimzi-kafka-operator
+  #     version: "0.44.0"
+  #     repository: "https://strimzi.io/charts/"
+  #     condition: subCharts.strimzi-kafka-operator.enabled
+  strimzi-kafka-operator:
+    enabled: false
+    watchNamespaces: []  # Empty = watch all namespaces
+    image:
+      registry: registry.gamewarden.io
+      repository: ironbank-proxy/ironbank/opensource/strimzi
+      tag: 0.44.0
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      runAsNonRoot: true
+###
+
+  # MinIO Object Storage (using uchart)
+  # This is a custom chart that itself uses uchart for deployment
+  # Add to Chart.yaml:
+  #   - name: uchart
+  #     version: "2.0.0"
+  #     repository: "https://charts.gamewarden.io"
+  #     condition: subCharts.minio-standalone.enabled
+  #     alias: minio-standalone
   minio-standalone:
     enabled: false
-    revision: 0.0.2
-    values:
-      microservices:
-        minio-standalone:
-          extraEnvs:
-            - name: MINIO_ACCESS_KEY
-              value: "gamewarden"
-            - name: MINIO_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: generated-secrets
-                  key: GENERATED_MINIO_SECRET_KEY
-            - name: MINIO_SERVER_URL
-              value: https://###CUSTOMER_DOMAIN###
-            - name: MINIO_BROWSER_REDIRECT_URL
-              value: https://###CUSTOMER_DOMAIN###
+    global:
+      applicationName: minio
+      customerName: example
+      impactLevel: il2
+      environment: dev
+    microservices:
+      minio-standalone:
+        image:
+          repository: registry.gamewarden.io/minio/minio
+          tag: latest
+        service:
+          enabled: true
+          port: 9000
+        extraEnvs:
+          - name: MINIO_ACCESS_KEY
+            value: "gamewarden"
+          - name: MINIO_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: generated-secrets
+                key: GENERATED_MINIO_SECRET_KEY
+          - name: MINIO_SERVER_URL
+            value: https://###CUSTOMER_DOMAIN###
+          - name: MINIO_BROWSER_REDIRECT_URL
+            value: https://###CUSTOMER_DOMAIN###
+        volumeMounts:
+          - name: data
+            mountPath: /data
+        volumes:
+          - name: data
+            persistentVolumeClaim:
+              claimName: minio-data
+###
+
+# Notes:
+# - All passwords marked with ###CHANGE_ME### should be replaced with secure values
+# - All placeholders marked with ###CUSTOMER_XXX### should be replaced with actual values
+# - For production, use existingSecret to reference secrets from a secret management system
+# - Adjust resource requests/limits based on your workload requirements
+# - Enable persistence for stateful workloads
+# - Check each chart's documentation for all available configuration options

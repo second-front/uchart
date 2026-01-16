@@ -1,9 +1,0 @@
-global:
-  environment: dev
-  impactLevel: il2
-
-microservices:
-  web:
-    image:
-      repository: registry.gamewarden.io/example/example
-      tag: "1.0.0"

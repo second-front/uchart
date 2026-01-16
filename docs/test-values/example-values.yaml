@@ -4,7 +4,6 @@
 ###
 nameOverride: ''
 
-# Used for subcharts
 global:
   applicationName: example
   customerName: Example Company

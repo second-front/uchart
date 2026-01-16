@@ -1,4 +1,3 @@
-{{- if or (.Values.argocd.wrapperAppOff) ( not .Values.subCharts ) }}
 {{- range $msvc, $v := .Values.microservices}}
 {{- with $ }}
 {{ if and (not (empty $v)) (not $v.containers) (not $v.cronjob) (not $v.job) (ne $v.enabled false) }}
@@ -98,7 +97,6 @@ spec:
           type: Utilization
           averageUtilization: {{ $targetCPUUtilizationPercentage }}
     {{- end }}
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
