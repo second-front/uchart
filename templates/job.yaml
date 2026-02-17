@@ -45,7 +45,7 @@ spec:
   backoffLimit: {{ $backoffLimit }}
   ttlSecondsAfterFinished: {{ $ttlSecondsAfterFinished }}
   template:
-    {{- include "podTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "v" $v) | nindent 4 }}
+    {{- include "podTemplate" (dict "msvc" $msvc "image" $v.image "Values" .Values "global" $ "labels" $labels "v" $v) | nindent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}
