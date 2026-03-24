@@ -46,7 +46,7 @@ microservices:
         cpu: 400m
         memory: 3Gi
     initContainers:
-      - name: theme
+      theme:
         image:
           name: cgr/git
           tag: "2.44.0-r2"
@@ -122,7 +122,7 @@ microservices:
         cpu: 400m
         memory: 3Gi
     initContainers:
-      - name: theme
+      theme:
         image:
           name: cgr/git
           tag: "2.44.0-r2"

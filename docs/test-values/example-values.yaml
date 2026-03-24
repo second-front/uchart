@@ -282,7 +282,7 @@ microservices:
       stringData:
         test: test
     initContainers:
-      - name: theme
+      theme:
         image:
           name: cgr/git
           tag: "2.45.0"
@@ -313,7 +313,7 @@ microservices:
             memory: "10Mi"
           limits:
             memory: "1Gi"
-      - name: two
+      two:
         image:
           name: cgr/git
           tag: "2.0.0"

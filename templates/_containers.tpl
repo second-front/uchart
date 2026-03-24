@@ -43,8 +43,8 @@ spec:
     {{- toYaml $podSecurityContext | nindent 8 }}
 {{- with $initContainers }}
   initContainers:
-    {{- range $container := $initContainers }}
-      {{- $ctx := merge (dict "Values" $.Values) $container }}
+    {{- range $name, $container := $initContainers }}
+      {{- $ctx := merge (dict "name" $name "Values" $.Values) $container }}
       {{- include "universal-app-chart.initContainersTagOverride" $ctx | nindent 8 }}
     {{- end }}
 {{- end }}

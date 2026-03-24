@@ -61,8 +61,8 @@ spec:
   serviceAccountName: {{ $serviceAccountName }}
   {{- with $initContainers }}
   initContainers:
-    {{- range $container := $initContainers }}
-      {{- $ctx := merge (dict "Values" $.Values) $container }}
+    {{- range $name, $container := $initContainers }}
+      {{- $ctx := merge (dict "name" $name "Values" $.Values) $container }}
       {{- include "universal-app-chart.initContainersTagOverride" $ctx | nindent 4 }}
     {{- end }}
   {{- end }}
