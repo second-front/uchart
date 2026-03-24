@@ -1,0 +1,319 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+---
+tests:
+  - it: should apply custom labels to pod template metadata in Deployment
+    set:
+      microservices.frontend.enabled: true
+      microservices.frontend.labels.protect: keycloak
+      microservices.frontend.labels.team: platform
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.metadata.labels.protect
+          value: keycloak
+      - equal:
+          path: spec.template.metadata.labels.team
+          value: platform
+      - matchRegex:
+          path: spec.template.metadata.labels.app
+          pattern: frontend
+    template: templates/deployment.yaml
+
+  - it: should apply custom labels to pod template metadata in StatefulSet
+    set:
+      microservices.backend.enabled: true
+      microservices.backend.statefulset.enabled: true
+      microservices.backend.labels.protect: keycloak
+      microservices.backend.labels.tier: database
+      microservices.backend.image.name: backend
+      microservices.backend.image.tag: v2.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: StatefulSet
+      - equal:
+          path: spec.template.metadata.labels.protect
+          value: keycloak
+      - equal:
+          path: spec.template.metadata.labels.tier
+          value: database
+      - matchRegex:
+          path: spec.template.metadata.labels.app
+          pattern: backend
+    template: templates/statefulset.yaml
+
+  - it: should apply custom labels to pod template metadata in DaemonSet
+    set:
+      microservices.agent.enabled: true
+      microservices.agent.daemonset.enabled: true
+      microservices.agent.labels.role: monitoring
+      microservices.agent.labels.component: agent
+      microservices.agent.image.name: agent
+      microservices.agent.image.tag: v1.5.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: DaemonSet
+      - equal:
+          path: spec.template.metadata.labels.role
+          value: monitoring
+      - equal:
+          path: spec.template.metadata.labels.component
+          value: agent
+      - matchRegex:
+          path: spec.template.metadata.labels.app
+          pattern: agent
+    template: templates/daemonset.yaml
+
+  - it: should apply custom labels to pod template metadata in Job
+    set:
+      microservices.migration.enabled: true
+      microservices.migration.job.enabled: true
+      microservices.migration.labels.type: migration
+      microservices.migration.labels.priority: high
+      microservices.migration.image.name: migration
+      microservices.migration.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Job
+      - equal:
+          path: spec.template.metadata.labels.type
+          value: migration
+      - equal:
+          path: spec.template.metadata.labels.priority
+          value: high
+      - matchRegex:
+          path: spec.template.metadata.labels.app
+          pattern: migration
+    template: templates/job.yaml
+
+  - it: should apply custom labels to pod template metadata in CronJob
+    set:
+      microservices.cleanup.enabled: true
+      microservices.cleanup.cronjob.enabled: true
+      microservices.cleanup.labels.schedule: daily
+      microservices.cleanup.labels.purpose: maintenance
+      microservices.cleanup.image.name: cleanup
+      microservices.cleanup.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: CronJob
+      - equal:
+          path: spec.jobTemplate.spec.template.metadata.labels.schedule
+          value: daily
+      - equal:
+          path: spec.jobTemplate.spec.template.metadata.labels.purpose
+          value: maintenance
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.metadata.labels.app
+          pattern: cleanup
+    template: templates/cronjob.yaml
+
+  - it: should work without custom labels (backward compatibility) - Deployment
+    set:
+      microservices.frontend.enabled: true
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - exists:
+          path: spec.template.metadata.labels.app
+      - notExists:
+          path: spec.template.metadata.labels.protect
+    template: templates/deployment.yaml
+
+  - it: should work without custom labels (backward compatibility) - StatefulSet
+    set:
+      microservices.backend.enabled: true
+      microservices.backend.statefulset.enabled: true
+      microservices.backend.image.name: backend
+      microservices.backend.image.tag: v2.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: StatefulSet
+      - exists:
+          path: spec.template.metadata.labels.app
+      - notExists:
+          path: spec.template.metadata.labels.tier
+    template: templates/statefulset.yaml
+
+  - it: should work without custom labels (backward compatibility) - DaemonSet
+    set:
+      microservices.agent.enabled: true
+      microservices.agent.daemonset.enabled: true
+      microservices.agent.image.name: agent
+      microservices.agent.image.tag: v1.5.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: DaemonSet
+      - exists:
+          path: spec.template.metadata.labels.app
+      - notExists:
+          path: spec.template.metadata.labels.role
+    template: templates/daemonset.yaml
+
+  - it: should work without custom labels (backward compatibility) - Job
+    set:
+      microservices.migration.enabled: true
+      microservices.migration.job.enabled: true
+      microservices.migration.image.name: migration
+      microservices.migration.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Job
+      - exists:
+          path: spec.template.metadata.labels.app
+      - notExists:
+          path: spec.template.metadata.labels.type
+    template: templates/job.yaml
+
+  - it: should work without custom labels (backward compatibility) - CronJob
+    set:
+      microservices.cleanup.enabled: true
+      microservices.cleanup.cronjob.enabled: true
+      microservices.cleanup.image.name: cleanup
+      microservices.cleanup.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: CronJob
+      - exists:
+          path: spec.jobTemplate.spec.template.metadata.labels.app
+      - notExists:
+          path: spec.jobTemplate.spec.template.metadata.labels.schedule
+    template: templates/cronjob.yaml
+
+  - it: should apply both custom labels and selectorLabels to pod template - Deployment
+    set:
+      microservices.api.enabled: true
+      microservices.api.labels.protect: keycloak
+      microservices.api.selectorLabels.version: v2
+      microservices.api.image.name: api
+      microservices.api.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.metadata.labels.protect
+          value: keycloak
+      - equal:
+          path: spec.template.metadata.labels.version
+          value: v2
+      - exists:
+          path: spec.template.metadata.labels.app
+    template: templates/deployment.yaml
+
+  - it: should apply both custom labels and selectorLabels to pod template - StatefulSet
+    set:
+      microservices.database.enabled: true
+      microservices.database.statefulset.enabled: true
+      microservices.database.labels.tier: data
+      microservices.database.selectorLabels.shard: primary
+      microservices.database.image.name: database
+      microservices.database.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: StatefulSet
+      - equal:
+          path: spec.template.metadata.labels.tier
+          value: data
+      - equal:
+          path: spec.template.metadata.labels.shard
+          value: primary
+      - exists:
+          path: spec.template.metadata.labels.app
+    template: templates/statefulset.yaml
+
+  - it: should include standard chart labels along with custom labels - Deployment
+    set:
+      global.applicationName: test-app
+      global.customerName: test-customer
+      global.impactLevel: il2
+      global.environment: dev
+      microservices.frontend.enabled: true
+      microservices.frontend.labels.protect: keycloak
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.metadata.labels.protect
+          value: keycloak
+      - exists:
+          path: spec.template.metadata.labels["app.kubernetes.io/name"]
+      - exists:
+          path: spec.template.metadata.labels["helm.sh/chart"]
+      - exists:
+          path: spec.template.metadata.labels["app.kubernetes.io/version"]
+      - exists:
+          path: spec.template.metadata.labels["app.kubernetes.io/managed-by"]
+    template: templates/deployment.yaml
+
+  - it: should handle empty labels object gracefully - Deployment
+    set:
+      microservices.frontend.enabled: true
+      microservices.frontend.labels: {}
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - exists:
+          path: spec.template.metadata.labels.app
+      - notExists:
+          path: spec.template.metadata.labels.protect
+    template: templates/deployment.yaml
+
+  - it: should handle complex nested label values - Deployment
+    set:
+      microservices.frontend.enabled: true
+      microservices.frontend.labels.environment: production
+      microservices.frontend.labels.cost-center: engineering
+      microservices.frontend.labels.app-version: "2.0.1"
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.metadata.labels.environment
+          value: production
+      - equal:
+          path: spec.template.metadata.labels.cost-center
+          value: engineering
+      - equal:
+          path: spec.template.metadata.labels.app-version
+          value: "2.0.1"
+    template: templates/deployment.yaml

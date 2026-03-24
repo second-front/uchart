@@ -96,11 +96,7 @@ Remove the last commas after the last auth and base64 it
 
 {{- define "universal-app-chart.initContainersTagOverride" }}
 - name: {{ .name }}
-  {{- if .overrideTag }}
-  image: {{ printf "%s:%s" (regexReplaceAll ":[^:]+$" .image "") .overrideTag }}
-  {{- else }}
-  image: {{ .image }}
-  {{- end }}
+  image: {{ include "uchart.image" (dict "msvc" .name "image" .image "Values" .Values) }}
   {{- if .command }}
   command:
     {{- toYaml .command | nindent 6 }}

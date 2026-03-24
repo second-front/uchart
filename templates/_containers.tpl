@@ -41,11 +41,12 @@ spec:
   serviceAccountName: {{ $serviceAccountName }}
   securityContext:
     {{- toYaml $podSecurityContext | nindent 8 }}
-{{- if $initContainers }}
+{{- with $initContainers }}
   initContainers:
-  {{- with $initContainers -}}
-    {{ tpl . $ | nindent 8 }}
-  {{- end }}
+    {{- range $container := $initContainers }}
+      {{- $ctx := merge (dict "Values" $.Values) $container }}
+      {{- include "universal-app-chart.initContainersTagOverride" $ctx | nindent 8 }}
+    {{- end }}
 {{- end }}
   terminationGracePeriodSeconds: {{ default 15 $terminationGracePeriodSeconds | int }}
   containers:

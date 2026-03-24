@@ -47,8 +47,9 @@ microservices:
         memory: 3Gi
     initContainers:
       - name: theme
-        image: registry.gamewarden.io/steelbank/cgr/git:2.44.0-r2
-        imagePullPolicy: IfNotPresent
+        image:
+          name: cgr/git
+          tag: "2.44.0-r2"
         command:
           - sh
           - -c
@@ -122,8 +123,9 @@ microservices:
         memory: 3Gi
     initContainers:
       - name: theme
-        image: registry.gamewarden.io/steelbank/cgr/git:2.44.0-r2
-        imagePullPolicy: IfNotPresent
+        image:
+          name: cgr/git
+          tag: "2.44.0-r2"
         command:
           - sh
           - -c
