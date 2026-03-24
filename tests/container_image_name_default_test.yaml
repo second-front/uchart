@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+---
+suite: container image.name defaults to map key
+tests:
+  - it: should default image.name to container map key in multi-container pod
+    set:
+      microservices.my-app.enabled: true
+      microservices.my-app.image.tag: null
+      microservices.my-app.containers:
+        my-sidecar:
+          image:
+            tag: "1.0.0"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: registry.gamewarden.io/testapp/my-sidecar:1.0.0
+    template: templates/multicontainer_deployment.yaml
+
+  - it: should use explicit image.name when provided in multi-container pod
+    set:
+      microservices.my-app.enabled: true
+      microservices.my-app.image.tag: null
+      microservices.my-app.containers:
+        my-sidecar:
+          image:
+            name: custom-image
+            tag: "2.0.0"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: registry.gamewarden.io/testapp/custom-image:2.0.0
+    template: templates/multicontainer_deployment.yaml
+
+  - it: should default image.name to map key for single-container pod
+    set:
+      microservices.my-service.enabled: true
+      microservices.my-service.image:
+        tag: "3.0.0"
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: registry.gamewarden.io/testapp/my-service:3.0.0
+    template: templates/deployment.yaml
