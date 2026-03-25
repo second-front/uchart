@@ -1,0 +1,148 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+---
+suite: initContainer image spec
+tests:
+  - it: should construct initContainer image from map-based format using global defaults
+    set:
+      microservices.frontend.enabled: true
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+      microservices.frontend.initContainers:
+        my-init:
+          image:
+            name: my-init-image
+            tag: "1.0.0"
+          command: ["echo", "hello"]
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: my-init
+      - equal:
+          path: spec.template.spec.initContainers[0].image
+          value: registry.gamewarden.io/testapp/my-init-image:1.0.0
+    template: templates/deployment.yaml
+
+  - it: should fallback to map key as image name when image.name is not provided
+    set:
+      microservices.frontend.enabled: true
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+      microservices.frontend.initContainers:
+        my-init:
+          image:
+            tag: "1.0.0"
+          command: ["echo", "hello"]
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].image
+          value: registry.gamewarden.io/testapp/my-init:1.0.0
+    template: templates/deployment.yaml
+
+  - it: should render command, args, env, resources, and volumeMounts
+    set:
+      microservices.frontend.enabled: true
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+      microservices.frontend.initContainers:
+        my-init:
+          image:
+            name: my-init-image
+            tag: "1.0.0"
+          command: ["sh", "-c"]
+          args: ["echo hello"]
+          env:
+            - name: FOO
+              value: bar
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].command
+          value: ["sh", "-c"]
+      - equal:
+          path: spec.template.spec.initContainers[0].args
+          value: ["echo hello"]
+      - equal:
+          path: spec.template.spec.initContainers[0].env[0].name
+          value: FOO
+      - equal:
+          path: spec.template.spec.initContainers[0].resources.requests.cpu
+          value: 100m
+    template: templates/deployment.yaml
+
+  - it: should render multiple initContainers from map
+    set:
+      microservices.frontend.enabled: true
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+      microservices.frontend.initContainers:
+        first-init:
+          image:
+            name: init-a
+            tag: "1.0.0"
+          command: ["echo", "first"]
+        second-init:
+          image:
+            name: init-b
+            tag: "2.0.0"
+          command: ["echo", "second"]
+    asserts:
+      - isNotNull:
+          path: spec.template.spec.initContainers
+      - lengthEqual:
+          path: spec.template.spec.initContainers
+          count: 2
+    template: templates/deployment.yaml
+
+  - it: should render envFrom with secretRef and configMapRef
+    set:
+      microservices.frontend.enabled: true
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+      microservices.frontend.initContainers:
+        my-init:
+          image:
+            name: my-init-image
+            tag: "1.0.0"
+          envFrom:
+            - secretRef:
+                name: my-secret
+            - configMapRef:
+                name: my-config
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].envFrom[0].secretRef.name
+          value: my-secret
+      - equal:
+          path: spec.template.spec.initContainers[0].envFrom[1].configMapRef.name
+          value: my-config
+    template: templates/deployment.yaml
+
+  - it: should render securityContext and volumeMounts
+    set:
+      microservices.frontend.enabled: true
+      microservices.frontend.image.name: frontend
+      microservices.frontend.image.tag: v1.0.0
+      microservices.frontend.initContainers:
+        my-init:
+          image:
+            name: my-init-image
+            tag: "1.0.0"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+          volumeMounts:
+            - name: data
+              mountPath: /data
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.initContainers[0].volumeMounts[0].mountPath
+          value: /data
+    template: templates/deployment.yaml

@@ -282,10 +282,10 @@ microservices:
       stringData:
         test: test
     initContainers:
-      - name: theme
-        image: registry.gamewarden.io/steelbank/cgr/git:2.44.0-r2
-        overrideTag: '2.45.0'
-        imagePullPolicy: IfNotPresent
+      theme:
+        image:
+          name: cgr/git
+          tag: "2.45.0"
         command:
           - sh
           - -c
@@ -313,10 +313,10 @@ microservices:
             memory: "10Mi"
           limits:
             memory: "1Gi"
-      - name: two
-        image: registry.gamewarden.io/steelbank/cgr/git:1.0.0
-        overrideTag: '2.0.0'
-        imagePullPolicy: IfNotPresent
+      two:
+        image:
+          name: cgr/git
+          tag: "2.0.0"
         command:
           - /bin/sh
         args:

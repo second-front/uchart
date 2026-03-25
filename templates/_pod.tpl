@@ -61,18 +61,9 @@ spec:
   serviceAccountName: {{ $serviceAccountName }}
   {{- with $initContainers }}
   initContainers:
-    {{- $foundOverrideTag := false -}}
-    {{- range $container := $initContainers }}
-      {{- if hasKey $container "overrideTag" }}
-        {{- $foundOverrideTag = true }}
-      {{- end }}
-    {{- end }}
-    {{- if $foundOverrideTag }}
-      {{- range $container := $initContainers }}
-          {{- include "universal-app-chart.initContainersTagOverride" $container | nindent 6 }}
-      {{- end }}
-    {{- else }}
-      {{- toYaml . | nindent 4 }}
+    {{- range $name, $container := $initContainers }}
+      {{- $ctx := merge (dict "name" $name "Values" $.Values) $container }}
+      {{- include "universal-app-chart.initContainersTagOverride" $ctx | nindent 4 }}
     {{- end }}
   {{- end }}
   securityContext:
