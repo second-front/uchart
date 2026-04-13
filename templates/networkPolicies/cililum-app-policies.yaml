@@ -127,6 +127,8 @@ spec:
         k8s:io.kubernetes.pod.namespace: {{ .Release.Namespace }}
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: istio-system
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: istio-gateway
   - fromCIDR:
     - 10.0.0.0/16
     - 172.20.0.0/16
