@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+---
+suite: cilium app-policy ingress rules
+tests:
+  - it: should include istio-gateway namespace in app-policy ingress fromEndpoints
+    set:
+      ciliumNetworkPolicies.appPolicy.enabled: true
+    asserts:
+      - equal:
+          path: metadata.name
+          value: app-policy
+        documentIndex: 7
+      - contains:
+          path: spec.ingress[0].fromEndpoints
+          content:
+            matchLabels:
+              k8s:io.kubernetes.pod.namespace: istio-gateway
+        documentIndex: 7
+    template: templates/networkPolicies/cililum-app-policies.yaml
+
+  - it: should include istio-system namespace in app-policy ingress fromEndpoints
+    set:
+      ciliumNetworkPolicies.appPolicy.enabled: true
+    asserts:
+      - contains:
+          path: spec.ingress[0].fromEndpoints
+          content:
+            matchLabels:
+              k8s:io.kubernetes.pod.namespace: istio-system
+        documentIndex: 7
+    template: templates/networkPolicies/cililum-app-policies.yaml
+
+  - it: should not render app-policy when appPolicy is disabled
+    set:
+      ciliumNetworkPolicies.appPolicy.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+    template: templates/networkPolicies/cililum-app-policies.yaml
