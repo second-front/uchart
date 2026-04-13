@@ -66,7 +66,7 @@ spec:
     - name: {{ $containerName }}
       securityContext:
         {{- toYaml $securityContext | nindent 12 }}
-      image: {{ printf "%s/%s/%s:%s" $.Values.global.image.defaultImageRegistry $.Values.global.image.defaultImageRepository (default $containerName $container.image.name) $container.image.tag }}
+      image: {{ include "uchart.image" (dict "msvc" $containerName "image" $container.image "Values" $.Values) }}
       {{- if $container.workingDir }}
       workingDir: {{ $container.workingDir }}
       {{- end }}
