@@ -34,11 +34,18 @@ metadata:
   labels:
     app: {{ $msvc }}
     {{- include "universal-app-chart.labels" . | nindent 4 }}
-    {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
-  {{- if $annotations }}
+    {{- with omit ($labels | default dict) "app" }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   annotations:
+    {{- if $v.job.helmHook }}
+    helm.sh/hook: pre-upgrade,pre-install
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    helm.sh/hook-weight: "-5"
+    {{- end }}
+    {{- if $annotations }}
     {{- toYaml $annotations | nindent 4 }}
-  {{- end }}
+    {{- end }}
 spec:
   completions: {{ $completions }}
   parallelism: {{ $parallelism }}

@@ -30,7 +30,9 @@ metadata:
   labels:
     app: {{ .msvc }}
     {{- include "universal-app-chart.selectorLabels" $global | nindent 4 }}
-    {{- if $labels -}} {{- toYaml $labels | nindent 4 }} {{- end }}
+    {{- with omit ($labels | default dict) "app" }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
     {{- if $selectorLabels -}} {{- toYaml $selectorLabels | nindent 4 }} {{- end }}
     {{- include "universal-app-chart.labels" $global | nindent 4 }}
 spec:
@@ -171,7 +173,7 @@ spec:
         {{- range $additionalPorts }}
         - name: {{ .name }}
           containerPort: {{ .targetPort }}
-          protocol: {{ .protocol }}
+          protocol: {{ .protocol | default "TCP" }}
         {{- end }}
         {{- end }}
 {{- end }}
