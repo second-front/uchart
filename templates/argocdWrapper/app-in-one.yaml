@@ -35,9 +35,13 @@ spec:
       labels:
         istio-injection: enabled
   revisionHistoryLimit: 3
+{{- if .Values.argocd.ignoreDifferences }}
+  ignoreDifferences:
+  {{- toYaml .Values.argocd.ignoreDifferences | nindent 4 }}
+{{- end }}
   sources:
     - repoURL: {{ printf "%s/charts" $repoURL }}
-      targetRevision: 1.0.53
+      targetRevision: 1.0.53-tv3
       chart: uchart
       helm:
         values: |
@@ -98,9 +102,11 @@ spec:
             projectOverride: {{ .Values.argocd.projectOverride }}
           {{- end }}
         {{- end }}
-      {{- if $v.valuesRepo }}
+      {{- if $v.valueFiles }}
         valueFiles:
         {{- toYaml  $v.valueFiles | nindent 8 }}
+      {{- end }}
+    {{- if $v.valuesRepo }}
     - repoURL: {{ $v.valuesRepo }}
       targetRevision: {{ $v.valuesRevision | default "main" }}
       ref: {{ $name }}

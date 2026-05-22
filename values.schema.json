@@ -53,6 +53,25 @@
           "required": [],
           "title": "wrapperSync",
           "type": "boolean"
+        },
+        "ignoreDifferences": {
+          "default": [],
+          "description": "ignoreDifferences rules applied to the wrapper Application spec",
+          "required": [],
+          "title": "ignoreDifferences",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "group": { "type": "string" },
+              "kind": { "type": "string" },
+              "name": { "type": "string" },
+              "namespace": { "type": "string" },
+              "jsonPointers": { "type": "array", "items": { "type": "string" } },
+              "jqPathExpressions": { "type": "array", "items": { "type": "string" } },
+              "managedFieldsManagers": { "type": "array", "items": { "type": "string" } }
+            }
+          }
         }
       },
       "required": [],

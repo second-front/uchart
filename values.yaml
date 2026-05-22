@@ -300,3 +300,8 @@ argocd:
   wrapAll: false
 # -- wrapper all-in-one argocd application name override
   wrapAllNameOverride: ""
+# -- ignoreDifferences rules applied to the wrapper Application spec (e.g. ignore Service /spec/selector drift)
+  ignoreDifferences: []
+  # - kind: Service
+  #   jsonPointers:
+  #     - /spec/selector
